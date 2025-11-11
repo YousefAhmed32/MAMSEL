@@ -16,7 +16,7 @@ export const getAllUsers = createAsyncThunk(
       queryParams.append('limit', limit);
       
       const response = await axios.get(
-        `http://localhost:5000/api/admin/users?${queryParams.toString()}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/users?${queryParams.toString()}`,
         { withCredentials: true }
       );
       return response.data;
@@ -31,7 +31,7 @@ export const getUserDetails = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/admin/users/${userId}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/users/${userId}`,
         { withCredentials: true }
       );
       return response.data;
@@ -46,7 +46,7 @@ export const updateUserStatus = createAsyncThunk(
   async ({ userId, status }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/admin/users/${userId}/status`,
+        `${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/status`,
         { status },
         { withCredentials: true }
       );
@@ -62,7 +62,7 @@ export const getUsersStats = createAsyncThunk(
   async (timeframe = '30d', { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/admin/users/stats/summary?timeframe=${timeframe}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/users/stats/summary?timeframe=${timeframe}`,
         { withCredentials: true }
       );
       return response.data;

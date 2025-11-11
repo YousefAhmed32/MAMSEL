@@ -22,7 +22,7 @@ export const getImageUrl = (imagePath) => {
   if (normalizedPath.includes('uploads')) {
     // In development
     if (import.meta.env.DEV || import.meta.env.MODE === 'development') {
-      return `http://localhost:5000${normalizedPath}`;
+      return `${import.meta.env.VITE_API_URL}${normalizedPath}`;
     }
     // In production, use the same origin
     return normalizedPath;
@@ -30,7 +30,7 @@ export const getImageUrl = (imagePath) => {
   
   // For other relative paths
   if (import.meta.env.DEV || import.meta.env.MODE === 'development') {
-    return `http://localhost:5000${normalizedPath}`;
+    return `${import.meta.env.VITE_API_URL}${normalizedPath}`;
   }
   
   // Fallback

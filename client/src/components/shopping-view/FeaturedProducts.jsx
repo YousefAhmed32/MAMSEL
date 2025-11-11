@@ -13,7 +13,7 @@ const FeaturedProducts = () => {
     const fetchTopSoldProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get("http://localhost:5000/api/shop/products/top-sold");
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/shop/products/top-sold`);
         if (response.data.success) {
           // عرض أعلى 5 منتجات فقط
           const topFive = (response.data.data || []).slice(0, 5);

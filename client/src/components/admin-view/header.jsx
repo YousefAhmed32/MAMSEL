@@ -126,7 +126,7 @@ function AdminHeader({ setOpen }) {
           // Fallback to direct API call if dispatch fails
           try {
             const productsResponse = await axios.get(
-              `http://localhost:5000/api/shop/search/${encodeURIComponent(query)}`,
+              `${import.meta.env.VITE_API_URL}/api/shop/search/${encodeURIComponent(query)}`,
               { withCredentials: true }
             );
             if (productsResponse.data?.success && productsResponse.data?.data) {

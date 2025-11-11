@@ -168,7 +168,13 @@
         // Order details route (legacy compatibility)
         // app.use('/api/orders', shopCheckoutRouter); // Commented out - using new route above
 
-        app.use('/api/common/feature', commonFeatureRouter)
+        app.use('/api/common/feature', commonFeatureRouter) 
+
+        // Health check endpoint
+        app.get('/health', (req, res) => {
+            console.log('Server is running');
+            res.status(200).send('Server is running');
+    });
 
         server.listen(PORT, ()=> {
             console.log(`🚀 Server is running on port ${PORT}`);

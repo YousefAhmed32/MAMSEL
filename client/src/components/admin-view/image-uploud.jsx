@@ -52,7 +52,7 @@ function ProductImageUpload({
     
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/admin/products/image-upload",
+        `${import.meta.env.VITE_API_URL}/api/admin/products/image-upload`,
         data,
         {
           headers: {
@@ -64,7 +64,7 @@ function ProductImageUpload({
       console.log(response, "response");
       if (response?.data?.success) {
         // Use full URL with server origin for preview
-        const fullUrl = `http://localhost:5000${response.data.result.url}`;
+        const fullUrl = `${import.meta.env.VITE_API_URL}${response.data.result.url}`;
         setUploadedImageUrl(fullUrl);
         console.log("Uploaded URL:", fullUrl);
       } else {

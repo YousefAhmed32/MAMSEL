@@ -318,7 +318,7 @@ function AdminFeatures() {
                       >
                         <div className="aspect-video overflow-hidden bg-muted/30 dark:bg-muted/20">
                           <img
-                            src={featureImageItem.image?.startsWith('http') ? featureImageItem.image : `http://localhost:5000${featureImageItem.image || ''}`}
+                            src={featureImageItem.image?.startsWith('http') ? featureImageItem.image : `${import.meta.env.VITE_API_URL}${featureImageItem.image || ''}`}
                             alt="Desktop Banner"
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             onError={(e) => {
@@ -468,7 +468,7 @@ function AdminFeatures() {
                       >
                         <div className="aspect-[9/16] overflow-hidden bg-muted/30 dark:bg-muted/20">
                           <img
-                            src={featureImageItem.image?.startsWith('http') ? featureImageItem.image : `http://localhost:5000${featureImageItem.image || ''}`}
+                            src={featureImageItem.image?.startsWith('http') ? featureImageItem.image : `${import.meta.env.VITE_API_URL}${featureImageItem.image || ''}`}
                             alt="Mobile Banner"
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             onError={(e) => {

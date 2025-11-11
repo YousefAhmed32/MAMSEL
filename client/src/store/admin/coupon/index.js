@@ -11,7 +11,7 @@ export const addCoupon = createAsyncThunk(
   "order/addCoupon",
   async (formData) => {
     const result = await axios.post(
-      "http://localhost:5000/api/admin/coupons",
+      `${import.meta.env.VITE_API_URL}/api/admin/coupons`,
       formData,
       {
         headers: {
@@ -27,7 +27,7 @@ export const addCoupon = createAsyncThunk(
 export const fetchAllCoupons = createAsyncThunk(
   "order/fetchAllCoupons",
   async () => {
-    const result = await axios.get("http://localhost:5000/api/admin/coupons");
+    const result = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/coupons`);
     return result?.data;
   }
 );
@@ -36,7 +36,7 @@ export const editCoupon = createAsyncThunk(
   "order/editCoupon",
   async ({ id, formData }) => {
     const result = await axios.put(
-      `http://localhost:5000/api/admin/coupons/${id}`,
+      `${import.meta.env.VITE_API_URL}/api/admin/coupons/${id}`,
       formData,
       {
         headers: {
@@ -53,7 +53,7 @@ export const deleteCoupon = createAsyncThunk(
   "order/deleteCoupon",
   async ({ id }) => {
     const result = await axios.delete(
-      `http://localhost:5000/api/admin/coupons/${id}`
+      `${import.meta.env.VITE_API_URL}/api/admin/coupons/${id}`
     );
     return result?.data;
   }

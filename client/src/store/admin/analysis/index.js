@@ -5,7 +5,7 @@ import axios from "axios"
 export const getAdminDashboardSummary = createAsyncThunk(
   '/order/getAdminDashboardSummary',
   async (timeframe = "monthly") => {
-    const response = await axios.get(`http://localhost:5000/api/admin/analysis/orders/get?timeframe=${timeframe}`);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/analysis/orders/get?timeframe=${timeframe}`);
     return response.data;
   }
 );

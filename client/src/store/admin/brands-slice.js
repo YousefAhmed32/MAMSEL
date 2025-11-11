@@ -6,7 +6,7 @@ export const fetchAllBrands = createAsyncThunk(
   'brands/fetchAllBrands',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/brands');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/brands`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'خطأ في جلب العلامات التجارية');
@@ -18,7 +18,7 @@ export const fetchActiveBrands = createAsyncThunk(
   'brands/fetchActiveBrands',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/brands/active');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/brands/active`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'خطأ في جلب العلامات التجارية النشطة');
@@ -30,7 +30,7 @@ export const createBrand = createAsyncThunk(
   'brands/createBrand',
   async (brandData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/brands', brandData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/brands`, brandData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'خطأ في إنشاء العلامة التجارية');
@@ -42,7 +42,7 @@ export const updateBrand = createAsyncThunk(
   'brands/updateBrand',
   async ({ id, brandData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/admin/brands/${id}`, brandData);
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/brands/${id}`, brandData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'خطأ في تحديث العلامة التجارية');
@@ -54,7 +54,7 @@ export const deleteBrand = createAsyncThunk(
   'brands/deleteBrand',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/admin/brands/${id}`);
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/brands/${id}`);
       return { id, message: response.data.message };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'خطأ في حذف العلامة التجارية');
@@ -66,7 +66,7 @@ export const toggleBrandStatus = createAsyncThunk(
   'brands/toggleBrandStatus',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`http://localhost:5000/api/admin/brands/${id}/toggle`);
+      const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/admin/brands/${id}/toggle`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'خطأ في تغيير حالة العلامة التجارية');

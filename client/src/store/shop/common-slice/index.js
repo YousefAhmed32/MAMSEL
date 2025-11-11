@@ -12,7 +12,7 @@ const initialState = {
 export const getFeatureImage = createAsyncThunk(
   "order/getFeatureImage",
   async () => {
-    const response = await axios.get("http://localhost:5000/api/common/feature/get/desktop");
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/common/feature/get/desktop`);
     return response.data;
   }
 );
@@ -20,7 +20,7 @@ export const getFeatureImage = createAsyncThunk(
 export const getFeatureImageMobile = createAsyncThunk(
   "order/getFeatureImageMobile",
   async () => {
-    const response = await axios.get("http://localhost:5000/api/common/feature/get/mobile");
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/common/feature/get/mobile`);
     return response.data;
   }
 );
@@ -28,7 +28,7 @@ export const getFeatureImageMobile = createAsyncThunk(
 export const addFeatureImage = createAsyncThunk(
   "order/addFeatureImage",
   async ({ image, device }) => {
-    const response = await axios.post("http://localhost:5000/api/common/feature/add", {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/common/feature/add`, {
       image,
       device, // ✅ include device: 'desktop' or 'mobile'
     });
@@ -40,7 +40,7 @@ export const addFeatureImage = createAsyncThunk(
 export const addFeatureImageMobile = createAsyncThunk(
   "order/addFeatureImageMobile",
   async ({ image, device }) => {
-    const response = await axios.post("http://localhost:5000/api/common/feature/add", {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/common/feature/add`, {
       image,
       device,
     });
@@ -51,7 +51,7 @@ export const addFeatureImageMobile = createAsyncThunk(
 export const deleteFeatureImages = createAsyncThunk(
   "order/deleteFeatureImages",
   async (id) => {
-    const response = await axios.delete(`http://localhost:5000/api/common/feature/delete/${id}`);
+    const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/common/feature/delete/${id}`);
     return { id, ...response.data };
   }
 )
