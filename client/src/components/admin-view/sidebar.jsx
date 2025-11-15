@@ -97,7 +97,7 @@ function AdminSidebar({ open, setOpen }) {
               <SheetTitle className="flex items-center gap-3 mt-4 text-lg font-bold text-foreground">
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-primary/10 dark:bg-primary/20 flex items-center justify-center ring-2 ring-primary/20">
                   <img 
-                    src="/src/assets/logo 1.png" 
+                    src="/assets/logo2.png" 
                     alt="عود الوجبة" 
                     className="w-8 h-8 object-cover rounded-full"
                   />
@@ -133,7 +133,7 @@ function AdminSidebar({ open, setOpen }) {
           >
             <div className="w-10 h-10 rounded-full overflow-hidden bg-primary/10 dark:bg-primary/20 flex items-center justify-center ring-2 ring-primary/20 flex-shrink-0">
               <img 
-                src="/src/assets/logo 1.png" 
+                src="/assets/logo2.png" 
                 alt="عود الوجبة" 
                 className="w-8 h-8 object-cover rounded-full"
               />

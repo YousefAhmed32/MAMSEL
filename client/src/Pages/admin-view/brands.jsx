@@ -285,7 +285,8 @@ const BrandsManagement = () => {
                   size="sm"
                   variant="outline"
                   onClick={() => handleToggleStatus(brand)}
-                  className="border-luxury-gold/30 text-luxury-gold hover:bg-luxury-gold hover:text-luxury-navy"
+                  disabled={loading}
+                  className="border-luxury-gold/30 text-luxury-gold hover:bg-luxury-gold hover:text-luxury-navy disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {brand.isActive ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
                 </Button>

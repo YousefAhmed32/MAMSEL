@@ -31,7 +31,7 @@ const defaultBrands = [
   {
     name: "جوتشي",
     nameEn: "Gucci",
-    description: "علامة إيطالية فاخرة للأزياء والعطور",
+    description: "علامة إيطالية فاخرة للأزياء و العود",
     logo: "",
     isActive: true
   },

@@ -100,7 +100,7 @@
         app.use(
             cors({
                 origin: CORS_ORIGIN,
-                methods: ['GET', 'POST','PUT', 'DELETE'],
+                methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
                 allowedHeaders: [
                     "Content-type",
                     "Authorization",

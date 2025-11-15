@@ -70,7 +70,11 @@ export const toggleBrandStatus = createAsyncThunk(
       const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/admin/brands/${id}/toggle`);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'خطأ في تغيير حالة العلامة التجارية');
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          error.message || 
+                          'خطأ في تغيير حالة العلامة التجارية';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -185,15 +189,20 @@ const brandsSlice = createSlice({
       .addCase(toggleBrandStatus.fulfilled, (state, action) => {
         state.loading = false;
         const updatedBrand = action.payload.data;
+        
+        // Update brands array
         state.brands = state.brands.map(brand => 
           brand._id === updatedBrand._id ? updatedBrand : brand
         );
         
+        // Update activeBrands array
         if (updatedBrand.isActive) {
-          // Add to active brands if not already there
-          const existsInActive = state.activeBrands.find(brand => brand._id === updatedBrand._id);
-          if (!existsInActive) {
+          // Add to active brands if not already there, or update if exists
+          const existingIndex = state.activeBrands.findIndex(brand => brand._id === updatedBrand._id);
+          if (existingIndex === -1) {
             state.activeBrands.push(updatedBrand);
+          } else {
+            state.activeBrands[existingIndex] = updatedBrand;
           }
         } else {
           // Remove from active brands

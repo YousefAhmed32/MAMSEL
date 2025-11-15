@@ -24,7 +24,7 @@ function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { productList } = useSelector((state) => state.shopProducts);
   const { user } = useSelector((state) => state.auth);
-  const { featureImageList,featureImageListMobile } = useSelector((state) => state.commonFeature);
+  const { featureImageList, featureImageListMobile } = useSelector((state) => state.commonFeature);
 
   // const listForMobile=[bannerOneForMoblie,bannerTwoForMoblie]
 
@@ -32,7 +32,7 @@ function ShoppingHome() {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
-  
+
 
   // Swipe handlers - isolated to image area only
   const swipeHandlers = useSwipeable({
@@ -47,11 +47,11 @@ function ShoppingHome() {
   });
 
 
-         function handleGetProductDetails(getCurrentProductId) {
-           if (getCurrentProductId) {
-             navigate(`/shop/product/${getCurrentProductId}`);
-           }
-         }
+  function handleGetProductDetails(getCurrentProductId) {
+    if (getCurrentProductId) {
+      navigate(`/shop/product/${getCurrentProductId}`);
+    }
+  }
 
   function handleAddToCart(getCurrentProductId) {
     if (!user) {
@@ -67,7 +67,7 @@ function ShoppingHome() {
       .then((data) => {
         if (data?.payload?.success) {
           dispatch(fetchCartItems(user?.id));
-          toast({ 
+          toast({
             title: "تمت إضافة المنتج إلى السلة",
             description: "تم إضافة المنتج بنجاح"
           });
@@ -133,16 +133,16 @@ function ShoppingHome() {
             {/* Luxury Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-luxury-navy via-luxury-navy/50 to-transparent pointer-events-none" />
           </div>
-          
+
           {/* Hero Content for Mobile - Above swipe area with proper z-index */}
           <div className="absolute bottom-8 left-6 right-6 text-center z-50 pointer-events-auto">
             <h1 className="text-gray-50  text-3xl font-serif font-bold dark:luxury-text  mb-4 pointer-events-none">
               اكتشف الفخامة
             </h1>
             <p className="text-white/90 mb-6 text-sm leading-relaxed pointer-events-none">
-              استمتع بأرقى العطور المصنوعة للذواقة المميزين
+              استمتع بأرقى أنواع العود المصممة خصيصًا للذواقة المميزين
             </p>
-            <Button 
+            <Button
               onClick={(e) => {
                 e.stopPropagation();
                 navigate('/shop/listing');
@@ -162,9 +162,8 @@ function ShoppingHome() {
             {featureImageList.map((slide, index) => (
               <div
                 key={index}
-                className={`absolute w-full top-0 left-0 h-full transition-opacity duration-1000 ${
-                  index === currentSlide ? "opacity-100" : "opacity-0"
-                }`}
+                className={`absolute w-full top-0 left-0 h-full transition-opacity duration-1000 ${index === currentSlide ? "opacity-100" : "opacity-0"
+                  }`}
               >
                 <img
                   src={slide.image}
@@ -186,13 +185,14 @@ function ShoppingHome() {
                 </h1>
 
                 <h2 className="text-lg sm:text-xl md:text-2xl font-light text-white/90 mb-3 sm:mb-4 font-serif pointer-events-none">
-                  حيث تلتقي الفخامة بالعطور
+                  حيث تلتقي الفخامة ب أنواع العود
                 </h2>
                 <p className="text-white/80 mb-6 sm:mb-8 text-base sm:text-lg leading-relaxed max-w-lg pointer-events-none">
-                  اكتشف مجموعتنا الحصرية من العطور الفاخرة، كل زجاجة تحفة فنية عطرية.
+                  اكتشف مجموعتنا الحصرية من العود الفاخر، كل قطعة تحفة فنية أصيلة.
                 </p>
+
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pointer-events-auto">
-                  <Button 
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate('/shop/listing');
@@ -201,12 +201,12 @@ function ShoppingHome() {
                   >
                     تسوق الآن
                   </Button>
-                  <Button 
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate('/shop/listing');
                     }}
-                    variant="outline" 
+                    variant="outline"
                     className="border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-luxury-navy luxury-btn px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg relative z-30"
                   >
                     عرض المجموعة
@@ -252,11 +252,10 @@ function ShoppingHome() {
                   e.stopPropagation();
                   setCurrentSlide(index);
                 }}
-                className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${
-                  index === currentSlide 
-                    ? 'bg-luxury-gold scale-125' 
+                className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${index === currentSlide
+                    ? 'bg-luxury-gold scale-125'
                     : 'bg-white/30 hover:bg-white/50'
-                }`}
+                  }`}
               />
             ))}
           </div>
@@ -266,14 +265,14 @@ function ShoppingHome() {
 
       {/* Random Products Section */}
       <section className="container mx-auto px-6 mt-10">
-      
+
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-0 w-32 h-32 bg-luxury-gold/5 rounded-full blur-3xl" />
           <div className="absolute bottom-1/4 right-0 w-40 h-40 bg-luxury-gold/3 rounded-full blur-3xl" />
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
-          <RandomProducts 
+          <RandomProducts
             onViewDetails={handleGetProductDetails}
             onAddToCart={handleAddToCart}
           />
@@ -284,7 +283,7 @@ function ShoppingHome() {
 
 
       {/* Featured Products Section */}
-       {/* <section className="container mx-auto px-6">
+      {/* <section className="container mx-auto px-6">
         
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-0 w-32 h-32 bg-luxury-gold/5 rounded-full blur-3xl" />
@@ -303,7 +302,7 @@ function ShoppingHome() {
 
       {/* New Arrivals Section */}
       <section className="relative py-24 bg-gradient-to-br from-luxury-navy-dark via-luxury-navy to-luxury-navy-light overflow-hidden">
-      
+
 
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-luxury-gold/3 rounded-full blur-3xl animate-pulse" />
@@ -311,14 +310,14 @@ function ShoppingHome() {
         </div>
 
         <div className="relative container mx-auto px-6 z-10">
-          <NewArrivals 
+          <NewArrivals
             onViewDetails={handleGetProductDetails}
             onAddToCart={handleAddToCart}
           />
         </div>
       </section>
 
-{/* <section className="container mx-auto px-6 mt-10 mb-20 relative z-20">
+      {/* <section className="container mx-auto px-6 mt-10 mb-20 relative z-20">
       
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-0 w-32 h-32 bg-luxury-gold/5 rounded-full blur-3xl" />

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Brand = require('../../models/Brand');
 // const { isAuth, isAdmin } = require('../../middleware/auth');
 
@@ -175,7 +176,18 @@ router.delete('/brands/:id', async (req, res) => {
 // Toggle brand status
 router.patch('/brands/:id/toggle', async (req, res) => {
   try {
-    const brand = await Brand.findById(req.params.id);
+    const { id } = req.params;
+    
+    // Validate MongoDB ObjectId format using mongoose method
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'معرف العلامة التجارية غير صحيح'
+      });
+    }
+
+    // Find the brand first to get current status
+    const brand = await Brand.findById(id).lean();
     if (!brand) {
       return res.status(404).json({
         success: false,
@@ -183,15 +195,55 @@ router.patch('/brands/:id/toggle', async (req, res) => {
       });
     }
 
-    brand.isActive = !brand.isActive;
-    await brand.save();
+    // Ensure isActive has a default value if undefined
+    const currentStatus = brand.isActive !== undefined && brand.isActive !== null ? brand.isActive : true;
+    const newStatus = !currentStatus;
+    
+    // Update using updateOne to avoid validation issues
+    // This directly updates the database without triggering save hooks
+    const updateResult = await Brand.updateOne(
+      { _id: id },
+      { 
+        $set: { 
+          isActive: newStatus,
+          updatedAt: new Date()
+        } 
+      }
+    );
+
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'العلامة التجارية غير موجودة'
+      });
+    }
+
+    if (updateResult.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'لم يتم تحديث حالة العلامة التجارية'
+      });
+    }
+
+    // Fetch the updated brand to return it
+    const updatedBrand = await Brand.findById(id);
 
     res.json({
       success: true,
-      message: `تم ${brand.isActive ? 'تفعيل' : 'إلغاء تفعيل'} العلامة التجارية بنجاح`,
-      data: brand
+      message: `تم ${newStatus ? 'تفعيل' : 'إلغاء تفعيل'} العلامة التجارية بنجاح`,
+      data: updatedBrand
     });
   } catch (error) {
+    console.error('Error toggling brand status:', error);
+    
+    // Check if it's a cast error (invalid ID)
+    if (error.name === 'CastError' || error.kind === 'ObjectId') {
+      return res.status(400).json({
+        success: false,
+        message: 'معرف العلامة التجارية غير صحيح'
+      });
+    }
+    
     res.status(500).json({
       success: false,
       message: 'خطأ في تغيير حالة العلامة التجارية',

@@ -5,8 +5,8 @@ const mockBanners = [
   {
     id: 1,
     type: "hero",
-    title: "اكتشف مجموعة منتقاة بعناية من أرقى العطور العالمية",
-    subtitle: "كل عطر يحمل قصة فريدة",
+      title: "اكتشف مجموعة منتقاة بعناية من أرقى  العود العالمية",
+    subtitle: "كل عود يحمل قصة فريدة",
     description: "عطور فاخرة بلا حدود",
     image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=1920&h=1080&fit=crop&crop=center",
     buttonText: "تسوق الآن",

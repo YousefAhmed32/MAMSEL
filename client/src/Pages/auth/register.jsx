@@ -73,7 +73,7 @@ function AuthRegister() {
               <div className="relative">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-br from-luxury-gold to-luxury-gold-light flex items-center justify-center shadow-[0_0_30px_rgba(210,176,101,0.4)]">
                   <img 
-                    src="/src/assets/logo 1.png" 
+                    src="/assets/logo2.png" 
                     alt="عود الوجبة" 
                     className="w-16 h-16 object-cover rounded-full"
                   />
@@ -90,7 +90,7 @@ function AuthRegister() {
                 <div className="flex items-center justify-center lg:justify-end gap-2">
                   <Sparkles className="w-6 h-6 text-luxury-gold" />
                   <p className="text-2xl font-light text-luxury-gold">
-                    متجر العطور الفاخرة
+                    متجر  العود الفاخرة
                   </p>
                   <Sparkles className="w-6 h-6 text-luxury-gold" />
                 </div>

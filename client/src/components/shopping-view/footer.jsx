@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Instagram, Facebook, Twitter, Mail, MapPin, Phone, Heart, Sparkles ,MessageCircle} from "lucide-react";
+import { Instagram, Facebook, Twitter, Mail, MapPin, Phone, Heart, Sparkles, MessageCircle } from "lucide-react";
 
 const handleYansyClick = () => {
   window.open('https://wa.me/201090385390', '_blank');
@@ -11,16 +11,16 @@ function Footer() {
       {/* خلفية فخمة مع تأثيرات متحركة */}
       <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/95 via-black/95 to-zinc-950/95" />
       <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-gold-400/60 to-transparent blur-[3px] animate-pulse" />
-      
+
       {/* تأثيرات إضاءة خفيفة */}
       <div className="absolute top-0 left-1/4 w-20 h-20 bg-gold-500/5 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 right-1/4 w-20 h-20 bg-gold-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
 
       <div className="relative container mx-auto px-6 py-16">
-        
+
         {/* ====== Grid Sections ====== */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          
+
           {/* === Logo & About === */}
           <div className="space-y-6">
             <Link to="/shop/home" className="flex items-center gap-3 group group-hover:scale-105 transition-all duration-300">
@@ -28,7 +28,7 @@ function Footer() {
                 <div className="absolute inset-0 bg-gradient-to-br from-gold-500 to-yellow-600 rounded-full blur-md opacity-50 group-hover:opacity-75 transition-opacity duration-300" />
                 <div className="relative w-14 h-14 rounded-full bg-gradient-to-br from-gold-500 to-yellow-600 flex items-center justify-center shadow-[0_0_20px_rgba(255,215,0,0.4)] group-hover:shadow-[0_0_30px_rgba(255,215,0,0.6)] transition-all duration-300 group-hover:scale-110">
                   <img
-                    src="/src/assets/logo 1.png"
+                    src="/assets/logo2.png"
                     alt="عود الوجبة"
                     className="w-10 h-10 object-cover rounded-full"
                   />
@@ -40,8 +40,9 @@ function Footer() {
             </Link>
 
             <p className="text-sm leading-relaxed text-gray-400 max-w-xs hover:text-gray-300 transition-colors duration-300">
-              اكتشف رفاهية العطور المختارة بعناية — نؤمن أن العطر هو هوية تُعبّر عنك.
+              اكتشف رفاهية العود الفاخر المختار بعناية — فالعود هو هوية تُعبّر عن ذوقك الرفيع.
             </p>
+
 
             <div className="flex gap-4 pt-2">
               {/* Instagram */}

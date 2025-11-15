@@ -98,7 +98,7 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
         </h2>
         <div className="w-24 h-1 bg-gradient-to-r from-luxury-gold to-luxury-gold-light mx-auto rounded-full" />
         <p className="text-white/70 mt-6 text-lg font-light max-w-3xl mx-auto">
-          استكشف مجموعتنا الكاملة من العطور الفاخرة، كل منتج تم اختياره بعناية ليوفر تجربة فريدة ومميزة.
+          استكشف مجموعتنا الكاملة من  العود الفاخرة، كل منتج تم اختياره بعناية ليوفر تجربة فريدة ومميزة.
         </p>
       </div>
 

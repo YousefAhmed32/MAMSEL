@@ -82,7 +82,7 @@ function AuthLogin() {
               <div className="relative">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-br from-luxury-gold to-luxury-gold-light flex items-center justify-center shadow-[0_0_30px_rgba(210,176,101,0.4)]">
                   <img 
-                    src="/src/assets/logo 1.png" 
+                    src="/assets/logo2.png" 
                     alt="عود الوجبة" 
                     className="w-16 h-16 object-cover rounded-full"
                   />
@@ -99,12 +99,12 @@ function AuthLogin() {
                 <div className="flex items-center justify-center lg:justify-end gap-2">
                   <Sparkles className="w-6 h-6 text-luxury-gold" />
                   <p className="text-2xl font-light text-luxury-gold">
-                    متجر العطور الفاخرة
+                    متجر  العود الفاخرة
                   </p>
                   <Sparkles className="w-6 h-6 text-luxury-gold" />
                 </div>
                 <p className="text-white/80 text-lg max-w-md mx-auto lg:mx-0">
-                  استكشف عالم العطور الفاخرة معنا، حيث تلتقي الأناقة بالجودة العالية
+                  استكشف عالم  العود الفاخرة معنا، حيث تلتقي الأناقة بالجودة العالية
                 </p>
               </div>
             </div>

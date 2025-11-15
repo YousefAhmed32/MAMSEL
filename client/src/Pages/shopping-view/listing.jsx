@@ -181,7 +181,7 @@ function ShoppingListing() {
                       جميع المنتجات
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-gold-300/70 mt-1">
-                      اكتشف مجموعتنا المميزة من العطور الفاخرة
+                      اكتشف مجموعتنا المميزة من  العود الفاخرة
                     </p>
                   </div>
                 </div>

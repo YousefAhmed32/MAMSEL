@@ -20,8 +20,8 @@ async function testProductCreation() {
 
     // Create a test product
     const testProduct = new Product({
-      title: "عطر شانيل رقم 5 - إصدار محدود",
-      description: "عطر نسائي فاخر برائحة زهرية كلاسيكية مع لمسة عصرية. يتميز برائحة الياسمين والورد مع قاعدة خشبية دافئة.",
+      title: "عود شانيل رقم 5 - إصدار محدود",
+      description: "عود نسائي فاخر برائحة زهرية كلاسيكية مع لمسة عصرية. يتميز برائحة الياسمين والورد مع قاعدة خشبية دافئة.",
       category: "perfumes",
       brand: brand._id,
       price: 450,

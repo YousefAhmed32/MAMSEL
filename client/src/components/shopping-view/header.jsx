@@ -226,7 +226,7 @@ function ShoppingHeader() {
         >
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gold-950/20 dark:bg-gold-500/20 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
             <img 
-              src="/src/assets/logo 1.png" 
+              src="/assets/logo2.png" 
               alt="عود الوجبة" 
               className="w-6 h-6 sm:w-8 sm:h-8 object-cover rounded-full"
             />

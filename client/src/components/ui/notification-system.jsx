@@ -5,50 +5,50 @@ import { Badge } from './badge';
 
 // Mock notifications data - replace with real API calls
 const mockNotifications = [
-  {
-    id: 1,
-    type: 'new_order',
-    title: 'طلب جديد',
-    message: 'عميل جديد: أحمد محمد - طلب بقيمة $250',
-    timestamp: '2024-10-14 16:30',
-    isRead: false,
-    orderId: 'ORD-001',
-    customerName: 'أحمد محمد',
-    amount: 250,
-    products: ['شانيل رقم 5', 'ديور سوفاج']
-  },
-  {
-    id: 2,
-    type: 'payment_received',
-    title: 'دفع مستلم',
-    message: 'تم استلام دفعة بقيمة $180 من سارة أحمد',
-    timestamp: '2024-10-14 16:15',
-    isRead: false,
-    orderId: 'ORD-002',
-    customerName: 'سارة أحمد',
-    amount: 180
-  },
-  {
-    id: 3,
-    type: 'low_stock',
-    title: 'مخزون منخفض',
-    message: 'منتج "فيرساتشي إيروس" مخزونه منخفض (3 قطع متبقية)',
-    timestamp: '2024-10-14 15:45',
-    isRead: true,
-    productName: 'فيرساتشي إيروس',
-    stockCount: 3
-  },
-  {
-    id: 4,
-    type: 'new_review',
-    title: 'تقييم جديد',
-    message: 'تقييم جديد 5 نجوم من عمر حسن على "جوتشي بلوم"',
-    timestamp: '2024-10-14 15:20',
-    isRead: true,
-    customerName: 'عمر حسن',
-    rating: 5,
-    productName: 'جوتشي بلوم'
-  }
+  // {
+  //   id: 1,
+  //   type: 'new_order',
+  //   title: 'طلب جديد',
+  //   message: 'عميل جديد: أحمد محمد - طلب بقيمة $250',
+  //   timestamp: '2024-10-14 16:30',
+  //   isRead: false,
+  //   orderId: 'ORD-001',
+  //   customerName: 'أحمد محمد',
+  //   amount: 250,
+  //   products: ['شانيل رقم 5', 'ديور سوفاج']
+  // },
+  // {
+  //   id: 2,
+  //   type: 'payment_received',
+  //   title: 'دفع مستلم',
+  //   message: 'تم استلام دفعة بقيمة $180 من سارة أحمد',
+  //   timestamp: '2024-10-14 16:15',
+  //   isRead: false,
+  //   orderId: 'ORD-002',
+  //   customerName: 'سارة أحمد',
+  //   amount: 180
+  // },
+  // {
+  //   id: 3,
+  //   type: 'low_stock',
+  //   title: 'مخزون منخفض',
+  //   message: 'منتج "فيرساتشي إيروس" مخزونه منخفض (3 قطع متبقية)',
+  //   timestamp: '2024-10-14 15:45',
+  //   isRead: true,
+  //   productName: 'فيرساتشي إيروس',
+  //   stockCount: 3
+  // },
+  // {
+  //   id: 4,
+  //   type: 'new_review',
+  //   title: 'تقييم جديد',
+  //   message: 'تقييم جديد 5 نجوم من عمر حسن على "جوتشي بلوم"',
+  //   timestamp: '2024-10-14 15:20',
+  //   isRead: true,
+  //   customerName: 'عمر حسن',
+  //   rating: 5,
+  //   productName: 'جوتشي بلوم'
+  // }
 ];
 
 function NotificationSystem() {

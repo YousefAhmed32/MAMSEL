@@ -22,7 +22,7 @@ function AdminSettings() {
   const [settings, setSettings] = useState({
     // General Settings
     siteName: "عود الوجبة",
-    siteDescription: "متجر العطور الفاخرة",
+    siteDescription: "متجر  العود الفاخرة",
     contactEmail: "info@oudalwajba.com",
     contactPhone: "+97451227772",
     

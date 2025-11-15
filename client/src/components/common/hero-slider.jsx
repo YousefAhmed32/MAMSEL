@@ -51,11 +51,14 @@ function HeroSlider() {
         <div className="w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
           <div className="text-center text-white px-6">
             <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white drop-shadow-2xl">
-              مرحباً بك في عالم العطور الفاخرة
+              مرحباً بك في عالم العود الفاخر
             </h1>
+
             <p className="text-xl text-yellow-300 mb-8 drop-shadow-lg">
-              اكتشف مجموعة منتقاة بعناية من أرقى العطور العالمية
+              اكتشف مجموعة منتقاة بعناية من أرقى أنواع العود العالمية
             </p>
+
+
             <Button className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-8 py-3 text-lg shadow-lg">
               تسوق الآن
             </Button>
@@ -66,7 +69,7 @@ function HeroSlider() {
   }
 
   return (
-    <div 
+    <div
       className="relative h-[70vh] w-full overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -76,9 +79,8 @@ function HeroSlider() {
         {heroBanners.map((banner, index) => (
           <div
             key={banner._id || index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'
+              }`}
           >
             <img
               src={banner.image}
@@ -95,15 +97,18 @@ function HeroSlider() {
         <div className="container mx-auto px-6">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-2xl">
-              عطور فاخرة من أرقى الماركات العالمية
+              عود فاخر من أرقى الماركات العالمية
             </h1>
+
             <h2 className="text-xl md:text-2xl text-yellow-300 mb-4 font-medium drop-shadow-lg">
-              اكتشف مجموعة منتقاة بعناية من أرقى العطور العالمية
+              اكتشف مجموعة منتقاة بعناية من أرقى أنواع العود العالمية
             </h2>
+
             <p className="text-lg text-yellow-100 mb-8 leading-relaxed drop-shadow-md">
-              استمتع بتجربة تسوق فريدة مع مجموعة واسعة من العطور الفاخرة من أشهر الماركات العالمية مثل شانيل، ديور، فيرساتشي، جوتشي، وتوم فورد.
+              استمتع بتجربة تسوق فريدة مع مجموعة واسعة من العود الفاخر من أشهر الماركات العالمية مثل شانيل، ديور، فيرساتشي، جوتشي، وتوم فورد.
             </p>
-            <Button 
+
+            <Button
               className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-8 py-4 text-lg shadow-lg"
               onClick={() => window.location.href = '/shop/listing'}
             >
@@ -140,11 +145,10 @@ function HeroSlider() {
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide 
-                  ? 'bg-gold-950 scale-125' 
-                  : 'bg-white/50 hover:bg-white/70'
-              }`}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
+                ? 'bg-gold-950 scale-125'
+                : 'bg-white/50 hover:bg-white/70'
+                }`}
             />
           ))}
         </div>

@@ -5,13 +5,13 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  ArrowLeft, 
-  Star, 
-  Heart, 
-  ShoppingCart, 
-  Minus, 
-  Plus, 
+import {
+  ArrowLeft,
+  Star,
+  Heart,
+  ShoppingCart,
+  Minus,
+  Plus,
   ZoomIn,
   X,
   ChevronLeft,
@@ -32,10 +32,10 @@ function ProductDetails() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { toast } = useToast();
-  
+
   const { productDetails, productList, isLoading } = useSelector((state) => state.shopProducts);
   const { user } = useSelector((state) => state.auth);
-  
+
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showLightbox, setShowLightbox] = useState(false);
@@ -70,14 +70,14 @@ function ProductDetails() {
       return;
     }
 
-    dispatch(addToCart({ 
-      userId: user?.id, 
-      productId: productDetails._id, 
-      quantity: quantity 
+    dispatch(addToCart({
+      userId: user?.id,
+      productId: productDetails._id,
+      quantity: quantity
     })).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
-        toast({ 
+        toast({
           title: "تم إضافة المنتج إلى السلة",
           description: `تم إضافة ${quantity} من ${productDetails.title} إلى السلة`
         });
@@ -93,12 +93,12 @@ function ProductDetails() {
       });
       return;
     }
-    
+
     // إضافة المنتج إلى السلة ثم الانتقال إلى صفحة الدفع
-    dispatch(addToCart({ 
-      userId: user?.id, 
-      productId: productDetails._id, 
-      quantity: quantity 
+    dispatch(addToCart({
+      userId: user?.id,
+      productId: productDetails._id,
+      quantity: quantity
     })).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
@@ -127,32 +127,32 @@ function ProductDetails() {
   // الحصول على المنتجات ذات الصلة (نفس الفئة أو الماركة)
   const getRelatedProducts = () => {
     if (!productDetails || !productList) return [];
-    
-    const related = productList.filter(product => 
-      product._id !== productDetails._id && 
-      (product.category === productDetails.category || 
-       product.brand === productDetails.brand)
+
+    const related = productList.filter(product =>
+      product._id !== productDetails._id &&
+      (product.category === productDetails.category ||
+        product.brand === productDetails.brand)
     ).slice(0, 4);
-    
+
     return related.length > 0 ? related : productList.slice(0, 4).filter(p => p._id !== productDetails._id);
   };
 
   const relatedProducts = getRelatedProducts();
 
   // Check if current product is in wishlist
-  const isProductInWishlist = useSelector((state) => 
+  const isProductInWishlist = useSelector((state) =>
     productDetails ? selectIsInWishlist(state, productDetails._id) : false
   );
 
   // Handle wishlist toggle for main product
   const handleWishlistToggle = () => {
     if (!productDetails) return;
-    
+
     const wasInWishlist = isProductInWishlist;
     dispatch(toggleWishlistItem(productDetails));
     toast({
       title: wasInWishlist ? "تم الحذف من المفضلة" : "تمت الإضافة للمفضلة",
-      description: wasInWishlist 
+      description: wasInWishlist
         ? `تم حذف ${productDetails.title} من قائمة المفضلة`
         : `تم إضافة ${productDetails.title} إلى قائمة المفضلة`,
     });
@@ -169,7 +169,7 @@ function ProductDetails() {
       dispatch(toggleWishlistItem(product));
       toast({
         title: wasInWishlist ? "تم الحذف من المفضلة" : "تمت الإضافة للمفضلة",
-        description: wasInWishlist 
+        description: wasInWishlist
           ? `تم حذف ${product?.title} من قائمة المفضلة`
           : `تم إضافة ${product?.title} إلى قائمة المفضلة`,
       });
@@ -181,21 +181,19 @@ function ProductDetails() {
         variant="outline"
         onClick={handleWishlistToggle}
         className={`backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2
-          ${
-            isInWishlist
-              ? "bg-red-500/90 hover:bg-red-600 border-red-400 text-white dark:bg-red-500/80 dark:hover:bg-red-600 dark:text-white"
-              : "bg-white/95 hover:bg-gray-100 border-gray-300 text-luxury-gold hover:text-navy-950 dark:bg-luxury-gold dark:hover:bg-luxury-gold/20 dark:text-gray-950 border-luxury-gold dark:border-luxury-gold/70"
+          ${isInWishlist
+            ? "bg-red-500/90 hover:bg-red-600 border-red-400 text-white dark:bg-red-500/80 dark:hover:bg-red-600 dark:text-white"
+            : "bg-white/95 hover:bg-gray-100 border-gray-300 text-luxury-gold hover:text-navy-950 dark:bg-luxury-gold dark:hover:bg-luxury-gold/20 dark:text-gray-950 border-luxury-gold dark:border-luxury-gold/70"
           }
         `}
         title={isInWishlist ? "إزالة من المفضلة" : "إضافة للمفضلة"}
         tabIndex={0}
       >
         <Heart
-          className={`w-4 h-4 transition-colors duration-200 ${
-            isInWishlist
+          className={`w-4 h-4 transition-colors duration-200 ${isInWishlist
               ? "fill-red-500 text-white dark:fill-red-400 dark:text-white"
               : "fill-none text-luxury-gold dark:text-gray-950"
-          }`}
+            }`}
         />
       </Button>
     );
@@ -208,7 +206,7 @@ function ProductDetails() {
     if (!showLightbox) return null;
 
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -224,7 +222,7 @@ function ProductDetails() {
           >
             <X className="w-6 h-6" />
           </Button>
-          
+
           {/* الصورة */}
           <motion.img
             key={lightboxIndex}
@@ -236,31 +234,31 @@ function ProductDetails() {
             className="max-w-full max-h-[90vh] object-contain rounded-lg"
             onClick={(e) => e.stopPropagation()}
           />
-          
+
           {/* أزرار التنقل */}
           {images.length > 1 && (
             <>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setLightboxIndex((prev) => (prev - 1 + images.length) % images.length);
-                        }}
-                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-luxury-gold hover:text-navy-950 text-white border border-white/30 hover:border-luxury-gold transition-all duration-300 shadow-lg hover:shadow-xl"
-                        size="icon"
-                      >
-                        <ChevronLeft className="w-6 h-6" />
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setLightboxIndex((prev) => (prev + 1) % images.length);
-                        }}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-luxury-gold hover:text-navy-950 text-white border border-white/30 hover:border-luxury-gold transition-all duration-300 shadow-lg hover:shadow-xl"
-                        size="icon"
-                      >
-                        <ChevronRight className="w-6 h-6" />
-                      </Button>
-              
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIndex((prev) => (prev - 1 + images.length) % images.length);
+                }}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-luxury-gold hover:text-navy-950 text-white border border-white/30 hover:border-luxury-gold transition-all duration-300 shadow-lg hover:shadow-xl"
+                size="icon"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIndex((prev) => (prev + 1) % images.length);
+                }}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-luxury-gold hover:text-navy-950 text-white border border-white/30 hover:border-luxury-gold transition-all duration-300 shadow-lg hover:shadow-xl"
+                size="icon"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </Button>
+
               {/* عداد الصور */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-full border border-luxury-gold/30 backdrop-blur-sm shadow-xl">
                 <span className="text-luxury-gold font-bold">{lightboxIndex + 1}</span>
@@ -282,7 +280,7 @@ function ProductDetails() {
             <div className="animate-spin rounded-full h-20 w-20 border-4 border-gray-200 dark:border-navy-700 mx-auto mb-6"></div>
             <div className="animate-spin rounded-full h-20 w-20 border-4 border-luxury-gold border-t-transparent absolute top-0 left-1/2 transform -translate-x-1/2"></div>
           </div>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-luxury-gold text-lg font-semibold"
@@ -297,7 +295,7 @@ function ProductDetails() {
   if (!productDetails) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-navy-950 dark:via-navy-900 dark:to-navy-950 flex items-center justify-center">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center bg-white dark:bg-navy-950/80 p-12 rounded-2xl shadow-2xl border border-gray-200 dark:border-luxury-gold/30"
@@ -305,16 +303,24 @@ function ProductDetails() {
           <div className="w-24 h-24 bg-gray-100 dark:bg-navy-900 rounded-full flex items-center justify-center mx-auto mb-6">
             <Eye className="w-12 h-12 text-gray-400 dark:text-luxury-gold/50" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">المنتج غير موجود</h1>
-          <p className="text-gray-600 dark:text-white/70 mb-6">عذراً، لم نتمكن من العثور على المنتج المطلوب</p>
-          <Button 
+
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            عذراً، هذا العود غير متوفر
+          </h1>
+
+          <p className="text-gray-600 dark:text-white/70 mb-6">
+            لم نتمكن من العثور على المنتج المطلوب، ولكن مجموعتنا الأخرى من العود الفاخر بانتظارك.
+          </p>
+
+          <Button
             onClick={() => navigate('/shop/listing')}
             className="bg-luxury-gold text-navy-950 hover:bg-luxury-gold/90 font-bold px-8 py-3 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
           >
-            العودة للمتجر
+            تصفح العود الفاخر
           </Button>
         </motion.div>
       </div>
+
     );
   }
 
@@ -339,7 +345,7 @@ function ProductDetails() {
 
       <div className="container mx-auto px-6 py-8 bg-gray-50 dark:bg-gray-950">
         {/* الصف الأول: معرض الصور وتفاصيل المنتج */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -348,7 +354,7 @@ function ProductDetails() {
           {/* معرض الصور - النصف الأيسر */}
           <div className="space-y-6">
             {/* الصورة الرئيسية */}
-            <motion.div 
+            <motion.div
               layout
               className="relative group bg-white dark:bg-gray-950 rounded-2xl overflow-hidden border border-gray-200 dark:border-luxury-gold/30 shadow-lg hover:shadow-xl dark:shadow-luxury-gold/20 dark:hover:shadow-luxury-gold/30 transition-all duration-300"
             >
@@ -366,7 +372,7 @@ function ProductDetails() {
                     setShowLightbox(true);
                   }}
                 />
-                
+
                 {/* زر التكبير */}
                 <Button
                   onClick={() => {
@@ -411,7 +417,7 @@ function ProductDetails() {
 
             {/* الصور المصغرة */}
             {images.length > 1 && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -421,11 +427,10 @@ function ProductDetails() {
                   <button
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
-                    className={`flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border-2 transition-all bg-white dark:bg-navy-900/50 hover:scale-105 ${
-                      index === selectedImageIndex 
-                        ? 'border-luxury-gold shadow-lg dark:shadow-luxury-gold/30 scale-105' 
+                    className={`flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border-2 transition-all bg-white dark:bg-navy-900/50 hover:scale-105 ${index === selectedImageIndex
+                        ? 'border-luxury-gold shadow-lg dark:shadow-luxury-gold/30 scale-105'
                         : 'border-gray-300 dark:border-luxury-gold/30 hover:border-luxury-gold/60 dark:hover:border-luxury-gold/70'
-                    }`}
+                      }`}
                   >
                     <img
                       src={image}
@@ -439,7 +444,7 @@ function ProductDetails() {
           </div>
 
           {/* تفاصيل المنتج - النصف الأيمن */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -450,7 +455,7 @@ function ProductDetails() {
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
                 {productDetails.title}
               </h1>
-              
+
               {productDetails.brand && (
                 <Badge className="bg-luxury-gold/20 text-luxury-gold border-luxury-gold/30 mb-4">
                   {typeof productDetails.brand === 'object' ? productDetails.brand.name : productDetails.brand}
@@ -463,9 +468,8 @@ function ProductDetails() {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-5 h-5 ${
-                        i < 4 ? 'text-luxury-gold fill-current' : 'text-gray-300'
-                      }`}
+                      className={`w-5 h-5 ${i < 4 ? 'text-luxury-gold fill-current' : 'text-gray-300'
+                        }`}
                     />
                   ))}
                 </div>
@@ -478,10 +482,10 @@ function ProductDetails() {
               {productDetails.salePrice && productDetails.salePrice < productDetails.price ? (
                 <div className="flex items-center gap-4">
                   <span className="text-4xl font-bold text-luxury-gold">
-                    ${productDetails.salePrice}
+                    QR{productDetails.salePrice}
                   </span>
                   <span className="text-2xl text-gray-500 line-through">
-                    ${productDetails.price}
+                    QR{productDetails.price}
                   </span>
                   <Badge className="bg-red-500/20 text-red-600 border-red-500/30">
                     خصم {Math.round(((productDetails.price - productDetails.salePrice) / productDetails.price) * 100)}%
@@ -489,7 +493,7 @@ function ProductDetails() {
                 </div>
               ) : (
                 <span className="text-4xl font-bold text-luxury-gold">
-                  ${productDetails.price}
+                  QR{productDetails.price}
                 </span>
               )}
             </div>
@@ -567,19 +571,17 @@ function ProductDetails() {
                   <Button
                     onClick={handleWishlistToggle}
                     variant="outline"
-                    className={`flex-1 border-2 transition-all duration-300 ${
-                      isProductInWishlist
+                    className={`flex-1 border-2 transition-all duration-300 ${isProductInWishlist
                         ? "border-red-500 dark:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/20 hover:bg-red-100 dark:hover:bg-red-500/30"
                         : "border-gray-300 dark:border-luxury-gold text-gray-700 dark:text-luxury-gold hover:bg-gray-100 dark:hover:bg-luxury-gold/10 hover:border-luxury-gold bg-white dark:bg-navy-900/30"
-                    }`}
+                      }`}
                     size="sm"
                   >
-                    <Heart 
-                      className={`w- h-4 mr-2 transition-colors duration-200 ${
-                        isProductInWishlist
+                    <Heart
+                      className={`w- h-4 mr-2 transition-colors duration-200 ${isProductInWishlist
                           ? "fill-red-500 text-red-500 dark:fill-red-400 dark:text-red-400"
                           : "fill-none"
-                      }`} 
+                        }`}
                     />
                     {isProductInWishlist ? "إزالة من المفضلة" : "إضافة للمفضلة"}
                   </Button>
@@ -607,7 +609,7 @@ function ProductDetails() {
 
         {/* الصف الثاني: المنتجات ذات الصلة */}
         {relatedProducts.length > 0 && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
@@ -636,7 +638,7 @@ function ProductDetails() {
                         alt={product.title}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                       />
-                      
+
                       {/* Action Buttons - Eye and Heart */}
                       <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-10">
                         <Button
@@ -681,9 +683,8 @@ function ProductDetails() {
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`w-4 h-4 ${
-                                i < 4 ? 'text-luxury-gold fill-current' : 'text-gray-300 dark:text-gray-600'
-                              }`}
+                              className={`w-4 h-4 ${i < 4 ? 'text-luxury-gold fill-current' : 'text-gray-300 dark:text-gray-600'
+                                }`}
                             />
                           ))}
                         </div>

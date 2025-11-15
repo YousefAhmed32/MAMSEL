@@ -94,8 +94,8 @@ async function seedSampleData() {
 
       const sampleProducts = [
         {
-          title: "عطر شانيل رقم 5",
-          description: "عطر نسائي فاخر برائحة زهرية كلاسيكية",
+          title: "عود شانيل رقم 5",
+          description: "عود نسائي فاخر برائحة زهرية كلاسيكية",
           category: "perfumes",
           brand: brands[0]._id,
           price: 450,
@@ -108,8 +108,8 @@ async function seedSampleData() {
           isActive: true
         },
         {
-          title: "عطر ديور سوفاج",
-          description: "عطر رجالي قوي برائحة خشبية",
+          title: "عود ديور سوفاج",
+          description: "عود رجالي قوي برائحة خشبية",
           category: "perfumes",
           brand: brands[1]._id,
           price: 600,
@@ -122,8 +122,8 @@ async function seedSampleData() {
           isActive: true
         },
         {
-          title: "عطر فيرساتشي إيروس",
-          description: "عطر رجالي جذاب برائحة منعشة",
+          title: "عود فيرساتشي إيروس",
+          description: "عود رجالي جذاب برائحة منعشة",
           category: "perfumes",
           brand: brands[2]._id,
           price: 350,
@@ -135,8 +135,8 @@ async function seedSampleData() {
           isActive: true
         },
         {
-          title: "عطر شانيل كوكو مادموزيل",
-          description: "عطر نسائي أنيق برائحة شرقية",
+          title: "عود شانيل كوكو مادموزيل",
+          description: "عود نسائي أنيق برائحة شرقية",
           category: "perfumes",
           brand: brands[0]._id,
           price: 500,
@@ -149,8 +149,8 @@ async function seedSampleData() {
           isActive: true
         },
         {
-          title: "عطر ديور جادور",
-          description: "عطر نسائي فاخر برائحة زهرية",
+          title: "عود ديور جادور",
+          description: "عود نسائي فاخر برائحة زهرية",
           category: "perfumes",
           brand: brands[1]._id,
           price: 700,
