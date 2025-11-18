@@ -126,7 +126,7 @@ const getUserDetails = async (req, res) => {
       if (order.items && order.items.length > 0) {
         order.items.forEach(item => {
           if (item.productImage && !item.productImage.startsWith('http')) {
-            item.productImage = `http://localhost:5000${item.productImage.startsWith('/') ? '' : '/'}${item.productImage}`;
+            item.productImage = `${process.env.CORS_ORIGIN_IMAGE}${item.productImage.startsWith('/') ? '' : '/'}${item.productImage}`;
           }
         });
       }
@@ -134,7 +134,7 @@ const getUserDetails = async (req, res) => {
       // Format payment proof URLs
       if (order.payment && order.payment.proofImage && order.payment.proofImage.url) {
         if (!order.payment.proofImage.url.startsWith('http')) {
-          order.payment.proofImage.url = `http://localhost:5000${order.payment.proofImage.url.startsWith('/') ? '' : '/'}${order.payment.proofImage.url}`;
+          order.payment.proofImage.url = `${process.env.CORS_ORIGIN_IMAGE}${order.payment.proofImage.url.startsWith('/') ? '' : '/'}${order.payment.proofImage.url}`;
         }
       }
     });

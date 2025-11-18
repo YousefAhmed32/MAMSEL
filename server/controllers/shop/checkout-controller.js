@@ -452,14 +452,6 @@ const createOrder = async (req, res) => {
         console.error('Error fetching user name:', userError);
       }
       
-      // Prepare order items details for notification
-      const itemsDetails = orderItemsWithImages.map(item => ({
-        title: item.title || 'منتج',
-        quantity: item.quantity || 1,
-        price: item.price || 0,
-        total: (item.quantity || 1) * (item.price || 0)
-      }));
-      
       // Emit to admin room for admin users
       io.to('admin').emit('newOrder', {
         orderId: newOrder._id,
@@ -468,15 +460,10 @@ const createOrder = async (req, res) => {
         userName: userName,
         total: totalAfterDiscount,
         totalBeforeDiscount: totalBeforeDiscount,
-        subtotal: subtotal,
-        shipping: shipping,
-        discount: discount,
         paymentMethod: paymentMethod,
         orderStatus: newOrder.orderStatus,
         paymentStatus: newOrder.payment.status,
         itemsCount: orderItemsWithImages.length,
-        items: itemsDetails,
-        address: addressData,
         createdAt: newOrder.createdAt,
         message: `طلب جديد #${newOrder._id.toString().substring(0, 8)} - ${paymentMethod} - ${totalAfterDiscount} QR`
       });
@@ -587,7 +574,7 @@ const getOrderDetails = async (req, res) => {
     if (order.items && order.items.length > 0) {
       order.items.forEach(item => {
         if (item.productImage && !item.productImage.startsWith('http')) {
-          item.productImage = `http://localhost:5000${item.productImage.startsWith('/') ? '' : '/'}${item.productImage}`;
+          item.productImage = `${process.env.CORS_ORIGIN_IMAGE}${item.productImage.startsWith('/') ? '' : '/'}${item.productImage}`;
         }
       });
     }
@@ -596,7 +583,7 @@ const getOrderDetails = async (req, res) => {
     if (order.payment && order.payment.proofImage && order.payment.proofImage.url) {
       const proofUrl = order.payment.proofImage.url.startsWith('http')
         ? order.payment.proofImage.url
-        : `http://localhost:5000${order.payment.proofImage.url}`;
+        : `${process.env.CORS_ORIGIN_IMAGE}${order.payment.proofImage.url}`;
       order.payment.proofImage.url = proofUrl;
     }
     
@@ -604,7 +591,7 @@ const getOrderDetails = async (req, res) => {
     if (order.payment && order.payment.transferInfo && order.payment.transferInfo.image && order.payment.transferInfo.image.url) {
       const transferUrl = order.payment.transferInfo.image.url.startsWith('http')
         ? order.payment.transferInfo.image.url
-        : `http://localhost:5000${order.payment.transferInfo.image.url}`;
+        : `${process.env.CORS_ORIGIN_IMAGE}${order.payment.transferInfo.image.url}`;
       order.payment.transferInfo.image.url = transferUrl;
     }
     

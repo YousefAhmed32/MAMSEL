@@ -1,8 +1,7 @@
 const paypal = require("../../helper/paypal");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
-const Product = require("../../models/Product");
-const User = require("../../models/User");
+const Product =require("../../models/Product")
 
 const createOrder = async (req, res) => {
     try {
@@ -156,54 +155,6 @@ const capturePayment = async (req, res) => {
 
         await order.save();
 
-        // Emit Socket.io notification for order confirmation
-        const io = req.app.get('io');
-        if (io) {
-          // Get user name from database
-          let userName = 'مستخدم';
-          try {
-            const user = await User.findById(order.userId);
-            if (user && user.userName) {
-              userName = user.userName;
-            }
-          } catch (userError) {
-            console.error('Error fetching user name:', userError);
-          }
-          
-          // Prepare order items details (use cartItems for legacy orders, items for new orders)
-          const orderItems = order.items || order.cartItems || [];
-          const itemsDetails = orderItems.map(item => ({
-            title: item.title || 'منتج',
-            quantity: item.quantity || 1,
-            price: item.price || 0,
-            total: (item.quantity || 1) * (item.price || 0)
-          }));
-          
-          // Emit to admin room for order confirmation notification
-          io.to('admin').emit('orderConfirmed', {
-            orderId: order._id,
-            orderNumber: order._id.toString().substring(0, 8),
-            userId: order.userId,
-            userName: userName,
-            total: order.totalAfterDiscount || order.totalAmount || order.total || 0,
-            totalBeforeDiscount: order.totalBeforeDiscount || 0,
-            subtotal: order.subtotal || 0,
-            shipping: order.shipping || 0,
-            discount: order.discount || order.couponDiscount || 0,
-            paymentMethod: order.payment?.method || order.paymentMethod || 'PayPal',
-            orderStatus: order.orderStatus,
-            paymentStatus: order.paymentStatus || 'paid',
-            itemsCount: orderItems.length,
-            items: itemsDetails,
-            address: order.address || order.addressInfo,
-            createdAt: order.createdAt,
-            confirmedAt: new Date(),
-            message: `تم تأكيد الطلب #${order._id.toString().substring(0, 8)} - ${userName} - ${order.totalAfterDiscount || order.totalAmount || order.total || 0} QR`
-          });
-          
-          console.log(`📢 Order confirmation notification sent: Order #${order._id.toString().substring(0, 8)} - User: ${userName}`);
-        }
-
         res.status(200).json({
             success: true,
             message: "Order confirmed",
@@ -270,19 +221,19 @@ const getAllOrdersByUser = async (req, res) => {
             if (order.items && order.items.length > 0) {
                 order.items.forEach(item => {
                     if (item.productImage && !item.productImage.startsWith('http')) {
-                        item.productImage = `http://localhost:5000${item.productImage.startsWith('/') ? '' : '/'}${item.productImage}`;
+                        item.productImage = `${process.env.CORS_ORIGIN_IMAGE}${item.productImage.startsWith('/') ? '' : '/'}${item.productImage}`;
                     }
                 });
             }
             
             // Format payment proof URLs
             if (order.payment?.proofImage?.url && !order.payment.proofImage.url.startsWith('http')) {
-                order.payment.proofImage.url = `http://localhost:5000${order.payment.proofImage.url}`;
+                order.payment.proofImage.url = `${process.env.CORS_ORIGIN_IMAGE}${order.payment.proofImage.url}`;
             }
             
             // Format transfer images
             if (order.payment?.transferInfo?.image?.url && !order.payment.transferInfo.image.url.startsWith('http')) {
-                order.payment.transferInfo.image.url = `http://localhost:5000${order.payment.transferInfo.image.url}`;
+                order.payment.transferInfo.image.url = `${process.env.CORS_ORIGIN_IMAGE}${order.payment.transferInfo.image.url}`;
             }
         });
 
