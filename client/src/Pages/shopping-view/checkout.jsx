@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Address from "@/components/shopping-view/address";
-import img from "../../assets/account2.png";
+import img from "/assets/account2.png";
 import UserCartItemsContent from "@/components/shopping-view/cart-items-content";
 import { Button } from "@/components/ui/button";
 import { createCheckoutOrder, validateCoupon, clearCoupon } from "@/store/shop/checkout-slice";
