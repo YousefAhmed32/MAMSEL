@@ -551,7 +551,13 @@ function ProductDetails() {
                 {/* الأزرار الرئيسية */}
                 <div className="flex gap-4">
                   <Button
-                    onClick={handleAddToCart}
+                    onClick={() => {
+                      if (!user) {
+                        navigate("/auth/login", { state: { from: location.pathname } });
+                        return;
+                      }
+                      handleAddToCart();
+                    }}
                     className="flex-1 bg-gradient-to-r from-luxury-gold to-luxury-gold/90 text-navy-950 hover:from-luxury-gold/90 hover:to-luxury-gold font-bold py-4 text-lg shadow-xl hover:shadow-2xl dark:shadow-luxury-gold/30 dark:hover:shadow-luxury-gold/40 transition-all duration-300 transform hover:-translate-y-1 border-2 border-luxury-gold"
                   >
                     <ShoppingCart className="w-5 h-5 mr-2" />

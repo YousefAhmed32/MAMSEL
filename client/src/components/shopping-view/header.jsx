@@ -6,6 +6,7 @@ import {
   ShoppingCart,
   UserCog,
   Heart,
+  LogIn,
 } from "lucide-react";
 import { ThemeToggle } from "../ui/theme-toggle";
 import {
@@ -37,32 +38,12 @@ import { setProductDetails } from "@/store/shop/products-slice";
 
 // Helper function to get initials from username (supports Arabic and English)
 function getInitials(userName) {
-  // Handle null, undefined, or empty values
-  if (!userName) {
-    return '??';
-  }
-  
-  // Convert to string if it's not already
+  if (!userName) return "??";
   const nameStr = String(userName).trim();
-  
-  // Check if string is empty after trimming
-  if (!nameStr || nameStr.length === 0) {
-    return '??';
-  }
-  
-  // Use Array.from to properly handle Unicode characters (Arabic, emojis, etc.)
-  // This correctly handles multi-byte characters like Arabic letters
+  if (!nameStr || nameStr.length === 0) return "??";
   const chars = Array.from(nameStr);
-  
-  if (chars.length === 0) {
-    return '??';
-  }
-  
-  // Get first 2 characters and join them
-  const initials = chars.slice(0, 2).join('');
-  
-  // Return initials or '??' if somehow empty
-  return initials || '??';
+  if (chars.length === 0) return "??";
+  return chars.slice(0, 2).join("") || "??";
 }
 
 function MenuItems({ isMobile = false }) {
@@ -91,7 +72,11 @@ function MenuItems({ isMobile = false }) {
   }
 
   return (
-    <nav className={`flex flex-col ${isMobile ? 'gap-4' : 'lg:flex-row gap-6 lg:items-center'}`}>
+    <nav
+      className={`flex flex-col ${
+        isMobile ? "gap-4" : "lg:flex-row gap-6 lg:items-center"
+      }`}
+    >
       {shoppingViewHeaderMenuItem.map((item) => (
         <Label
           key={item.id}
@@ -126,10 +111,62 @@ function HeaderRightContent({ isMobile = false }) {
     dispatch(logoutUser());
   }
 
+  const loginButton = (
+    <Button
+      onClick={() => navigate("/auth/login")}
+      variant="outline"
+      size={isMobile ? "sm" : "md"}
+      className="
+        relative overflow-hidden border-2 border-gold-300 dark:border-gold-500
+        text-white dark:text-white font-semibold rounded-lg px-4 py-2
+        hover:text-gold-950 dark:hover:text-navy-950
+        hover:bg-gold-300/20 dark:hover:bg-gold-500/20
+        shadow-lg hover:shadow-gold-500/40 dark:hover:shadow-gold-400/40
+        transition-all duration-300 ease-in-out
+        hover:scale-105
+        flex items-center gap-2 justify-center
+      "
+    >
+      <span>تسجيل الدخول</span>
+      <LogIn className="w-4 h-4 text-white dark:text-white group-hover:text-gold-950 dark:group-hover:text-navy-950 transition-colors" />
+    </Button>
+  );
+
+  if (!user) {
+    return (
+      <div className={`flex ${isMobile ? "flex-col gap-4" : "lg:flex-row gap-4 items-center"}`}>
+        {loginButton}
+
+        {!isMobile && (
+          <>
+            <ThemeToggle />
+            <Button
+              onClick={() => navigate("/shop/wishlist")}
+              variant="ghost"
+              size="icon"
+              className="relative hover:bg-gold-950/10 dark:hover:bg-gold-500/10 transition-all duration-300 group"
+            >
+              <Heart className="w-6 h-6 text-white dark:text-white group-hover:text-red-500 dark:group-hover:text-red-500 transition-colors duration-300" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-semibold rounded-full min-w-[18px] h-[18px] flex items-center justify-center shadow-md z-10">
+                  {wishlistCount}
+                </span>
+              )}
+            </Button>
+          </>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className={`flex ${isMobile ? 'flex-col gap-4' : 'lg:items-center lg:flex-row flex-col gap-4'}`}>
+    <div
+      className={`flex ${
+        isMobile ? "flex-col gap-4" : "lg:items-center lg:flex-row flex-col gap-4"
+      }`}
+    >
       <ThemeToggle />
-      
+
       <Button
         onClick={() => navigate("/shop/wishlist")}
         variant="ghost"
@@ -143,7 +180,7 @@ function HeaderRightContent({ isMobile = false }) {
           </span>
         )}
       </Button>
-      
+
       <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
         <SheetTrigger asChild>
           <Button
@@ -165,80 +202,78 @@ function HeaderRightContent({ isMobile = false }) {
         />
       </Sheet>
 
-      {user && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Avatar className="bg-gold-950 dark:bg-gold-300 border-2 border-gold-400 dark:border-gold-500 hover:border-gold-300 dark:hover:border-gold-400 transition-all duration-300 cursor-pointer glow-gold hover:scale-105">
-              <AvatarFallback className="text-navy-950 dark:text-navy-200 font-bold text-sm">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Avatar className="bg-gold-950 dark:bg-gold-300 border-2 border-gold-400 dark:border-gold-500 hover:border-gold-300 dark:hover:border-gold-400 transition-all duration-300 cursor-pointer glow-gold hover:scale-105">
+            <AvatarFallback className="text-navy-950 dark:text-navy-200 font-bold text-sm">
+              {getInitials(user?.userName)}
+            </AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent
+          side={isMobile ? "bottom" : "right"}
+          align={isMobile ? "start" : "end"}
+          className="
+            w-80 mt-3 rounded-2xl border-0 px-5 py-4
+            bg-white/95 dark:bg-navy-950
+            text-gray-900 dark:text-gray-100
+            shadow-2xl backdrop-blur-md
+            ring-1 ring-gold-950/20 dark:ring-gold-500/20
+            animate-in fade-in slide-in-from-top-2
+            transition-all duration-300
+          "
+        >
+          <DropdownMenuLabel className="text-xs uppercase tracking-widest text-gold-600 dark:text-gold-300 mb-2">
+            أهلاً بعودتك 👋
+          </DropdownMenuLabel>
+
+          <div className="mb-4 mt-4 flex items-center gap-4">
+            <Avatar className="h-10 w-10 border-2 border-gold-400 dark:border-gold-500 shadow-gold-500/50 shadow-lg glow-gold">
+              <AvatarFallback className="text-navy-950 dark:text-navy-950 font-bold text-xl dark:text-yellow-500">
                 {getInitials(user?.userName)}
               </AvatarFallback>
             </Avatar>
-          </DropdownMenuTrigger>
+            <div className="flex flex-col">
+              <span className="text-base font-semibold text-gray-900 dark:text-white drop-shadow-md">
+                {user?.userName}
+              </span>
+              <span className="text-xs text-gold-600 dark:text-gold-300">
+                🌟 تم تسجيل الدخول
+              </span>
+            </div>
+          </div>
 
-          <DropdownMenuContent
-            side={isMobile ? "bottom" : "right"}
-            align={isMobile ? "start" : "end"}
+          <DropdownMenuItem
+            onClick={() => navigate("/shop/account")}
             className="
-              w-80 mt-3 rounded-2xl border-0 px-5 py-4
-              bg-white/95 dark:bg-navy-950
-              text-gray-900 dark:text-gray-100
-              shadow-2xl backdrop-blur-md
-              ring-1 ring-gold-950/20 dark:ring-gold-500/20
-              animate-in fade-in slide-in-from-top-2
-              transition-all duration-300
+              group flex items-center gap-3 px-3 py-2 rounded-lg
+              hover:bg-gold-950/10 dark:hover:bg-gold-500/10
+              hover:shadow-md transition-all duration-200 cursor-pointer
             "
           >
-            <DropdownMenuLabel className="text-xs uppercase tracking-widest text-gold-600 dark:text-gold-300 mb-2">
-              أهلاً بعودتك 👋
-            </DropdownMenuLabel>
+            <UserCog className="h-5 w-5 text-gold-600 dark:text-gold-400 group-hover:scale-110 group-hover:text-gold-500 dark:group-hover:text-gold-300 transition-transform" />
+            <span className="text-sm text-gray-800 dark:text-gray-200 group-hover:text-gold-600 dark:group-hover:text-gold-300">
+              إعدادات الحساب
+            </span>
+          </DropdownMenuItem>
 
-            <div className="mb-4 mt-4 flex items-center gap-4">
-              <Avatar className="h-10 w-10 border-2 border-gold-400 dark:border-gold-500 shadow-gold-500/50 shadow-lg glow-gold">
-                <AvatarFallback className="text-navy-950 dark:text-navy-950 font-bold text-xl dark:text-yellow-500">
-                  {getInitials(user?.userName)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="text-base font-semibold text-gray-900 dark:text-white drop-shadow-md">
-                  {user?.userName}
-                </span>
-                <span className="text-xs text-gold-600 dark:text-gold-300">
-                  🌟 تم تسجيل الدخول
-                </span>
-              </div>
-            </div>
+          <DropdownMenuSeparator className="my-3 border-t border-gold-950/20 dark:border-gold-500/20" />
 
-            <DropdownMenuItem
-              onClick={() => navigate("/shop/account")}
-              className="
-                group flex items-center gap-3 px-3 py-2 rounded-lg
-                hover:bg-gold-950/10 dark:hover:bg-gold-500/10
-                hover:shadow-md transition-all duration-200 cursor-pointer
-              "
-            >
-              <UserCog className="h-5 w-5 text-gold-600 dark:text-gold-400 group-hover:scale-110 group-hover:text-gold-500 dark:group-hover:text-gold-300 transition-transform" />
-              <span className="text-sm text-gray-800 dark:text-gray-200 group-hover:text-gold-600 dark:group-hover:text-gold-300">
-                إعدادات الحساب
-              </span>
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator className="my-3 border-t border-gold-950/20 dark:border-gold-500/20" />
-
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="
-                group flex items-center gap-3 px-3 py-2 rounded-lg
-                hover:bg-red-500/10 hover:shadow-md transition-all duration-200 cursor-pointer
-              "
-            >
-              <LogOut className="h-5 w-5 text-red-500 group-hover:rotate-12 group-hover:text-red-400 transition-transform" />
-              <span className="text-sm text-gray-800 dark:text-gray-200 group-hover:text-red-400">
-                تسجيل الخروج
-              </span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
+          <DropdownMenuItem
+            onClick={handleLogout}
+            className="
+              group flex items-center gap-3 px-3 py-2 rounded-lg
+              hover:bg-red-500/10 hover:shadow-md transition-all duration-200 cursor-pointer
+            "
+          >
+            <LogOut className="h-5 w-5 text-red-500 group-hover:rotate-12 group-hover:text-red-400 transition-transform" />
+            <span className="text-sm text-gray-800 dark:text-gray-200 group-hover:text-red-400">
+              تسجيل الخروج
+            </span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
@@ -255,9 +290,9 @@ function ShoppingHeader() {
           className="flex items-center gap-2 sm:gap-3 text-white dark:text-white text-lg sm:text-xl font-bold tracking-widest hover:opacity-90 group transition-all duration-300 flex-shrink-0"
         >
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gold-950/20 dark:bg-gold-500/20 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-            <img 
-              src="/assets/logo3.png" 
-              alt="عود الوجبة" 
+            <img
+              src="/assets/logo3.png"
+              alt="عود الوجبة"
               className="w-6 h-6 sm:w-8 sm:h-8 object-cover rounded-full"
             />
           </div>
@@ -265,7 +300,13 @@ function ShoppingHeader() {
           <span className="glow-text sm:hidden">عود</span>
         </Link>
 
+        {/* Mobile Menu Trigger */}
         <div className="flex items-center gap-2 lg:hidden">
+          {/* تسجيل الدخول خارج الموبايل menu */}
+          {!isAuthenticated && (
+            <HeaderRightContent isMobile={true} />
+          )}
+
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button
@@ -287,17 +328,23 @@ function ShoppingHeader() {
                 </SheetTitle>
                 <MenuItems isMobile={true} />
                 <div className="pt-4 border-t border-gold-950/20 dark:border-gold-500/20">
-                  <HeaderRightContent isMobile={true} />
+                  {/* تسجيل الدخول داخل الموبايل menu */}
+                  {!isAuthenticated && (
+                    <HeaderRightContent isMobile={true} />
+                  )}
+                  {isAuthenticated && <HeaderRightContent isMobile={true} />}
                 </div>
               </div>
             </SheetContent>
           </Sheet>
         </div>
 
+        {/* Menu Items for large screens */}
         <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
           <MenuItems isMobile={false} />
         </div>
 
+        {/* Header Right Content for large screens */}
         <div className="hidden lg:flex items-center gap-4">
           <HeaderRightContent isMobile={false} />
         </div>

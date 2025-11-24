@@ -116,66 +116,71 @@ const NewArrivals = ({ onViewDetails, onAddToCart }) => {
                   <Eye className="w-4 h-4" />
                 </Button>
                 <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={(e) => {
-                    e.stopPropagation();
+  size="icon"
+  variant="outline"
+  onClick={(e) => {
+    e.stopPropagation();
 
-                    // Check if user is logged in
-                    if (!user) {
-                      toast({
-                        title: "يجب تسجيل الدخول أولاً",
-                        description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
-                        variant: "destructive"
-                      });
-                      return;
-                    }
+    // Redirect to login if not logged in
+    
+    if (!user) {
+      navigate("/auth/login", { state: { from: location.pathname } });
 
-                    // Check if product is out of stock
-                    if (product.totalStock === 0) {
-                      toast({
-                        title: "المنتج غير متوفر",
-                        description: "هذا المنتج غير متوفر حالياً",
-                        variant: "destructive"
-                      });
-                      return;
-                    }
+      toast({
+        title: "يجب تسجيل الدخول أولاً",
+        description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
+        variant: "destructive"
+      });
 
-                    if (onAddToCart) {
-                      onAddToCart(product._id);
-                    } else {
-                      dispatch(addToCart({ userId: user?.id, productId: product._id, quantity: 1 }))
-                        .then((data) => {
-                          if (data?.payload?.success) {
-                            dispatch(fetchCartItems(user?.id));
-                            toast({
-                              title: "تمت إضافة المنتج إلى السلة",
-                              description: product.title || product.name
-                            });
-                          } else {
-                            toast({
-                              title: "خطأ في الإضافة",
-                              description: data?.payload?.message || "فشل إضافة المنتج إلى السلة",
-                              variant: "destructive"
-                            });
-                          }
-                        })
-                        .catch((error) => {
-                          console.error("Error adding to cart:", error);
-                          toast({
-                            title: "خطأ في الإضافة",
-                            description: "حدث خطأ أثناء إضافة المنتج إلى السلة",
-                            variant: "destructive"
-                          });
-                        });
-                    }
-                  }}
-                  className="bg-luxury-gold/95 border-luxury-gold text-luxury-navy hover:bg-luxury-gold-light hover:text-luxury-navy shadow-[0_0_15px_rgba(210,176,101,0.6)] backdrop-blur-sm"
-                  disabled={product.totalStock === 0}
-                  title="أضف إلى السلة"
-                >
-                  <ShoppingCart className="w-4 h-4" />
-                </Button>
+      return;
+    }
+
+    // Check if product is out of stock
+    if (product.totalStock === 0) {
+      toast({
+        title: "المنتج غير متوفر",
+        description: "هذا المنتج غير متوفر حالياً",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (onAddToCart) {
+      onAddToCart(product._id);
+    } else {
+      dispatch(addToCart({ userId: user?.id, productId: product._id, quantity: 1 }))
+        .then((data) => {
+          if (data?.payload?.success) {
+            dispatch(fetchCartItems(user?.id));
+            toast({
+              title: "تمت إضافة المنتج إلى السلة",
+              description: product.title || product.name
+            });
+          } else {
+            toast({
+              title: "خطأ في الإضافة",
+              description: data?.payload?.message || "فشل إضافة المنتج إلى السلة",
+              variant: "destructive"
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error adding to cart:", error);
+          toast({
+            title: "خطأ في الإضافة",
+            description: "حدث خطأ أثناء إضافة المنتج إلى السلة",
+            variant: "destructive"
+          });
+        });
+    }
+  }}
+  className="bg-luxury-gold/95 border-luxury-gold text-luxury-navy hover:bg-luxury-gold-light hover:text-luxury-navy shadow-[0_0_15px_rgba(210,176,101,0.6)] backdrop-blur-sm"
+  disabled={product.totalStock === 0}
+  title="أضف إلى السلة"
+>
+  <ShoppingCart className="w-4 h-4" />
+</Button>
+
                 <WishlistHeartButton product={product} />
               </div>
             </div>
@@ -246,12 +251,7 @@ const NewArrivals = ({ onViewDetails, onAddToCart }) => {
 
                     // Check if user is logged in
                     if (!user) {
-                      toast({
-                        title: "يجب تسجيل الدخول أولاً",
-                        description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
-                        variant: "destructive"
-                      });
-                      return;
+                      navigate("/auth/login", { state: { from: location.pathname } });
                     }
 
                     // Check if product is out of stock

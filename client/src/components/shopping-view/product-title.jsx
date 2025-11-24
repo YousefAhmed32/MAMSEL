@@ -94,6 +94,16 @@ function ShoppingProductTitle({
                 variant="outline"
                 onClick={(e) => {
                   e.stopPropagation();
+                  if (!user) {
+                    navigate("/auth/login", { state: { from: location.pathname } });
+                
+                    toast({
+                      title: "يجب تسجيل الدخول أولاً",
+                      description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
+                      variant: "destructive"
+                    });
+                    return;
+                  }
                   if (product?.totalStock > 0) {
                     handleAddToCart(product?._id, product?.totalStock);
                   }

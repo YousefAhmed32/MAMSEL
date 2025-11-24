@@ -103,6 +103,17 @@ const RandomProducts = ({ onViewDetails, onAddToCart }) => {
                   variant="outline"
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (!user) {
+                      navigate("/auth/login", { state: { from: location.pathname } });
+                
+                      toast({
+                        title: "يجب تسجيل الدخول أولاً",
+                        description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
+                        variant: "destructive"
+                      });
+                      return;
+                    }
+
                     if (onAddToCart) {
                       onAddToCart(product._id);
                     } else {
@@ -188,6 +199,16 @@ const RandomProducts = ({ onViewDetails, onAddToCart }) => {
                 {/* Add to Cart Button */}
                 <Button
                   onClick={(e) => {
+                    if (!user) {
+                      navigate("/auth/login", { state: { from: location.pathname } });
+                
+                      toast({
+                        title: "يجب تسجيل الدخول أولاً",
+                        description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
+                        variant: "destructive"
+                      });
+                      return;
+                    }
                     e.stopPropagation();
                     if (onAddToCart) {
                       onAddToCart(product._id);

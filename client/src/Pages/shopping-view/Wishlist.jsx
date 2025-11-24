@@ -257,6 +257,10 @@ function Wishlist() {
                       <Button
                         onClick={(e) => {
                           e.stopPropagation();
+                          if (!user) {
+                            navigate("/auth/login", { state: { from: location.pathname } });
+                            return;
+                          }
                           handleAddToCart(productId, product?.totalStock);
                         }}
                         className="w-full bg-gradient-to-r from-primary to-primary/90 

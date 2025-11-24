@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import AuthLayout from "./components/auth/layout";
 
 import AuthLogin from "./Pages/auth/login";
@@ -44,15 +44,13 @@ function App() {
   const { user, isAuthenticated, isloading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
 
-   useEffect(() => {
-    
+  useEffect(() => {
     if (user?.id) {
-      dispatch(fetchCartItems(user.id)); 
+      dispatch(fetchCartItems(user.id));
     }
   }, [user, dispatch]);
 
@@ -62,14 +60,11 @@ function App() {
   return (
     <div className="flex flex-col overflow-hidden bg-background text-foreground">
       <Routes>
-        <Route
-        path="/"
-         element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-            
-            </CheckAuth>
-          }
-        />
+
+        {/* 🔥 اعمل redirect من / إلى /shop/home */}
+        <Route path="/" element={<Navigate to="/shop/home" replace />} />
+
+        {/* صفحات تسجيل الدخول - عامة */}
         <Route
           path="/auth"
           element={
@@ -82,6 +77,7 @@ function App() {
           <Route path="register" element={<AuthRegister />} />
         </Route>
 
+        {/* صفحات الأدمن - محمية */}
         <Route
           path="/admin"
           element={
@@ -103,6 +99,7 @@ function App() {
           <Route path="settings" element={<AdminSettings />} />
         </Route>
 
+        {/* صفحات الشوب */}
         <Route
           path="/shop/*"
           element={
@@ -111,20 +108,25 @@ function App() {
             </CheckAuth>
           }
         >
+          {/* صفحات عامة */}
           <Route index element={<ShoppingHome />} />
           <Route path="home" element={<ShoppingHome />} />
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="product/:productId" element={<ProductDetails />} />
+          <Route path="wishlist" element={<Wishlist />} />
+          <Route path="search" element={<SearchProducts />} />
+
+          {/* صفحات محمية */}
           <Route path="account" element={<ShoppingAccount />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
-          <Route path="wishlist" element={<Wishlist />} />
+
+          {/* صفحات الدفع */}
           <Route path="paypal-return" element={<PaypalReturnPage />} />
           <Route path="payment-success" element={<PaymentSuccessPage />} />
-          <Route path="search" element={<SearchProducts />} />
         </Route>
 
         <Route path="/unauth-page" element={<UnauthPage />} />
-          <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );

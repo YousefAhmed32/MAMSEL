@@ -149,11 +149,7 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
                     e.preventDefault();
                     
                     if (!user) {
-                      toast({
-                        title: "يجب تسجيل الدخول أولاً",
-                        description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
-                        variant: "destructive"
-                      });
+                      navigate("/auth/login", { state: { from: location.pathname } });
                       return;
                     }
 
@@ -250,7 +246,13 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
                 ) : (
                   <Button
                     className="w-full bg-gradient-to-r from-gold-500 via-gold-600 to-gold-500 hover:from-gold-600 hover:via-gold-700 hover:to-gold-600 text-white dark:text-navy-950 font-bold shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group/btn z-20"
-                    onClick={(e) => handleAddToCartClick(e, product._id, product.totalStock)}
+                    onClick={(e) => {
+                      if (!user) {
+                        navigate("/auth/login", { state: { from: location.pathname } });
+                        return;
+                      }
+                      handleAddToCartClick(e, product._id, product.totalStock);
+                    }}
                     type="button"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 pointer-events-none" />
