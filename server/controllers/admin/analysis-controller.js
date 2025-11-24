@@ -317,9 +317,9 @@ const getAdminDashboardSummary = async (req, res) => {
 
     const totalRevenue = totalAggRevenue;
 
-    // Calculate revenue by payment status (without date filter for overall totals)
+    // Calculate revenue by payment status WITH date filter for timeframe-specific totals
     const [pendingRevenueResult, rejectedRevenueResult, approvedRevenueResult] = await Promise.all([
-      // Pending/Awaiting Approval Revenue
+      // Pending/Awaiting Approval Revenue (filtered by timeframe)
       Orders.aggregate([
         {
           $match: {
@@ -333,7 +333,9 @@ const getAdminDashboardSummary = async (req, res) => {
                 ]
               },
               // Exclude delivered orders from pending (they should be approved)
-              { orderStatus: { $ne: "delivered" } }
+              { orderStatus: { $ne: "delivered" } },
+              // Add date filter for timeframe
+              orderDateFilter
             ]
           }
         },
@@ -344,14 +346,20 @@ const getAdminDashboardSummary = async (req, res) => {
           }
         }
       ]),
-      // Rejected Revenue
+      // Rejected Revenue (filtered by timeframe)
       Orders.aggregate([
         {
           $match: {
-            $or: [
-              { "payment.status": "rejected" },
-              { orderStatus: "rejected" },
-              { orderStatus: "cancelled" }
+            $and: [
+              {
+                $or: [
+                  { "payment.status": "rejected" },
+                  { orderStatus: "rejected" },
+                  { orderStatus: "cancelled" }
+                ]
+              },
+              // Add date filter for timeframe
+              orderDateFilter
             ]
           }
         },
@@ -362,16 +370,22 @@ const getAdminDashboardSummary = async (req, res) => {
           }
         }
       ]),
-      // Approved Revenue (including delivered orders)
+      // Approved Revenue (filtered by timeframe) - including delivered orders
       Orders.aggregate([
         {
           $match: {
-            $or: [
-              { "payment.status": "approved" },
-              { paymentStatus: "paid" },
-              { paymentStatus: "approved" },
-              { orderStatus: "delivered" }, // Include delivered orders as approved revenue
-              { orderStatus: "completed" }
+            $and: [
+              {
+                $or: [
+                  { "payment.status": "approved" },
+                  { paymentStatus: "paid" },
+                  { paymentStatus: "approved" },
+                  { orderStatus: "delivered" }, // Include delivered orders as approved revenue
+                  { orderStatus: "completed" }
+                ]
+              },
+              // Add date filter for timeframe
+              orderDateFilter
             ]
           }
         },
@@ -391,15 +405,24 @@ const getAdminDashboardSummary = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        totalUsers: totalUsersAll, // Use overall count
-        totalOrders: totalOrdersAll, // Use overall count
-        totalProducts: totalProductsAll, // Use overall count
-        totalRevenue: approvedRevenue, // Use overall approved revenue
-        pendingRevenue: pendingRevenue,
-        rejectedRevenue: rejectedRevenue,
+        // Use timeframe-specific data instead of overall counts
+        totalUsers: totalUsers, // Timeframe-specific count
+        totalCustomers: totalUsers, // Alias for totalUsers (same value)
+        totalOrders: totalOrders, // Timeframe-specific count
+        totalProducts: totalProducts, // Timeframe-specific count
+        totalRevenue: approvedRevenue, // Timeframe-specific approved revenue
+        pendingRevenue: pendingRevenue, // Timeframe-specific pending revenue
+        rejectedRevenue: rejectedRevenue, // Timeframe-specific rejected revenue
+        // Overall totals (for reference if needed)
+        overallTotals: {
+          totalUsers: totalUsersAll,
+          totalOrders: totalOrdersAll,
+          totalProducts: totalProductsAll,
+        },
         // Timeframe-specific data for growth calculations
         timeframeData: {
           totalUsers,
+          totalCustomers: totalUsers, // Alias for totalUsers
           totalOrders,
           totalProducts,
           totalRevenue,

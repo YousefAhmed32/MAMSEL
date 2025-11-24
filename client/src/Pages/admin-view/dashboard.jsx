@@ -39,7 +39,7 @@ function AdminDashboard() {
   // Map timeFilter to API timeframe format
   const getTimeframeForAPI = (filter) => {
     const mapping = {
-      '24h': 'hour',
+      '24h': 'daily', // Last 24 hours (daily timeframe in API)
       '7d': 'weekly',
       '30d': 'monthly',
       '3m': 'yearly',
@@ -47,6 +47,44 @@ function AdminDashboard() {
       'all': 'all'
     };
     return mapping[filter] || 'monthly';
+  };
+
+  // Get start date based on timeframe (matching API logic)
+  const getStartDateForTimeframe = (filter) => {
+    const now = new Date();
+    // Calculate months more accurately
+    const getMonthsAgo = (months) => {
+      const date = new Date(now);
+      date.setMonth(date.getMonth() - months);
+      return date;
+    };
+    
+    // Set time to start of day for date comparisons
+    const startOfDay = (date) => {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    };
+    
+    const mapping = {
+      '24h': startOfDay(now), // Start of today (daily timeframe = last 24 hours)
+      '7d': new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000), // Last 6 days + today = 7 days (weekly)
+      '30d': new Date(startOfDay(now).getTime() - 29 * 24 * 60 * 60 * 1000), // Last 29 days + today = 30 days (monthly)
+      '3m': getMonthsAgo(3), // Last 3 months (maps to yearly API timeframe)
+      '1y': getMonthsAgo(11), // Last 11 months + current = 12 months (yearly)
+      'all': new Date('2025-01-01') // Match API start date
+    };
+    return mapping[filter] || new Date(startOfDay(now).getTime() - 29 * 24 * 60 * 60 * 1000);
+  };
+
+  // Filter data by timeframe
+  const filterByTimeframe = (data, dateField = 'createdAt') => {
+    if (!data || data.length === 0) return [];
+    const startDate = getStartDateForTimeframe(timeFilter);
+    return data.filter(item => {
+      const itemDate = new Date(item.orderDate || item[dateField] || item.createdAt);
+      return itemDate >= startDate;
+    });
   };
 
   useEffect(() => {
@@ -68,11 +106,12 @@ function AdminDashboard() {
 
   // Calculate best selling products from actual orders
   const calculateBestSellingProducts = () => {
-    if (!orderList || orderList.length === 0) return [];
+    const filteredOrders = filterByTimeframe(orderList || [], 'orderDate');
+    if (!filteredOrders || filteredOrders.length === 0) return [];
     
     const productSales = {};
     
-    orderList.forEach(order => {
+    filteredOrders.forEach(order => {
       // Handle both new format (items) and legacy format (cartItems)
       const items = order.items || order.cartItems || [];
       
@@ -113,9 +152,10 @@ function AdminDashboard() {
   const calculateRecentActivity = () => {
     const activities = [];
     
-    // Get recent orders
-    if (orderList && orderList.length > 0) {
-      const recentOrders = orderList
+    // Get recent orders (filtered by timeframe)
+    const filteredOrders = filterByTimeframe(orderList || [], 'orderDate');
+    if (filteredOrders && filteredOrders.length > 0) {
+      const recentOrders = filteredOrders
         .slice()
         .sort((a, b) => {
           const dateA = new Date(a.orderDate || a.createdAt);
@@ -151,9 +191,10 @@ function AdminDashboard() {
       });
     }
     
-    // Get recent products
-    if (productList && productList.length > 0) {
-      const recentProducts = productList
+    // Get recent products (filtered by timeframe)
+    const filteredProducts = filterByTimeframe(productList || [], 'createdAt');
+    if (filteredProducts && filteredProducts.length > 0) {
+      const recentProducts = filteredProducts
         .slice()
         .sort((a, b) => {
           const dateA = new Date(a.createdAt);
@@ -208,15 +249,17 @@ function AdminDashboard() {
       customersGrowth: previousSummary?.timeframeData ? calculateGrowth(summary?.timeframeData?.totalCustomers || 0, previousSummary.timeframeData?.totalCustomers || 0) : 0,
       productsGrowth: previousSummary?.timeframeData ? calculateGrowth(summary?.timeframeData?.totalProducts || 0, previousSummary.timeframeData?.totalProducts || 0) : 0
     },
-    recentOrders: orderList && orderList.length > 0
-      ? orderList
-          .slice()
-          .sort((a, b) => {
-            const dateA = new Date(a.orderDate || a.createdAt);
-            const dateB = new Date(b.orderDate || b.createdAt);
-            return dateB - dateA;
-          })
-          .slice(0, 4)
+    recentOrders: (() => {
+      const filteredOrders = filterByTimeframe(orderList || [], 'orderDate');
+      return filteredOrders && filteredOrders.length > 0
+        ? filteredOrders
+            .slice()
+            .sort((a, b) => {
+              const dateA = new Date(a.orderDate || a.createdAt);
+              const dateB = new Date(b.orderDate || b.createdAt);
+              return dateB - dateA;
+            })
+            .slice(0, 4)
           .map(order => ({
             id: order._id,
             customer: order.userName || order.userId || 'عميل',
@@ -225,7 +268,8 @@ function AdminDashboard() {
             date: new Date(order.orderDate || order.createdAt).toLocaleString('ar-EG'),
             products: (order.items || order.cartItems || []).map(item => item.title || 'منتج').slice(0, 2)
           }))
-      : [],
+        : [];
+    })(),
     bestSellingProducts: calculateBestSellingProducts(),
     recentActivity: calculateRecentActivity()
   };
