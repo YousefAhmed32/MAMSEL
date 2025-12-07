@@ -13,6 +13,7 @@ import {
 } from "@/store/admin/product-slice";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { PlusCircle, Pencil, Image as ImageIcon, Package, Trash2, CheckCircle, AlertTriangle, Tags, X } from "lucide-react";
 
 const initialFormData = {
@@ -27,7 +28,15 @@ const initialFormData = {
   totalStock: "",
   size: "",
   fragranceType: "",
+  // Clothes specific fields
+  color: "",
+  material: "",
+  fit: "",
   gender: "",
+  // Attributes for sizes
+  selectedSizes: [], // Array of selected sizes for Clothes
+  // Groups/Collections
+  selectedGroups: [], // Array of selected groups/collections
 };
 
 function AdminProductsSimple() {
@@ -43,6 +52,8 @@ function AdminProductsSimple() {
   const { productList } = useSelector((state) => state.adminProducts);
   const dispatch = useDispatch();
   const { toast } = useToast();
+  const { t: translate } = useTranslation();
+  const t = translate || ((key) => key); // Fallback to return key if t is undefined
 
   function onSubmit(event) {
     event.preventDefault();
@@ -63,10 +74,27 @@ function AdminProductsSimple() {
     }
 
     // Prepare form data with File objects
+    // Format attributes for Clothes category
+    let attributes = {};
+    if (formData.category === "Clothes" && formData.selectedSizes.length > 0) {
+      attributes = {
+        sizes: formData.selectedSizes
+      };
+    }
+
     const submitData = {
       ...formData,
-      imageFiles: imageFiles.length > 0 ? imageFiles : undefined
+      attributes: Object.keys(attributes).length > 0 ? JSON.stringify(attributes) : undefined,
+      groups: formData.selectedGroups.length > 0 ? JSON.stringify(formData.selectedGroups) : undefined,
+      imageFiles: imageFiles.length > 0 ? imageFiles : undefined,
+      // Remove selectedSizes and selectedGroups from submitData as they're now in attributes/groups
+      selectedSizes: undefined,
+      selectedGroups: undefined
     };
+    
+    // Clean up - remove selectedSizes and selectedGroups from the object
+    delete submitData.selectedSizes;
+    delete submitData.selectedGroups;
 
     if (currentEditId) {
       dispatch(
@@ -78,7 +106,7 @@ function AdminProductsSimple() {
         if (data?.payload?.success) {
           dispatch(fetchAllProduct());
           resetForm();
-          toast({ title: "✅ تم تحديث المنتج بنجاح" });
+          toast({ title: t('products.productUpdated') });
         }
       });
     } else {
@@ -88,7 +116,7 @@ function AdminProductsSimple() {
         if (data?.payload?.success) {
           dispatch(fetchAllProduct());
           resetForm();
-          toast({ title: "✅ تم إضافة المنتج بنجاح" });
+          toast({ title: t('products.productAdded') });
         }
       });
     }
@@ -98,7 +126,7 @@ function AdminProductsSimple() {
     dispatch(deleteProduct(productId)).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchAllProduct());
-        toast({ title: "🗑️ تم حذف المنتج بنجاح" });
+        toast({ title: t('products.productDeleted') });
       }
     });
   }
@@ -115,6 +143,15 @@ function AdminProductsSimple() {
 
   function handleEditProduct(productItem) {
     setCurrentEditId(productItem._id);
+    
+    // Extract sizes from attributes if exists
+    let selectedSizes = [];
+    if (productItem.attributes && productItem.attributes.sizes) {
+      selectedSizes = Array.isArray(productItem.attributes.sizes) 
+        ? productItem.attributes.sizes 
+        : [];
+    }
+    
     setFormData({
       title: productItem.title || "",
       description: productItem.description || "",
@@ -125,7 +162,12 @@ function AdminProductsSimple() {
       totalStock: productItem.totalStock || "",
       size: productItem.size || "",
       fragranceType: productItem.fragranceType || "",
+      color: productItem.color || "",
+      material: productItem.material || "",
+      fit: productItem.fit || "",
       gender: productItem.gender || "",
+      selectedSizes: selectedSizes,
+      selectedGroups: Array.isArray(productItem.groups) ? productItem.groups : [],
     });
     
     // Handle existing images using utility function
@@ -168,7 +210,7 @@ function AdminProductsSimple() {
   }, [dispatch]);
 
   const isFormValid = () => {
-    return formData.title && 
+    const baseValid = formData.title && 
            formData.description && 
            formData.category && 
            formData.brand && 
@@ -176,6 +218,13 @@ function AdminProductsSimple() {
            formData.totalStock && 
            formData.gender &&
            (uploadedImageUrl || productImages.length > 0);
+    
+    // Additional validation based on category
+    if (formData.category === "Clothes") {
+      return baseValid && formData.selectedSizes.length > 0 && formData.color && formData.material && formData.fit;
+    }
+    
+    return baseValid;
   };
 
   return (
@@ -187,9 +236,9 @@ function AdminProductsSimple() {
             <div className="p-4 rounded-2xl bg-primary/10 dark:bg-primary/20">
               <Package className="w-8 h-8 text-primary" />
             </div>
-            <h1 className="text-4xl font-bold text-foreground">إدارة المنتجات</h1>
+            <h1 className="text-4xl font-bold text-foreground">{t('products.title')}</h1>
           </div>
-          <p className="text-primary/70 text-lg">إدارة شاملة لجميع منتجات المتجر</p>
+          <p className="text-primary/70 text-lg">{t('products.subtitle')}</p>
         </div>
 
         {/* Stats Cards */}
@@ -198,7 +247,7 @@ function AdminProductsSimple() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-primary/70 text-sm">إجمالي المنتجات</p>
+                  <p className="text-primary/70 text-sm">{t('products.totalProducts')}</p>
                   <p className="text-3xl font-bold text-foreground">{productList?.length || 0}</p>
                 </div>
                 <div className="p-3 rounded-xl bg-blue-500/20">
@@ -212,7 +261,7 @@ function AdminProductsSimple() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-primary/70 text-sm">منتجات نشطة</p>
+                  <p className="text-primary/70 text-sm">{t('products.activeProducts')}</p>
                   <p className="text-3xl font-bold text-foreground">
                     {productList?.filter(p => p.isActive !== false).length || 0}
                   </p>
@@ -228,7 +277,7 @@ function AdminProductsSimple() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-primary/70 text-sm">نفذ المخزون</p>
+                  <p className="text-primary/70 text-sm">{t('products.outOfStock')}</p>
                   <p className="text-3xl font-bold text-foreground">
                     {productList?.filter(p => p.totalStock === 0).length || 0}
                   </p>
@@ -244,7 +293,7 @@ function AdminProductsSimple() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-primary/70 text-sm">الفئات المختلفة</p>
+                  <p className="text-primary/70 text-sm">{t('products.differentCategories')}</p>
                   <p className="text-3xl font-bold text-foreground">
                     {new Set(productList?.map(p => p.category)).size || 0}
                   </p>
@@ -264,7 +313,7 @@ function AdminProductsSimple() {
             className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-4 text-lg rounded-xl shadow-[0_0_20px_rgba(210,176,101,0.4)]"
           >
             <PlusCircle className="w-6 h-6 mr-2" />
-            إضافة منتج جديد
+            {t('products.addNewProduct')}
           </Button>
         </div>
 
@@ -293,7 +342,7 @@ function AdminProductsSimple() {
                       <p className="text-primary/70 text-sm line-clamp-2">{productItem.description}</p>
                       <div className="flex items-center justify-between">
                         <span className="text-2xl font-bold text-primary">${productItem.price}</span>
-                        <span className="text-sm text-foreground/70">المخزون: {productItem.totalStock}</span>
+                        <span className="text-sm text-foreground/70">{t('products.stockLabel', { stock: productItem.totalStock })}</span>
                       </div>
                     </div>
 
@@ -306,7 +355,7 @@ function AdminProductsSimple() {
                         className="flex-1 border-border text-primary hover:bg-luxury-gold hover:text-luxury-navy"
                       >
                         <Pencil className="w-4 h-4 mr-1" />
-                        تعديل
+                        {t('products.edit')}
                       </Button>
                       <Button
                         size="sm"
@@ -328,14 +377,14 @@ function AdminProductsSimple() {
               <div className="w-24 h-24 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Package className="w-12 h-12 text-primary/50" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">لا توجد منتجات</h3>
-              <p className="text-primary/70 mb-8">ابدأ بإضافة منتج جديد لبناء متجرك</p>
+              <h3 className="text-2xl font-bold text-foreground mb-4">{t('products.noProducts')}</h3>
+              <p className="text-primary/70 mb-8">{t('products.createNew')}</p>
               <Button
                 onClick={() => setOpenCreateProductDialog(true)}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-3 rounded-xl"
               >
                 <PlusCircle className="w-5 h-5 mr-2" />
-                إضافة أول منتج
+                {t('products.addProduct')}
               </Button>
             </div>
           </div>
@@ -353,9 +402,9 @@ function AdminProductsSimple() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-foreground">
-                      {currentEditId ? "تعديل المنتج" : "إضافة منتج جديد"}
+                      {currentEditId ? t('products.editProduct') : t('products.addNewProduct')}
                     </h2>
-                    <p className="text-primary/70">املأ البيانات المطلوبة</p>
+                    <p className="text-primary/70">{t('products.fillRequiredFields')}</p>
                   </div>
                 </div>
                 <Button
@@ -374,13 +423,13 @@ function AdminProductsSimple() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
                     <ImageIcon className="w-5 h-5" />
-                    صور المنتج
+                    {t('products.productImages')}
                   </h3>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Multiple Images */}
                     <div>
-                      <label className="text-foreground font-medium mb-2 block">صور متعددة (اختياري)</label>
+                      <label className="text-foreground font-medium mb-2 block">{t('products.multipleImages')}</label>
                       <MultipleImageUpload
                         images={productImages}
                         setImages={setProductImages}
@@ -392,7 +441,7 @@ function AdminProductsSimple() {
                     
                     {/* Single Image */}
                     <div>
-                      <label className="text-foreground font-medium mb-2 block">صورة واحدة</label>
+                      <label className="text-foreground font-medium mb-2 block">{t('products.singleImage')}</label>
                       <ProductImageUpload
                         imageFile={imageFile}
                         setImageFile={setImageFile}
@@ -410,22 +459,21 @@ function AdminProductsSimple() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
                     <Package className="w-5 h-5" />
-                    تفاصيل المنتج
+                    {t('products.productDetails')}
                   </h3>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Product Name */}
                     <div>
                       <label className="text-foreground font-medium mb-2 block">
-                        اسم المنتج <span className="text-red-400">*</span>
+                        {t('products.productName')} <span className="text-red-400">*</span>
                       </label>
                       <input
                         type="text"
                         value={formData.title}
                         onChange={(e) => setFormData({...formData, title: e.target.value})}
-                        placeholder="أدخل اسم المنتج"
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-white/50 focus:border-luxury-gold focus:outline-none"
-                        style={{ backgroundColor: '#0a1628', color: '#ffffff' }}
+                        placeholder={t('products.enterProductName')}
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
                         required
                       />
                     </div>
@@ -433,23 +481,17 @@ function AdminProductsSimple() {
                     {/* Category */}
                     <div>
                       <label className="text-foreground font-medium mb-2 block">
-                        الفئة <span className="text-red-400">*</span>
+                        {t('products.categoryLabel')} <span className="text-red-400">*</span>
                       </label>
                       <select
                         value={formData.category}
                         onChange={(e) => setFormData({...formData, category: e.target.value})}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-luxury-gold focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
-                        style={{ backgroundColor: '#0a1628', color: '#ffffff', colorScheme: 'dark' }}
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
                         required
                       >
-                        <option value="" className="bg-background text-foreground">اختر الفئة</option>
-                        <option value="oud" className="bg-background text-foreground">عود</option>
-                        {/* <option value="perfumes" className="bg-background text-foreground">عطور</option>
-                        <option value="cosmetics" className="bg-background text-foreground">مستحضرات تجميل</option>
-                        <option value="skincare" className="bg-background text-foreground">العناية بالبشرة</option>
-                        <option value="men" className="bg-background text-foreground">رجالي</option>
-                        <option value="women" className="bg-background text-foreground">نسائي</option>
-                        <option value="kids" className="bg-background text-foreground">أطفال</option> */}
+                        <option value="" className="bg-background text-foreground">{t('products.selectCategoryOption')}</option>
+                        {/* <option value="Perfume" className="bg-background text-foreground">{t('products.perfume')}</option> */}
+                        <option value="Clothes" className="bg-background text-foreground">{t('products.clothes')}</option>
                       </select>
                     </div>
 
@@ -458,7 +500,7 @@ function AdminProductsSimple() {
                       <BrandSelect
                         value={formData.brand}
                         onChange={(value) => setFormData({...formData, brand: value})}
-                        label="العلامة التجارية"
+                        label={t('products.brand')}
                         required={true}
                       />
                     </div>
@@ -466,96 +508,236 @@ function AdminProductsSimple() {
                     {/* Gender */}
                     <div>
                       <label className="text-foreground font-medium mb-2 block">
-                        الجنس المستهدف <span className="text-red-400">*</span>
+                        {t('products.targetGender')} <span className="text-red-400">*</span>
                       </label>
                       <select
                         value={formData.gender}
                         onChange={(e) => setFormData({...formData, gender: e.target.value})}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-luxury-gold focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
-                        style={{ backgroundColor: '#0a1628', color: '#ffffff', colorScheme: 'dark' }}
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
                         required
                       >
-                        <option value="" className="bg-background text-foreground">اختر الجنس</option>
-                        <option value="men" className="bg-background text-foreground">رجالي</option>
-                        <option value="women" className="bg-background text-foreground">نسائي</option>
-                        <option value="unisex" className="bg-background text-foreground">للجنسين</option>
+                        <option value="" className="bg-background text-foreground">{t('products.selectGender')}</option>
+                        <option value="men" className="bg-background text-foreground">{t('products.men')}</option>
+                        <option value="women" className="bg-background text-foreground">{t('products.women')}</option>
+                        <option value="unisex" className="bg-background text-foreground">{t('products.unisex')}</option>
                       </select>
                     </div>
 
                     {/* Price */}
                     <div>
                       <label className="text-foreground font-medium mb-2 block">
-                        السعر الأساسي <span className="text-red-400">*</span>
+                        {t('products.basePrice')} <span className="text-red-400">*</span>
                       </label>
                       <input
                         type="number"
                         value={formData.price}
                         onChange={(e) => setFormData({...formData, price: e.target.value})}
-                        placeholder="أدخل السعر"
+                        placeholder={t('products.enterPrice')}
                         min="0"
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-white/50 focus:border-luxury-gold focus:outline-none"
-                        style={{ backgroundColor: '#0a1628', color: '#ffffff' }}
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
                         required
                       />
                     </div>
 
                     {/* Sale Price */}
                     <div>
-                      <label className="text-foreground font-medium mb-2 block">سعر التخفيض</label>
+                      <label className="text-foreground font-medium mb-2 block">{t('products.salePriceLabel')}</label>
                       <input
                         type="number"
                         value={formData.salePrice}
                         onChange={(e) => setFormData({...formData, salePrice: e.target.value})}
-                        placeholder="سعر التخفيض (اختياري)"
+                        placeholder={t('products.salePricePlaceholder')}
                         min="0"
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-white/50 focus:border-luxury-gold focus:outline-none"
-                        style={{ backgroundColor: '#0a1628', color: '#ffffff' }}
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
                       />
                     </div>
 
                     {/* Stock */}
                     <div>
                       <label className="text-foreground font-medium mb-2 block">
-                        الكمية المتاحة <span className="text-red-400">*</span>
+                        {t('products.availableQuantity')} <span className="text-red-400">*</span>
                       </label>
                       <input
                         type="number"
                         value={formData.totalStock}
                         onChange={(e) => setFormData({...formData, totalStock: e.target.value})}
-                        placeholder="أدخل الكمية"
+                        placeholder={t('products.enterQuantity')}
                         min="0"
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-white/50 focus:border-luxury-gold focus:outline-none"
-                        style={{ backgroundColor: '#0a1628', color: '#ffffff' }}
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
                         required
                       />
                     </div>
 
-                    {/* Size */}
-                    <div>
-                      <label className="text-foreground font-medium mb-2 block">الحجم</label>
-                      <input
-                        type="text"
-                        value={formData.size}
-                        onChange={(e) => setFormData({...formData, size: e.target.value})}
-                        placeholder="مثال: 100ml, 50ml"
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-white/50 focus:border-luxury-gold focus:outline-none"
-                        style={{ backgroundColor: '#0a1628', color: '#ffffff' }}
-                      />
+                    {/* Conditional Fields based on Category */}
+                    {formData.category === "Perfume" && (
+                      <>
+                        {/* Size for Perfume */}
+                        <div>
+                          <label className="text-foreground font-medium mb-2 block">{t('products.size')}</label>
+                          <input
+                            type="text"
+                            value={formData.size}
+                            onChange={(e) => setFormData({...formData, size: e.target.value})}
+                            placeholder={t('products.sizePlaceholder')}
+                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                          />
+                        </div>
+
+                        {/* Fragrance Type */}
+                        <div>
+                          <label className="text-foreground font-medium mb-2 block">{t('products.fragranceType')}</label>
+                          <input
+                            type="text"
+                            value={formData.fragranceType}
+                            onChange={(e) => setFormData({...formData, fragranceType: e.target.value})}
+                            placeholder={t('products.fragranceTypePlaceholder')}
+                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {formData.category === "Clothes" && (
+                      <>
+                        {/* Sizes for Clothes - Multi-Select Pills */}
+                        <div className="md:col-span-2">
+                          <label className="text-foreground font-medium mb-3 block">
+                            {t('products.availableSizes')} <span className="text-red-400">*</span>
+                          </label>
+                          <div className="flex flex-wrap gap-3">
+                            {["XS", "S", "M", "L", "XL", "XXL"].map((size) => {
+                              const isSelected = formData.selectedSizes.includes(size);
+                              return (
+                                <button
+                                  key={size}
+                                  type="button"
+                                  onClick={() => {
+                                    const newSizes = isSelected
+                                      ? formData.selectedSizes.filter(s => s !== size)
+                                      : [...formData.selectedSizes, size];
+                                    setFormData({...formData, selectedSizes: newSizes});
+                                  }}
+                                  className={`px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 ${
+                                    isSelected
+                                      ? "bg-primary text-primary-foreground border-2 border-primary shadow-[0_0_15px_rgba(210,176,101,0.5)] scale-105"
+                                      : "bg-background border-2 border-border text-foreground hover:border-primary/50 hover:bg-primary/10"
+                                  }`}
+                                >
+                                  {size}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {formData.selectedSizes.length === 0 && (
+                            <p className="text-red-400 text-sm mt-2">{t('products.selectAtLeastOneSize')}</p>
+                          )}
+                        </div>
+
+                        {/* Color */}
+                        <div>
+                          <label className="text-foreground font-medium mb-2 block">
+                            {t('products.color')} <span className="text-red-400">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.color}
+                            onChange={(e) => setFormData({...formData, color: e.target.value})}
+                            placeholder={t('products.colorPlaceholder')}
+                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                            required
+                          />
+                        </div>
+
+                        {/* Material */}
+                        <div>
+                          <label className="text-foreground font-medium mb-2 block">
+                            {t('products.material')} <span className="text-red-400">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.material}
+                            onChange={(e) => setFormData({...formData, material: e.target.value})}
+                            placeholder={t('products.materialPlaceholder')}
+                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                            required
+                          />
+                        </div>
+
+                        {/* Fit */}
+                        <div>
+                          <label className="text-foreground font-medium mb-2 block">
+                            {t('products.fit')} <span className="text-red-400">*</span>
+                          </label>
+                          <select
+                            value={formData.fit}
+                            onChange={(e) => setFormData({...formData, fit: e.target.value})}
+                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
+                            required
+                          >
+                            <option value="" className="bg-background text-foreground">{t('products.selectFit')}</option>
+                            <option value="Slim" className="bg-background text-foreground">{t('products.slim')}</option>
+                            <option value="Regular" className="bg-background text-foreground">{t('products.regular')}</option>
+                            <option value="Loose" className="bg-background text-foreground">{t('products.loose')}</option>
+                            <option value="Oversized" className="bg-background text-foreground">{t('products.oversized')}</option>
+                          </select>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Groups/Collections - Available for all categories */}
+                  <div className="md:col-span-2">
+                    <label className="text-foreground font-medium mb-3 block">
+                      {t('products.collections')}
+                    </label>
+                    <div className="flex flex-wrap gap-3">
+                      {[
+                        "Ramadan Collection",
+                        // "Evening Wear",
+                        "Mamsel Couture",
+                        "Corset & Lingerie",
+                        "Casual Essentials",
+                        "Giveaways & Gifts",
+                        // "Accessories & Bags",
+                        "Seasonal Picks",
+                        "Best Sellers",
+                        "New Arrivals"
+                      ].map((group) => {
+                        const isSelected = formData.selectedGroups.includes(group);
+                        return (
+                          <button
+                            key={group}
+                            type="button"
+                            onClick={() => {
+                              const newGroups = isSelected
+                                ? formData.selectedGroups.filter(g => g !== group)
+                                : [...formData.selectedGroups, group];
+                              setFormData({...formData, selectedGroups: newGroups});
+                            }}
+                            className={`px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 border-2 ${
+                              isSelected
+                                ? "bg-primary text-primary-foreground border-primary shadow-[0_0_10px_rgba(210,176,101,0.4)] scale-105"
+                                : "bg-background border-border text-foreground hover:border-primary/50 hover:bg-primary/10"
+                            }`}
+                          >
+                            {group}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
                   {/* Description */}
                   <div>
                     <label className="text-foreground font-medium mb-2 block">
-                      وصف المنتج <span className="text-red-400">*</span>
+                      {t('products.productDescription')} <span className="text-red-400">*</span>
                     </label>
                       <textarea
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
-                      placeholder="أدخل وصف مفصل للمنتج"
+                      placeholder={t('products.enterProductDescription')}
                       rows="4"
-                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-white/50 focus:border-luxury-gold focus:outline-none resize-none"
-                      style={{ backgroundColor: '#0a1628', color: '#ffffff' }}
+                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none resize-none"
                       required
                     />
                   </div>
@@ -571,12 +753,12 @@ function AdminProductsSimple() {
                     {imageLoadingStatus ? (
                       <div className="flex items-center gap-2">
                         <div className="w-5 h-5 border-2 border-luxury-navy border-t-transparent rounded-full animate-spin"></div>
-                        جاري الرفع...
+                        {t('products.uploading')}
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
                         <PlusCircle className="w-6 h-6" />
-                        {currentEditId ? "تحديث المنتج" : "إضافة المنتج"}
+                        {currentEditId ? t('products.updateProductButton') : t('products.addProductButton')}
                       </div>
                     )}
                   </Button>

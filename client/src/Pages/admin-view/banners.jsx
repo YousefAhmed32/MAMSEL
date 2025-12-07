@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import {
   addFeatureImage,
   deleteFeatureImages,
@@ -35,6 +36,7 @@ function AdminFeatures() {
   const [activeTab, setActiveTab] = useState('desktop');
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { featureImageList, featureImageListMobile } = useSelector(
     (state) => state.commonFeature
   );
@@ -43,8 +45,8 @@ function AdminFeatures() {
   const handleUploadFeatureImage = () => {
     if (!uploadedImageUrl) {
       toast({
-        title: "يرجى تحميل صورة أولاً",
-        description: "يجب اختيار صورة قبل الرفع"
+        title: t('banners.uploadImage'),
+        description: t('banners.uploadDescription')
       });
       return;
     }
@@ -57,13 +59,13 @@ function AdminFeatures() {
         setImageFile(null);
         setUploadedImageUrl("");
         toast({
-          title: "تم رفع البانر بنجاح",
-          description: "تم إضافة البانر للكمبيوتر بنجاح"
+          title: t('banners.bannerUploaded'),
+          description: t('banners.bannerUploadedDesktop')
         });
       } else {
         toast({
-          title: "فشل في رفع البانر",
-          description: "حدث خطأ أثناء رفع الصورة"
+          title: t('banners.uploadFailed'),
+          description: t('banners.uploadError')
         });
       }
     });
@@ -72,8 +74,8 @@ function AdminFeatures() {
   const handleUploadFeatureImageMobile = () => {
     if (!uploadedImageUrl) {
       toast({
-        title: "يرجى تحميل صورة أولاً",
-        description: "يجب اختيار صورة قبل الرفع"
+        title: t('banners.uploadImage'),
+        description: t('banners.uploadDescription')
       });
       return;
     }
@@ -86,13 +88,13 @@ function AdminFeatures() {
         setImageFile(null);
         setUploadedImageUrl("");
         toast({
-          title: "تم رفع البانر بنجاح",
-          description: "تم إضافة البانر للجوال بنجاح"
+          title: t('banners.bannerUploaded'),
+          description: t('banners.bannerUploadedMobile')
         });
       } else {
         toast({
-          title: "فشل في رفع البانر",
-          description: "حدث خطأ أثناء رفع الصورة"
+          title: t('banners.uploadFailed'),
+          description: t('banners.uploadError')
         });
       }
     });
@@ -115,8 +117,8 @@ function AdminFeatures() {
     dispatch(getFeatureImage());
     dispatch(getFeatureImageMobile());
     toast({
-      title: "تم تحديث البيانات",
-      description: "تم تحديث قائمة البنرات"
+      title: t('banners.dataRefreshed'),
+      description: t('banners.bannersListRefreshed')
     });
   };
 
@@ -136,13 +138,13 @@ function AdminFeatures() {
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-2">
-                إدارة البنرات
+                {t('banners.title')}
               </h1>
               <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-primary to-primary/70 mx-auto rounded-full" />
             </div>
           </div>
           <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-3xl mx-auto px-4 leading-relaxed">
-            إدارة شاملة لبنرات الموقع للكمبيوتر والجوال
+            {t('banners.subtitle')}
           </p>
         </div>
 
@@ -156,7 +158,7 @@ function AdminFeatures() {
                 </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-bold text-foreground">{featureImageList?.length || 0}</h3>
-                  <p className="text-muted-foreground text-sm">بنرات الكمبيوتر</p>
+                  <p className="text-muted-foreground text-sm">{t('banners.desktopBanners')}</p>
                 </div>
               </div>
             </CardContent>
@@ -170,7 +172,7 @@ function AdminFeatures() {
                 </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-bold text-foreground">{featureImageListMobile?.length || 0}</h3>
-                  <p className="text-muted-foreground text-sm">بنرات الجوال</p>
+                  <p className="text-muted-foreground text-sm">{t('banners.mobileBanners')}</p>
                 </div>
               </div>
             </CardContent>
@@ -187,7 +189,7 @@ function AdminFeatures() {
                     onClick={handleRefresh}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm sm:text-base"
                   >
-                    تحديث البيانات
+                    {t('banners.refreshData')}
                   </Button>
                 </div>
               </div>
@@ -240,8 +242,8 @@ function AdminFeatures() {
                     <Upload className="w-8 h-8 text-primary" />
                   </div>
                   <div>
-                    <h2 className="text-3xl font-bold text-foreground">رفع بانر جديد للكمبيوتر</h2>
-                    <p className="text-primary/70">اختر صورة عالية الجودة للعرض على الشاشات الكبيرة</p>
+                    <h2 className="text-3xl font-bold text-foreground">{t('banners.uploadNewDesktop')}</h2>
+                    <p className="text-primary/70">{t('banners.selectHighQuality')}</p>
                   </div>
                 </div>
 
@@ -258,7 +260,7 @@ function AdminFeatures() {
 
                   {uploadedImageUrl && (
                     <div className="mt-4 p-4 bg-muted/30 dark:bg-muted/20 rounded-lg border border-border">
-                      <p className="text-primary text-sm mb-2">معاينة الصورة:</p>
+                      <p className="text-primary text-sm mb-2">{t('banners.previewImage')}</p>
                       <img 
                         src={uploadedImageUrl} 
                         alt="Preview" 
@@ -304,8 +306,8 @@ function AdminFeatures() {
                     <Monitor className="w-8 h-8 text-primary" />
                   </div>
                   <div>
-                    <h2 className="text-3xl font-bold text-foreground">بنرات الكمبيوتر الحالية</h2>
-                    <p className="text-primary/70">إدارة البنرات المعروضة على الشاشات الكبيرة</p>
+                    <h2 className="text-3xl font-bold text-foreground">{t('banners.currentDesktopBanners')}</h2>
+                    <p className="text-primary/70">{t('banners.manageDesktopBanners')}</p>
                   </div>
                 </div>
 
@@ -390,8 +392,8 @@ function AdminFeatures() {
                     <Upload className="w-8 h-8 text-primary" />
                   </div>
                   <div>
-                    <h2 className="text-3xl font-bold text-foreground">رفع بانر جديد للجوال</h2>
-                    <p className="text-primary/70">اختر صورة محسنة للعرض على الشاشات الصغيرة</p>
+                    <h2 className="text-3xl font-bold text-foreground">{t('banners.uploadNewMobile')}</h2>
+                    <p className="text-primary/70">{t('banners.selectOptimized')}</p>
                   </div>
                 </div>
 
@@ -408,7 +410,7 @@ function AdminFeatures() {
 
                   {uploadedImageUrl && (
                     <div className="mt-4 p-4 bg-muted/30 dark:bg-muted/20 rounded-lg border border-border">
-                      <p className="text-primary text-sm mb-2">معاينة الصورة:</p>
+                      <p className="text-primary text-sm mb-2">{t('banners.previewImage')}</p>
                       <img 
                         src={uploadedImageUrl} 
                         alt="Preview" 
@@ -506,11 +508,11 @@ function AdminFeatures() {
                         <div className="p-4">
                           <div className="flex items-center justify-between">
                             <Badge className="bg-luxury-gold/20 text-primary border-luxury-gold/30">
-                              بانر #{index + 1}
+                              {t('banners.bannerNumber', { number: index + 1 })}
                             </Badge>
                             <div className="flex items-center gap-1 text-primary/70 text-sm">
                               <CheckCircle className="w-4 h-4" />
-                              نشط
+                              {t('banners.active')}
                             </div>
                           </div>
                         </div>
@@ -520,8 +522,8 @@ function AdminFeatures() {
                 ) : (
                   <div className="text-center py-12">
                     <Smartphone className="w-16 h-16 text-primary/30 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-foreground mb-2">لا توجد بنرات للجوال</h3>
-                    <p className="text-primary/70">ابدأ برفع أول بانر للجوال</p>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">{t('banners.noMobileBanners')}</h3>
+                    <p className="text-primary/70">{t('banners.startUploadMobile')}</p>
                   </div>
                 )}
               </CardContent>

@@ -171,41 +171,39 @@ function ShoppingListing() {
               transition={{ duration: 0.5 }}
               className="bg-white dark:bg-gradient-to-br dark:from-navy-950/90 dark:to-black/90 backdrop-blur-xl rounded-2xl border border-gold-500/20 shadow-lg dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-6"
             >
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-gold-500/20 to-gold-600/10 border border-gold-500/30">
-                    <Package className="w-6 h-6 text-gold-500 dark:text-gold-400" />
-                  </div>
+             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 border border-pink-200 dark:border-pink-800/30">
+                <Package className="w-6 h-6 text-pink-600 dark:text-pink-400" />
+              </div>
                   <div>
-                    <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 dark:from-gold-400 dark:via-gold-300 dark:to-gold-400 bg-clip-text text-transparent">
-                      جميع المنتجات
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">                    All products
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-gold-300/70 mt-1">
-                      اكتشف مجموعتنا المميزة من  العود الفاخرة
-                    </p>
+                    Discover our exclusive collection of luxurious fashion                     </p>
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-4 w-full sm:w-auto">
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gold-500/10 dark:bg-gold-500/20 border border-gold-500/30">
-                    <Sparkles className="w-4 h-4 text-gold-600 dark:text-gold-400" />
-                    <span className="text-sm font-semibold text-gold-700 dark:text-gold-300">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800/30">
+                <Sparkles className="w-4 h-4 text-pink-600 dark:text-pink-400" />
+                <span className="text-sm font-semibold text-pink-700 dark:text-pink-300">
                       {productList?.length || 0} منتج
                     </span>
                   </div>
                   
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-2 bg-white dark:bg-navy-900/50 border-2 border-gold-500/30 dark:border-gold-500/40 text-gold-700 dark:text-gold-300 hover:bg-gold-50 dark:hover:bg-gold-500/10 hover:border-gold-500/50 transition-all duration-300 shadow-sm hover:shadow-md"
-                      >
-                        <ArrowUpDownIcon className="h-4 w-4" />
-                        <span className="font-semibold">ترتيب</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[220px] bg-white dark:bg-navy-900 border border-gold-500/20 shadow-xl">
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300"
+                  >
+                    <ArrowUpDownIcon className="h-4 w-4" />
+                    <span className="font-semibold">ترتيب</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[220px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-xl">
                       <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
                         {sortOption.map((sortItems) => (
                           <DropdownMenuRadioItem
@@ -263,7 +261,7 @@ function ShoppingListing() {
                 className="col-span-full flex flex-col items-center justify-center py-20 text-center bg-white dark:bg-gradient-to-br dark:from-navy-950/90 dark:to-black/90 backdrop-blur-xl rounded-2xl border border-gold-500/20 shadow-lg"
               >
                 <div className="p-6 rounded-full bg-gold-500/10 dark:bg-gold-500/20 mb-6">
-                  <Package className="w-16 h-16 text-gold-500 dark:text-gold-400" />
+                  <Package className="w-16 h-16 text-pink-500 dark:text-pink-400" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   لا توجد منتجات

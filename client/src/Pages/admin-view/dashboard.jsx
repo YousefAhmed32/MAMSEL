@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -30,6 +31,7 @@ import { getProductImageUrl } from '@/utils/imageUtils';
 
 function AdminDashboard() {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { summary, loading } = useSelector((state) => state.adminAnalysis);
   const { productList } = useSelector((state) => state.shopProducts);
   const { orderList } = useSelector((state) => state.adminOrder);
@@ -213,15 +215,15 @@ function AdminDashboard() {
         
         let timeAgo = '';
         if (diffMins < 60) {
-          timeAgo = `منذ ${diffMins} دقيقة`;
+          timeAgo = t('dashboard.minutesAgo', { count: diffMins });
         } else if (diffHours < 24) {
-          timeAgo = `منذ ${diffHours} ساعة`;
+          timeAgo = t('dashboard.hoursAgo', { count: diffHours });
         } else {
-          timeAgo = `منذ ${diffDays} يوم`;
+          timeAgo = t('dashboard.daysAgo', { count: diffDays });
         }
         
         activities.push({
-          action: `تم إضافة منتج جديد: ${product.title}`,
+          action: t('dashboard.newProductAdded', { product: product.title }),
           time: timeAgo,
           type: 'success',
           date: productDate
@@ -262,7 +264,7 @@ function AdminDashboard() {
             .slice(0, 4)
           .map(order => ({
             id: order._id,
-            customer: order.userName || order.userId || 'عميل',
+            customer: order.userName || order.userId || t('dashboard.customer'),
             amount: order.totalAmount || order.total || 0,
             status: order.orderStatus || 'pending',
             date: new Date(order.orderDate || order.createdAt).toLocaleString('ar-EG'),
@@ -299,21 +301,21 @@ function AdminDashboard() {
     switch (status?.toLowerCase()) {
       case 'completed':
       case 'delivered':
-        return 'مكتمل';
+        return t('orders.delivered');
       case 'pending':
-        return 'في الانتظار';
+        return t('orders.pending');
       case 'shipped':
       case 'on the way':
-        return 'تم الشحن';
+        return t('orders.shipped');
       case 'accepted':
       case 'processing':
-        return 'قيد المعالجة';
+        return t('orders.processing');
       case 'rejected':
-        return 'مرفوض';
+        return t('orders.cancelled');
       case 'cancelled':
-        return 'ملغي';
+        return t('orders.cancelled');
       default:
-        return status || 'غير محدد';
+        return status || t('common.status');
     }
   };
 
@@ -322,204 +324,237 @@ function AdminDashboard() {
       <div className="min-h-screen bg-background p-6 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-foreground text-lg">جاري تحميل البيانات...</p>
+          <p className="text-foreground text-lg">{t('common.loading')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background p-3 sm:p-4 md:p-6">
-      <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 animate-in fade-in duration-500">
         {/* Header */}
         <div className="text-center">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <div className="p-3 sm:p-4 rounded-2xl bg-primary/10 dark:bg-primary/20 backdrop-blur-sm">
-              <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+            <div className="relative p-4 rounded-2xl bg-gradient-to-br from-[#D4AF37]/20 to-[#D4AF37]/10 dark:from-[#D4AF37]/30 dark:to-[#D4AF37]/20 backdrop-blur-sm shadow-lg group hover:scale-110 transition-transform duration-300">
+              <BarChart3 className="w-8 h-8 text-[#D4AF37] dark:text-[#D4AF37]" />
+              <div className="absolute inset-0 bg-[#D4AF37]/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
-              لوحة التحكم
-            </h1>
+            <div>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tight text-gray-900 dark:text-white mb-2">
+                {t('dashboard.title')}
+              </h1>
+              <div className="h-1 w-24 bg-gradient-to-r from-[#D4AF37] to-transparent mx-auto"></div>
+            </div>
           </div>
-          <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
-            نظرة شاملة على أداء المتجر والإحصائيات المهمة
+          <p className="text-gray-600 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto px-4 font-light">
+            {t('dashboard.subtitle')}
           </p>
         </div>
 
         {/* Time Filter */}
         <div className="flex justify-center overflow-x-auto pb-2">
-          <div className="flex bg-muted/50 dark:bg-muted/30 rounded-xl p-1 gap-1">
+          <div className="flex bg-gray-100/50 dark:bg-gray-900/50 rounded-xl p-1.5 gap-1.5 backdrop-blur-sm border border-gray-200/50 dark:border-gray-800/50 shadow-lg">
             {[
-              { key: "24h", label: "24س", icon: Clock, fullLabel: "آخر 24 ساعة" },
-              { key: "7d", label: "7أ", icon: Activity, fullLabel: "آخر 7 أيام" },
-              { key: "30d", label: "30ي", icon: BarChart3, fullLabel: "آخر 30 يوم" },
-              { key: "3m", label: "3ش", icon: TrendingUp, fullLabel: "آخر 3 أشهر" },
-              { key: "1y", label: "سنة", icon: LineChart, fullLabel: "آخر سنة" },
-              { key: "all", label: "الكل", icon: Star, fullLabel: "منذ الإنشاء" }
-            ].map(({ key, label, fullLabel, icon: Icon }) => (
+              { key: "24h", label: "24س", icon: Clock, translationKey: "dashboard.timeFilters.24h" },
+              { key: "7d", label: "7أ", icon: Activity, translationKey: "dashboard.timeFilters.7d" },
+              { key: "30d", label: "30ي", icon: BarChart3, translationKey: "dashboard.timeFilters.30d" },
+              { key: "3m", label: "3ش", icon: TrendingUp, translationKey: "dashboard.timeFilters.3m" },
+              { key: "1y", label: "سنة", icon: LineChart, translationKey: "dashboard.timeFilters.1y" },
+              { key: "all", label: "الكل", icon: Star, translationKey: "dashboard.timeFilters.all" }
+            ].map(({ key, label, translationKey, icon: Icon }) => {
+              const fullLabel = t(translationKey);
+              return (
               <button
                 key={key}
                 onClick={() => setTimeFilter(key)}
-                className={`px-2 sm:px-3 md:px-4 py-2 rounded-lg transition-all flex items-center gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap ${
-                  timeFilter === key 
-                    ? "bg-primary text-primary-foreground shadow-md" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
+                className={`
+                  px-3 sm:px-4 md:px-5 py-2.5 rounded-lg transition-all duration-300 
+                  flex items-center gap-2 text-xs sm:text-sm font-medium whitespace-nowrap
+                  ${
+                    timeFilter === key 
+                      ? "bg-gradient-to-r from-[#D4AF37] to-[#E5C158] text-[#0a0a0f] shadow-lg shadow-[#D4AF37]/30 scale-105" 
+                      : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/50 dark:hover:bg-gray-800/50"
+                  }
+                `}
                 title={fullLabel}
               >
-                <Icon className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                <Icon className={`w-4 h-4 flex-shrink-0 ${timeFilter === key ? 'text-[#0a0a0f]' : ''}`} />
                 <span className="hidden sm:inline">{fullLabel}</span>
                 <span className="sm:hidden">{label}</span>
               </button>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Overview Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {/* Total Revenue */}
-          <div className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2 sm:p-3 rounded-xl bg-green-500/10 dark:bg-green-500/20">
-                <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
+          <div className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-[#0f0f0f] dark:to-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden">
+            {/* Gradient overlay on hover */}
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-green-500/20 to-green-500/10 dark:from-green-500/30 dark:to-green-500/20 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
+                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-green-50 dark:bg-green-900/20">
+                  {parseFloat(dashboardData.overview.revenueGrowth) > 0 ? (
+                    <ArrowUpRight className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  ) : (
+                    <ArrowDownRight className="w-4 h-4 text-red-600 dark:text-red-400" />
+                  )}
+                  <span className={`text-xs font-semibold ${
+                    parseFloat(dashboardData.overview.revenueGrowth) > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                  }`}>
+                    {parseFloat(dashboardData.overview.revenueGrowth) > 0 ? '+' : ''}{dashboardData.overview.revenueGrowth}%
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                {parseFloat(dashboardData.overview.revenueGrowth) > 0 ? (
-                  <ArrowUpRight className="w-4 h-4 text-green-600 dark:text-green-400" />
-                ) : (
-                  <ArrowDownRight className="w-4 h-4 text-red-600 dark:text-red-400" />
-                )}
-                <span className={`text-xs sm:text-sm font-medium ${
-                  parseFloat(dashboardData.overview.revenueGrowth) > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                }`}>
-                  {parseFloat(dashboardData.overview.revenueGrowth) > 0 ? '+' : ''}{dashboardData.overview.revenueGrowth}%
-                </span>
-              </div>
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
+                QR{dashboardData.overview.totalRevenue.toLocaleString()}
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.overview.totalRevenue')}</p>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-              QR{dashboardData.overview.totalRevenue.toLocaleString()}
-            </h3>
-            <p className="text-muted-foreground text-xs sm:text-sm">إجمالي الإيرادات</p>
           </div>
 
           {/* Total Orders */}
-          <div className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2 sm:p-3 rounded-xl bg-blue-500/10 dark:bg-blue-500/20">
-                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+          <div className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-[#0f0f0f] dark:to-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/10 dark:from-blue-500/30 dark:to-blue-500/20 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <ShoppingCart className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+                  {parseFloat(dashboardData.overview.ordersGrowth) > 0 ? (
+                    <ArrowUpRight className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  ) : (
+                    <ArrowDownRight className="w-4 h-4 text-red-600 dark:text-red-400" />
+                  )}
+                  <span className={`text-xs font-semibold ${
+                    parseFloat(dashboardData.overview.ordersGrowth) > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                  }`}>
+                    {parseFloat(dashboardData.overview.ordersGrowth) > 0 ? '+' : ''}{dashboardData.overview.ordersGrowth}%
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                {parseFloat(dashboardData.overview.ordersGrowth) > 0 ? (
-                  <ArrowUpRight className="w-4 h-4 text-green-600 dark:text-green-400" />
-                ) : (
-                  <ArrowDownRight className="w-4 h-4 text-red-600 dark:text-red-400" />
-                )}
-                <span className={`text-xs sm:text-sm font-medium ${
-                  parseFloat(dashboardData.overview.ordersGrowth) > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                }`}>
-                  {parseFloat(dashboardData.overview.ordersGrowth) > 0 ? '+' : ''}{dashboardData.overview.ordersGrowth}%
-                </span>
-              </div>
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                {dashboardData.overview.totalOrders.toLocaleString()}
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.overview.totalOrders')}</p>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-              {dashboardData.overview.totalOrders.toLocaleString()}
-            </h3>
-            <p className="text-muted-foreground text-xs sm:text-sm">إجمالي الطلبات</p>
           </div>
 
           {/* Total Customers */}
-          <div className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2 sm:p-3 rounded-xl bg-purple-500/10 dark:bg-purple-500/20">
-                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
+          <div className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-[#0f0f0f] dark:to-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 dark:from-purple-500/30 dark:to-purple-500/20 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+                  {parseFloat(dashboardData.overview.customersGrowth) > 0 ? (
+                    <ArrowUpRight className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  ) : (
+                    <ArrowDownRight className="w-4 h-4 text-red-600 dark:text-red-400" />
+                  )}
+                  <span className={`text-xs font-semibold ${
+                    parseFloat(dashboardData.overview.customersGrowth) > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                  }`}>
+                    {parseFloat(dashboardData.overview.customersGrowth) > 0 ? '+' : ''}{dashboardData.overview.customersGrowth}%
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                {parseFloat(dashboardData.overview.customersGrowth) > 0 ? (
-                  <ArrowUpRight className="w-4 h-4 text-green-600 dark:text-green-400" />
-                ) : (
-                  <ArrowDownRight className="w-4 h-4 text-red-600 dark:text-red-400" />
-                )}
-                <span className={`text-xs sm:text-sm font-medium ${
-                  parseFloat(dashboardData.overview.customersGrowth) > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                }`}>
-                  {parseFloat(dashboardData.overview.customersGrowth) > 0 ? '+' : ''}{dashboardData.overview.customersGrowth}%
-                </span>
-              </div>
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                {dashboardData.overview.totalCustomers.toLocaleString()}
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.overview.totalCustomers')}</p>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-              {dashboardData.overview.totalCustomers.toLocaleString()}
-            </h3>
-            <p className="text-muted-foreground text-xs sm:text-sm">إجمالي العملاء</p>
           </div>
 
           {/* Total Products */}
-          <div className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2 sm:p-3 rounded-xl bg-primary/10 dark:bg-primary/20">
-                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+          <div className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-[#0f0f0f] dark:to-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#D4AF37]/10 dark:from-[#D4AF37]/30 dark:to-[#D4AF37]/20 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Package className="w-6 h-6 text-[#D4AF37] dark:text-[#D4AF37]" />
+                </div>
+                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#D4AF37]/10 dark:bg-[#D4AF37]/20">
+                  {parseFloat(dashboardData.overview.productsGrowth) > 0 ? (
+                    <ArrowUpRight className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  ) : (
+                    <ArrowDownRight className="w-4 h-4 text-red-600 dark:text-red-400" />
+                  )}
+                  <span className={`text-xs font-semibold ${
+                    parseFloat(dashboardData.overview.productsGrowth) > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                  }`}>
+                    {parseFloat(dashboardData.overview.productsGrowth) > 0 ? '+' : ''}{dashboardData.overview.productsGrowth}%
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-1">
-                {parseFloat(dashboardData.overview.productsGrowth) > 0 ? (
-                  <ArrowUpRight className="w-4 h-4 text-green-600 dark:text-green-400" />
-                ) : (
-                  <ArrowDownRight className="w-4 h-4 text-red-600 dark:text-red-400" />
-                )}
-                <span className={`text-xs sm:text-sm font-medium ${
-                  parseFloat(dashboardData.overview.productsGrowth) > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                }`}>
-                  {parseFloat(dashboardData.overview.productsGrowth) > 0 ? '+' : ''}{dashboardData.overview.productsGrowth}%
-                </span>
-              </div>
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#D4AF37] dark:group-hover:text-[#D4AF37] transition-colors">
+                {dashboardData.overview.totalProducts}
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.overview.totalProducts')}</p>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-              {dashboardData.overview.totalProducts}
-            </h3>
-            <p className="text-muted-foreground text-xs sm:text-sm">إجمالي المنتجات</p>
           </div>
         </div>
 
         {/* Revenue Status Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Pending Revenue */}
-          <div className="bg-card border-2 border-yellow-500/30 dark:border-yellow-500/30 rounded-xl p-4 sm:p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2 sm:p-3 rounded-xl bg-yellow-500/10 dark:bg-yellow-500/20">
-                <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" />
+          <div className="group relative bg-gradient-to-br from-white to-yellow-50/30 dark:from-[#0f0f0f] dark:to-yellow-900/10 border-2 border-yellow-500/30 dark:border-yellow-500/30 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-yellow-500/20 to-yellow-500/10 dark:from-yellow-500/30 dark:to-yellow-500/20 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Clock className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                </div>
               </div>
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
+                QR{dashboardData.overview.pendingRevenue.toLocaleString()}
+              </h3>
+              <p className="text-yellow-600 dark:text-yellow-400 text-sm font-semibold mb-1">{t('dashboard.revenueStatus.pendingRevenue')}</p>
+              <p className="text-gray-500 dark:text-gray-500 text-xs">{t('dashboard.revenueStatus.pendingDescription')}</p>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-              QR{dashboardData.overview.pendingRevenue.toLocaleString()}
-            </h3>
-            <p className="text-yellow-600 dark:text-yellow-400 text-xs sm:text-sm font-medium">إيرادات في الانتظار</p>
-            <p className="text-muted-foreground text-xs mt-2">طلبات في انتظار الموافقة</p>
           </div>
 
           {/* Rejected Revenue */}
-          <div className="bg-card border-2 border-red-500/30 dark:border-red-500/30 rounded-xl p-4 sm:p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2 sm:p-3 rounded-xl bg-red-500/10 dark:bg-red-500/20">
-                <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 dark:text-red-400" />
+          <div className="group relative bg-gradient-to-br from-white to-red-50/30 dark:from-[#0f0f0f] dark:to-red-900/10 border-2 border-red-500/30 dark:border-red-500/30 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-red-500/20 to-red-500/10 dark:from-red-500/30 dark:to-red-500/20 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+                </div>
               </div>
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                QR{dashboardData.overview.rejectedRevenue.toLocaleString()}
+              </h3>
+              <p className="text-red-600 dark:text-red-400 text-sm font-semibold mb-1">{t('dashboard.revenueStatus.rejectedRevenue')}</p>
+              <p className="text-gray-500 dark:text-gray-500 text-xs">{t('dashboard.revenueStatus.rejectedDescription')}</p>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-              QR{dashboardData.overview.rejectedRevenue.toLocaleString()}
-            </h3>
-            <p className="text-red-600 dark:text-red-400 text-xs sm:text-sm font-medium">إيرادات مرفوضة</p>
-            <p className="text-muted-foreground text-xs mt-2">طلبات مرفوضة أو ملغاة</p>
           </div>
 
           {/* Total Approved Revenue */}
-          <div className="bg-card border-2 border-green-500/30 dark:border-green-500/30 rounded-xl p-4 sm:p-6 shadow-sm sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2 sm:p-3 rounded-xl bg-green-500/10 dark:bg-green-500/20">
-                <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
+          <div className="group relative bg-gradient-to-br from-white to-green-50/30 dark:from-[#0f0f0f] dark:to-green-900/10 border-2 border-green-500/30 dark:border-green-500/30 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden sm:col-span-2 lg:col-span-1">
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-green-500/20 to-green-500/10 dark:from-green-500/30 dark:to-green-500/20 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
               </div>
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
+                QR{dashboardData.overview.totalRevenue.toLocaleString()}
+              </h3>
+              <p className="text-green-600 dark:text-green-400 text-sm font-semibold mb-1">إيرادات معتمدة</p>
+              <p className="text-gray-500 dark:text-gray-500 text-xs">إجمالي الإيرادات المعتمدة</p>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-              QR{dashboardData.overview.totalRevenue.toLocaleString()}
-            </h3>
-            <p className="text-green-600 dark:text-green-400 text-xs sm:text-sm font-medium">إيرادات معتمدة</p>
-            <p className="text-muted-foreground text-xs mt-2">إجمالي الإيرادات المعتمدة</p>
           </div>
         </div>
 
@@ -531,7 +566,7 @@ function AdminDashboard() {
               <div className="p-2 rounded-lg bg-blue-500/10 dark:bg-blue-500/20">
                 <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <h2 className="text-lg sm:text-xl font-bold text-foreground">الطلبات الأخيرة</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-foreground">{t('dashboard.recentOrders.title')}</h2>
             </div>
             
             <div className="space-y-3 sm:space-y-4">
@@ -564,7 +599,7 @@ function AdminDashboard() {
                 ))
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
-                  <p>لا توجد طلبات حديثة</p>
+                  <p>{t('dashboard.noRecentOrders')}</p>
                 </div>
               )}
             </div>
@@ -576,14 +611,14 @@ function AdminDashboard() {
               <div className="p-2 rounded-lg bg-green-500/10 dark:bg-green-500/20">
                 <LineChart className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
               </div>
-              <h2 className="text-lg sm:text-xl font-bold text-foreground">مبيعات الشهر</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-foreground">{t('dashboard.monthlySales')}</h2>
             </div>
             
             <div className="h-48 sm:h-64 flex items-center justify-center">
               <div className="text-center">
                 <BarChart3 className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground text-sm sm:text-base">رسم بياني للمبيعات</p>
-                <p className="text-primary text-xs sm:text-sm mt-2">سيتم إضافة الرسم البياني قريباً</p>
+                <p className="text-primary text-xs sm:text-sm mt-2">{t('dashboard.chartComingSoon')}</p>
               </div>
             </div>
           </div>
@@ -595,7 +630,7 @@ function AdminDashboard() {
             <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/20">
               <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             </div>
-            <h2 className="text-lg sm:text-xl font-bold text-foreground">المنتجات الأكثر مبيعاً</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-foreground">{t('dashboard.bestSelling.title')}</h2>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -647,7 +682,7 @@ function AdminDashboard() {
             
             <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <button className="bg-primary/10 dark:bg-primary/20 hover:bg-primary/20 dark:hover:bg-primary/30 text-primary p-3 sm:p-4 rounded-lg transition-all">
-                <Package className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" />
+                <Package className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2 text-primary dark:text-primary" />
                 <span className="text-xs sm:text-sm font-medium">إضافة منتج</span>
               </button>
               <button className="bg-green-500/10 dark:bg-green-500/20 hover:bg-green-500/20 dark:hover:bg-green-500/30 text-green-600 dark:text-green-400 p-3 sm:p-4 rounded-lg transition-all">

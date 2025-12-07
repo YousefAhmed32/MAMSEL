@@ -8,6 +8,7 @@ const initialState = {
     productList: [],
     productDetails: null,
     brands: [],
+    groups: [],
     priceRange: { minPrice: 0, maxPrice: 1000 }
 }
 
@@ -55,6 +56,16 @@ export const fetchPriceRange = createAsyncThunk(
   async () => {
     const result = await axios.get(
       `${import.meta.env.VITE_API_URL}/api/shop/products/price-range`
+    );
+    return result?.data;
+  }
+);
+
+export const fetchGroups = createAsyncThunk(
+  'products/fetchGroups',
+  async () => {
+    const result = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/shop/products/groups`
     );
     return result?.data;
   }
@@ -115,6 +126,9 @@ const shoppingProductSlice = createSlice({
       })
       .addCase(fetchPriceRange.fulfilled, (state, action) => {
         state.priceRange = action.payload.data || { minPrice: 0, maxPrice: 1000 }
+      })
+      .addCase(fetchGroups.fulfilled, (state, action) => {
+        state.groups = action.payload.data || []
       })
   }
 })

@@ -63,7 +63,12 @@ const addProduct = async (req, res) => {
       totalStock,
       size,
       fragranceType,
-      gender
+      color,
+      material,
+      fit,
+      gender,
+      attributes,
+      groups
     } = req.body;
 
     // Validate required fields
@@ -88,6 +93,29 @@ const addProduct = async (req, res) => {
     // Set main image (first image in array, or empty string)
     const mainImage = imageObjects.length > 0 ? imageObjects[0].url : '';
 
+    // Parse attributes if provided (for sizes in clothes)
+    let parsedAttributes = {};
+    if (attributes) {
+      try {
+        parsedAttributes = typeof attributes === 'string' ? JSON.parse(attributes) : attributes;
+      } catch (e) {
+        console.error('Error parsing attributes:', e);
+      }
+    }
+
+    // Parse groups if provided
+    let parsedGroups = [];
+    if (groups) {
+      try {
+        parsedGroups = typeof groups === 'string' ? JSON.parse(groups) : groups;
+        if (!Array.isArray(parsedGroups)) {
+          parsedGroups = [];
+        }
+      } catch (e) {
+        console.error('Error parsing groups:', e);
+      }
+    }
+
     // Create new product
     const newlyCreatedProduct = new Product({
       image: mainImage,
@@ -101,7 +129,12 @@ const addProduct = async (req, res) => {
       totalStock: parseInt(totalStock),
       size: size || undefined,
       fragranceType: fragranceType || undefined,
+      color: color || undefined,
+      material: material || undefined,
+      fit: fit || undefined,
       gender,
+      attributes: Object.keys(parsedAttributes).length > 0 ? parsedAttributes : undefined,
+      groups: parsedGroups.length > 0 ? parsedGroups : [],
       isActive: true
     });
 
@@ -168,7 +201,12 @@ const editProduct = async (req, res) => {
       totalStock,
       size,
       fragranceType,
+      color,
+      material,
+      fit,
       gender,
+      attributes,
+      groups,
       keepOldImages // Optional: if true, keep old images when new ones are uploaded
     } = req.body;
 
@@ -194,7 +232,30 @@ const editProduct = async (req, res) => {
     if (totalStock !== undefined) findProduct.totalStock = parseInt(totalStock);
     if (size !== undefined) findProduct.size = size;
     if (fragranceType !== undefined) findProduct.fragranceType = fragranceType;
+    if (color !== undefined) findProduct.color = color;
+    if (material !== undefined) findProduct.material = material;
+    if (fit !== undefined) findProduct.fit = fit;
     if (gender !== undefined) findProduct.gender = gender;
+    
+    // Handle attributes (for sizes in clothes)
+    if (attributes !== undefined) {
+      try {
+        const parsedAttributes = typeof attributes === 'string' ? JSON.parse(attributes) : attributes;
+        findProduct.attributes = parsedAttributes;
+      } catch (e) {
+        console.error('Error parsing attributes:', e);
+      }
+    }
+    
+    // Handle groups
+    if (groups !== undefined) {
+      try {
+        const parsedGroups = typeof groups === 'string' ? JSON.parse(groups) : groups;
+        findProduct.groups = Array.isArray(parsedGroups) ? parsedGroups : [];
+      } catch (e) {
+        console.error('Error parsing groups:', e);
+      }
+    }
 
     // Handle image updates
     if (files.length > 0) {

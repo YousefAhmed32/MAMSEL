@@ -59,6 +59,10 @@ const productSchema = new mongoose.Schema({
   },
   size: String,
   fragranceType: String,
+  // Clothes specific fields
+  color: String,
+  material: String,
+  fit: String,
   gender: {
     type: String,
     enum: ['men', 'women', 'unisex'],
@@ -81,6 +85,16 @@ const productSchema = new mongoose.Schema({
   sampleLimit: {
     type: Number,
     default: null // null means unlimited samples per user
+  },
+  // Attributes object for flexible product properties (e.g., sizes for clothes)
+  attributes: {
+    type: Object,
+    default: {}
+  },
+  // Groups/Collections that this product belongs to
+  groups: {
+    type: [String],
+    default: []
   }
 }, { timestamps: true });
 

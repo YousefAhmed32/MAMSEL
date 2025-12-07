@@ -3,6 +3,7 @@ import AuthLayout from "./components/auth/layout";
 
 import AuthLogin from "./Pages/auth/login";
 import AuthRegister from "./Pages/auth/register";
+import ForgotPassword from "./Pages/auth/forgot-password";
 
 import AdminLayout from "./components/admin-view/layout";
 
@@ -39,6 +40,7 @@ import AdminUsers from "./Pages/admin-view/users";
 import AdminReviews from "./Pages/admin-view/reviews";
 import AdminSettings from "./Pages/admin-view/settings";
 import AdminBrands from "./Pages/admin-view/brands";
+import Collection from "./Pages/shopping-view/Collection";
 
 function App() {
   const { user, isAuthenticated, isloading } = useSelector((state) => state.auth);
@@ -75,6 +77,7 @@ function App() {
         >
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
         </Route>
 
         {/* صفحات الأدمن - محمية */}
@@ -115,6 +118,7 @@ function App() {
           <Route path="product/:productId" element={<ProductDetails />} />
           <Route path="wishlist" element={<Wishlist />} />
           <Route path="search" element={<SearchProducts />} />
+          <Route path="collection/:collectionName" element={<Collection />} />
 
           {/* صفحات محمية */}
           <Route path="account" element={<ShoppingAccount />} />

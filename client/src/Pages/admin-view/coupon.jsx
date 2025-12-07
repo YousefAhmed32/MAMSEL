@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/config";
 import { addCouponFormElements } from "@/config";
 import { addCoupon, fetchAllCoupons, deleteCoupon } from "@/store/admin/coupon";
 import CommonForm from "../../components/common/form";
@@ -10,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 function AdminCoupon() {
   const dispatch = useDispatch();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [copiedCode, setCopiedCode] = useState(null);
@@ -32,8 +35,8 @@ function AdminCoupon() {
     // Validate discount value based on type
     if (formData.discountType === 'percentage' && (formData.discountValue < 0 || formData.discountValue > 100)) {
       toast({
-        title: "خطأ",
-        description: "نسبة الخصم يجب أن تكون بين 0 و 100",
+        title: t('common.error'),
+        description: t('coupons.discountRange'),
         variant: "destructive",
       });
       return;
@@ -57,8 +60,8 @@ function AdminCoupon() {
       
       if (result.payload?.success) {
         toast({
-          title: "نجح",
-          description: "تم إنشاء الكوبون بنجاح!",
+          title: t('common.success'),
+          description: t('coupons.couponCreated'),
         });
         // Reset form
         setFormData({});
@@ -66,16 +69,16 @@ function AdminCoupon() {
         await dispatch(fetchAllCoupons());
       } else {
         toast({
-          title: "خطأ",
-          description: result.payload?.message || 'فشل في إنشاء الكوبون',
+          title: t('common.error'),
+          description: result.payload?.message || t('coupons.couponCreated'),
           variant: "destructive",
         });
       }
     } catch (error) {
       console.error('Error creating coupon:', error);
       toast({
-        title: "خطأ",
-        description: "حدث خطأ أثناء إنشاء الكوبون",
+        title: t('common.error'),
+        description: t('coupons.couponCreated'),
         variant: "destructive",
       });
     } finally {
@@ -88,7 +91,7 @@ function AdminCoupon() {
   }, [dispatch]);
 
   const handleDeleteCoupon = async (couponId) => {
-    if (!window.confirm('هل أنت متأكد من حذف هذا الكوبون؟')) {
+    if (!window.confirm(t('coupons.deleteConfirm'))) {
       return;
     }
     
@@ -114,16 +117,17 @@ function AdminCoupon() {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
     toast({
-      title: "تم النسخ!",
-      description: `تم نسخ كود الكوبون "${code}"`,
+      title: t('coupons.codeCopied'),
+      description: `${t('coupons.codeCopied')}: "${code}"`,
     });
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'بدون انتهاء';
+    if (!dateString) return t('coupons.noExpiry');
     const date = new Date(dateString);
-    return date.toLocaleDateString('ar-EG', { 
+    const locale = i18n.language === 'ar' ? 'ar-EG' : 'en-US';
+    return date.toLocaleDateString(locale, { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
@@ -145,11 +149,11 @@ function AdminCoupon() {
               <Ticket className="w-8 h-8 text-primary" />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground glow-text">
-              إدارة الكوبونات
+              {t('coupons.title')}
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            إنشاء وإدارة كوبونات الخصم للمتجر
+            {t('coupons.subtitle')}
           </p>
         </div>
 
@@ -158,7 +162,7 @@ function AdminCoupon() {
           <div className="bg-card border border-border shadow-sm p-4 sm:p-6 rounded-xl space-y-4 sm:space-y-6">
             <h3 className="text-xl sm:text-2xl font-semibold text-foreground mb-4 flex items-center gap-2">
               <PlusCircle className="text-primary" size={24} /> 
-              إنشاء كوبون جديد
+              {t('coupons.createNew')}
             </h3>
 
           <CommonForm
@@ -169,10 +173,10 @@ function AdminCoupon() {
             buttonText={
               submitting ? (
                 <span className="flex items-center gap-2">
-                  <Loader2 className="animate-spin" size={18} /> جاري الإضافة...
+                  <Loader2 className="animate-spin" size={18} /> {t('coupons.adding')}
                 </span>
               ) : (
-                "إضافة كوبون"
+                t('coupons.addCoupon')
               )
             }
             isBtnDisabled={submitting}
@@ -183,15 +187,15 @@ function AdminCoupon() {
             {/* Preview */}
             <div className="mt-6 bg-muted/50 dark:bg-muted/30 p-5 rounded-xl border border-border">
               <h4 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-                <Ticket className="text-primary" size={20} /> معاينة الكوبون
+                <Ticket className="text-primary" size={20} /> {t('coupons.preview')}
               </h4>
               <div className="space-y-2 text-muted-foreground text-sm">
                 <p>
-                  <span className="text-primary">الكود:</span>{" "}
+                  <span className="text-primary">{t('coupons.code')}:</span>{" "}
                   <span className="font-bold text-foreground">{formData.code?.toUpperCase() || "N/A"}</span>
                 </p>
                 <p>
-                  <span className="text-primary">الخصم:</span>{" "}
+                  <span className="text-primary">{t('coupons.discount')}:</span>{" "}
                   <span className="font-bold text-primary">
                     {formData.discountType === "percentage"
                       ? `${formData.discountValue || 0}%`
@@ -199,13 +203,13 @@ function AdminCoupon() {
                   </span>
                 </p>
                 <p>
-                  <span className="text-primary">تاريخ الانتهاء:</span>{" "}
-                  <span className="text-foreground">{formData.expiryDate ? formatDate(formData.expiryDate) : "لم يتم التحديد"}</span>
+                  <span className="text-primary">{t('coupons.expiryDate')}:</span>{" "}
+                  <span className="text-foreground">{formData.expiryDate ? formatDate(formData.expiryDate) : t('coupons.notSpecified')}</span>
                 </p>
                 {formData.usageLimit && (
                   <p>
-                    <span className="text-primary">حد الاستخدام:</span>{" "}
-                    <span className="text-foreground">{formData.usageLimit} مرة</span>
+                    <span className="text-primary">{t('coupons.usageLimit')}:</span>{" "}
+                    <span className="text-foreground">{formData.usageLimit} {t('coupons.times')}</span>
                   </p>
                 )}
               </div>
@@ -257,7 +261,7 @@ function AdminCoupon() {
                               <button
                                 onClick={() => handleCopyCode(coupon.code)}
                                 className="p-1 hover:bg-primary/10 dark:bg-primary/20 rounded transition-colors"
-                                title="نسخ الكود"
+                                title={t('coupons.copyCode')}
                               >
                                 {copiedCode === coupon.code ? (
                                   <CheckCircle2 className="w-4 h-4 text-green-400" />
@@ -268,7 +272,7 @@ function AdminCoupon() {
                             </p>
                             {expired && (
                               <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded-full border border-red-500/30">
-                                منتهي
+                                {t('coupons.expired')}
                               </span>
                             )}
                           </div>

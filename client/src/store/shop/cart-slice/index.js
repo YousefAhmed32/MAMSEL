@@ -9,7 +9,7 @@ const initialState = {
 
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
-  async ({ userId, productId, quantity }) => {
+  async ({ userId, productId, quantity, selectedSize }) => {
 
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api/shop/cart/add`
@@ -18,6 +18,7 @@ export const addToCart = createAsyncThunk(
         userId,
         productId,
         quantity,
+        selectedSize: selectedSize || null,
       });
     return response.data;
 
@@ -51,14 +52,15 @@ export const deleteCartItem = createAsyncThunk(
 
 export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartQuantity",
-  async ({ userId, productId, quantity }) => {
+  async ({ userId, productId, quantity, selectedSize }) => {
 
     const response = await axios.put(
       `${import.meta.env.VITE_API_URL}/api/shop/cart/update-cart`,
       {
         userId,
         productId,
-        quantity
+        quantity,
+        selectedSize: selectedSize || null,
       }
     );
     return response.data;
@@ -103,9 +105,10 @@ const shoppingCartSlice = createSlice({
         state.isLoading = false;
         state.cartItems = action.payload.data;
       })
-      .addCase(updateCartQuantity.rejected, (state) => {
+      .addCase(updateCartQuantity.rejected, (state, action) => {
         state.isLoading = false;
-        state.cartItems = [];
+        // Don't clear cart items on error, keep existing items
+        console.error("Failed to update cart quantity:", action.error);
       })
       .addCase(deleteCartItem.pending, (state) => {
         state.isLoading = true;

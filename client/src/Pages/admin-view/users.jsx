@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/config";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +56,7 @@ import {
 
 function AdminUsers() {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { users, stats, isLoading, error, userDetails } = useSelector((state) => state.adminUsers);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("all");
@@ -158,22 +161,22 @@ function AdminUsers() {
 
   const getTimeframeLabel = () => {
     const labels = {
-      "24h": "آخر 24 ساعة",
-      "7d": "آخر 7 أيام",
-      "30d": "آخر 30 يوم",
-      "3m": "آخر 3 أشهر",
-      "1y": "آخر سنة",
-      "all": "منذ الإنشاء"
+      "24h": t('dashboard.timeFilters.24h'),
+      "7d": t('dashboard.timeFilters.7d'),
+      "30d": t('dashboard.timeFilters.30d'),
+      "3m": t('dashboard.timeFilters.3m'),
+      "1y": t('dashboard.timeFilters.1y'),
+      "all": t('users.sinceCreation')
     };
-    return labels[timeFilter] || "منذ الإنشاء";
+    return labels[timeFilter] || t('users.sinceCreation');
   };
 
   const getStatusBadge = (status) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30">نشط</Badge>;
+        return <Badge className="bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30">{t('users.active')}</Badge>;
       case "inactive":
-        return <Badge className="bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30">غير نشط</Badge>;
+        return <Badge className="bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30">{t('users.inactive')}</Badge>;
       default:
         return <Badge className="bg-muted text-muted-foreground border-border">غير محدد</Badge>;
     }
@@ -182,10 +185,10 @@ function AdminUsers() {
   const getRoleBadge = (role) => {
     switch (role) {
       case "admin":
-        return <Badge className="bg-primary/10 dark:bg-primary/20 text-primary border-primary/30">مدير</Badge>;
+        return <Badge className="bg-primary/10 dark:bg-primary/20 text-primary border-primary/30">{t('users.admin')}</Badge>;
       case "user":
       case "customer":
-        return <Badge className="bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30">عميل</Badge>;
+        return <Badge className="bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30">{t('users.user')}</Badge>;
       default:
         return <Badge className="bg-muted text-muted-foreground border-border">غير محدد</Badge>;
     }
@@ -218,11 +221,11 @@ function AdminUsers() {
               <Users className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
-              إدارة المستخدمين
+              {t('users.title')}
             </h1>
           </div>
           <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
-            إدارة العملاء والمدراء مع إحصائيات مفصلة وتحليلات متقدمة
+            {t('users.subtitle')}
           </p>
         </div>
 
@@ -269,7 +272,7 @@ function AdminUsers() {
             <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
               {stats?.totalUsers || 0}
             </h3>
-            <p className="text-muted-foreground text-xs sm:text-sm">إجمالي المستخدمين</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">{t('users.totalUsers')}</p>
             <div className="mt-2 text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
               {stats?.newUsers || 0} جديد ({getTimeframeLabel()})
@@ -287,10 +290,10 @@ function AdminUsers() {
             <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
               {stats?.activeUsers || 0}
             </h3>
-            <p className="text-muted-foreground text-xs sm:text-sm">المستخدمين النشطين</p>
+            <p className="text-muted-foreground text-xs sm:text-sm">{t('users.activeUsers')}</p>
             <div className="mt-2 text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              +8% من الأسبوع الماضي
+              {t('users.fromLastWeek')}
             </div>
           </div>
 
@@ -306,15 +309,15 @@ function AdminUsers() {
               {timeFilter === "24h" ? (stats?.lastHourActive || 0) : (stats?.newUsers || 0)}
             </h3>
             <p className="text-muted-foreground text-xs sm:text-sm">
-              {timeFilter === "24h" ? "نشط في آخر 24 ساعة" : 
-               timeFilter === "7d" ? "جديد في 7 أيام" : 
-               timeFilter === "30d" ? "جديد في 30 يوم" :
-               timeFilter === "3m" ? "جديد في 3 أشهر" :
-               timeFilter === "1y" ? "جديد في سنة" : "منذ الإنشاء"}
+              {timeFilter === "24h" ? t('users.activeLast24h') : 
+               timeFilter === "7d" ? t('users.newIn7Days') : 
+               timeFilter === "30d" ? t('users.newIn30Days') :
+               timeFilter === "3m" ? t('users.newIn3Months') :
+               timeFilter === "1y" ? t('users.newInYear') : t('users.sinceCreation')}
             </p>
             <div className="mt-2 text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              {stats?.newUsers || 0} مستخدم جديد
+              {stats?.newUsers || 0} {t('users.newUser')}
             </div>
           </div>
 
@@ -349,7 +352,7 @@ function AdminUsers() {
                 <h3 className="text-xl sm:text-2xl font-bold text-foreground">
                   {stats?.premiumUsers || 0}
                 </h3>
-                <p className="text-muted-foreground text-xs sm:text-sm">مشتركين مميزين</p>
+                <p className="text-muted-foreground text-xs sm:text-sm">{t('users.premiumSubscribers')}</p>
               </div>
             </div>
             <div className="w-full bg-muted/50 dark:bg-muted/30 rounded-full h-2">
@@ -370,7 +373,7 @@ function AdminUsers() {
                 <h3 className="text-xl sm:text-2xl font-bold text-foreground">
                   {stats?.verifiedUsers || 0}
                 </h3>
-                <p className="text-muted-foreground text-xs sm:text-sm">مستخدمين موثقين</p>
+                <p className="text-muted-foreground text-xs sm:text-sm">{t('users.verifiedUsers')}</p>
               </div>
             </div>
             <div className="w-full bg-muted/50 dark:bg-muted/30 rounded-full h-2">
@@ -404,14 +407,14 @@ function AdminUsers() {
         <div className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm">
           <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-            فلاتر البحث
+            {t('users.searchFilters')}
           </h3>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 min-w-0">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder="البحث عن المستخدمين..."
+                  placeholder={t('users.search')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 bg-background border-border text-foreground placeholder:text-muted-foreground"
@@ -424,9 +427,9 @@ function AdminUsers() {
               onChange={(e) => setFilterRole(e.target.value)}
               className="px-3 sm:px-4 py-2 rounded-lg bg-background border border-border text-foreground text-sm sm:text-base min-w-[140px]"
             >
-              <option value="all">جميع الأدوار</option>
-              <option value="user">العملاء</option>
-              <option value="admin">المدراء</option>
+              <option value="all">{t('users.allRolesOption')}</option>
+              <option value="user">{t('users.customersOption')}</option>
+              <option value="admin">{t('users.adminsOption')}</option>
             </select>
 
             <select
@@ -434,9 +437,9 @@ function AdminUsers() {
               onChange={(e) => setFilterStatus(e.target.value)}
               className="px-3 sm:px-4 py-2 rounded-lg bg-background border border-border text-foreground text-sm sm:text-base min-w-[140px]"
             >
-              <option value="all">جميع الحالات</option>
-              <option value="active">نشط</option>
-              <option value="inactive">غير نشط</option>
+              <option value="all">{t('users.allStatusesOption')}</option>
+              <option value="active">{t('users.activeOption')}</option>
+              <option value="inactive">{t('users.inactiveOption')}</option>
             </select>
           </div>
         </div>
@@ -460,11 +463,11 @@ function AdminUsers() {
             </div>
           ) : error ? (
             <div className="text-center py-12 text-destructive">
-              <p>خطأ في جلب البيانات: {error}</p>
+              <p>{t('users.errorFetching')}: {error}</p>
             </div>
           ) : filteredUsers.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              <p>لا يوجد مستخدمين</p>
+              <p>{t('users.noUsers')}</p>
             </div>
           ) : (
             <div className="space-y-3 sm:space-y-4">
@@ -511,16 +514,16 @@ function AdminUsers() {
                       <div className="flex flex-wrap items-center gap-3 sm:gap-6 mt-3 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">انضم: {formatDate(user.createdAt)}</span>
+                          <span className="truncate">{t('users.joined')}: {formatDate(user.createdAt)}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Clock className="w-3 h-3 flex-shrink-0" />
-                          <span className="truncate">آخر دخول: {formatDate(user.lastLogin)}</span>
+                          <span className="truncate">{t('users.lastLogin')}: {formatDate(user.lastLogin)}</span>
                         </div>
                         {user.role !== "admin" && (
                           <div className="flex items-center gap-1">
                             <Star className="w-3 h-3 flex-shrink-0" />
-                            <span>{user.totalOrders || 0} طلب • ${(user.totalSpent || 0).toFixed(2)} إنفاق</span>
+                            <span>{user.totalOrders || 0} {t('users.orders')} • ${(user.totalSpent || 0).toFixed(2)} {t('users.spending')}</span>
                           </div>
                         )}
                       </div>
@@ -548,26 +551,26 @@ function AdminUsers() {
                             {user.status === "active" ? (
                               <>
                                 <UserX className="w-4 h-4 mr-2" />
-                                إلغاء تفعيل
+                                {t('users.deactivate')}
                               </>
                             ) : (
                               <>
                                 <UserCheck className="w-4 h-4 mr-2" />
-                                تفعيل
+                                {t('users.activate')}
                               </>
                             )}
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem className="text-foreground hover:bg-muted">
                           <Mail className="w-4 h-4 mr-2" />
-                          إرسال بريد إلكتروني
+                          {t('users.sendEmail')}
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           onClick={() => handleViewDetails(user._id || user.id)}
                           className="text-foreground hover:bg-muted"
                         >
                           <Shield className="w-4 h-4 mr-2" />
-                          عرض التفاصيل
+                          {t('users.viewDetails')}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -585,10 +588,10 @@ function AdminUsers() {
           <SheetHeader>
             <SheetTitle className="text-foreground text-xl sm:text-2xl flex items-center gap-2 sm:gap-3">
               <Users className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              تفاصيل المستخدم
+              {t('users.userDetails')}
             </SheetTitle>
             <SheetDescription className="text-muted-foreground">
-              عرض جميع الطلبات والعناوين المسجلة
+              {t('users.viewAllOrders')}
             </SheetDescription>
           </SheetHeader>
 
@@ -639,7 +642,7 @@ function AdminUsers() {
               <div className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm">
                 <h3 className="text-lg sm:text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                   <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                  الطلبات ({userDetails.orders?.length || 0})
+                  {t('users.ordersSection', { count: userDetails.orders?.length || 0 })}
                 </h3>
                 {userDetails.orders && userDetails.orders.length > 0 ? (
                   <div className="space-y-3 sm:space-y-4 max-h-96 overflow-y-auto">
@@ -667,7 +670,7 @@ function AdminUsers() {
                         <div className="space-y-2">
                           {order.items && order.items.length > 0 && (
                             <div>
-                              <p className="text-muted-foreground text-xs sm:text-sm mb-2">المنتجات:</p>
+                                <p className="text-muted-foreground text-xs sm:text-sm mb-2">{t('users.productsLabel')}</p>
                               <div className="space-y-2">
                                 {order.items.map((item, idx) => (
                                   <div key={idx} className="flex items-center gap-3 bg-background p-2 rounded">
@@ -681,7 +684,7 @@ function AdminUsers() {
                                     <div className="flex-1 min-w-0">
                                       <p className="text-foreground text-xs sm:text-sm truncate">{item.title}</p>
                                       <p className="text-muted-foreground text-xs">
-                                        الكمية: {item.quantity} × ${item.price}
+                                        {t('users.quantity')}: {item.quantity} × ${item.price}
                                       </p>
                                     </div>
                                   </div>
@@ -702,8 +705,8 @@ function AdminUsers() {
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <p className="text-muted-foreground text-center py-8">لا توجد طلبات</p>
+                  ) : (
+                  <p className="text-muted-foreground text-center py-8">{t('users.noOrders')}</p>
                 )}
               </div>
 
@@ -711,7 +714,7 @@ function AdminUsers() {
               <div className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm">
                 <h3 className="text-lg sm:text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                   <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                  العناوين ({userDetails.addresses?.length || 0})
+                  {t('users.addressesSection', { count: userDetails.addresses?.length || 0 })}
                 </h3>
                 {userDetails.addresses && userDetails.addresses.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -751,13 +754,13 @@ function AdminUsers() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground text-center py-8">لا توجد عناوين مسجلة</p>
+                  <p className="text-muted-foreground text-center py-8">{t('users.noAddresses')}</p>
                 )}
               </div>
             </div>
           ) : (
             <div className="text-center py-12 text-destructive">
-              <p>فشل في جلب تفاصيل المستخدم</p>
+              <p>{t('users.failedToFetch')}</p>
             </div>
           )}
         </SheetContent>

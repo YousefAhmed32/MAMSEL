@@ -10,17 +10,26 @@ const getFilterProducts = async (req, res) => {
       minPrice, 
       maxPrice,
       sortBy = 'price-lowtohigh',
-      keyword
+      keyword,
+      groups // Filter by collections/groups (can be multiple comma-separated)
     } = req.query;
     
     let filters = { isActive: true }; // Only show active products
+
+    // Groups/Collections filter - support multiple groups
+    if (groups && groups.trim().length > 0) {
+      const groupList = groups.split(',').map(g => g.trim()).filter(g => g.length > 0);
+      if (groupList.length > 0) {
+        filters.groups = { $in: groupList };
+      }
+    }
 
     // Category filter (apply before keyword search to avoid duplicate category matching)
     if (category && category.length > 0) {
       filters.category = { $in: category.split(',') };
     }
 
-    // Search keyword filter - search in title, description, and brand
+    // Search keyword filter - search in title, description, brand, and groups
     if (keyword && keyword.trim().length > 0) {
       const searchRegex = new RegExp(keyword.trim(), 'i');
       
@@ -36,10 +45,11 @@ const getFilterProducts = async (req, res) => {
       const brandIds = matchingBrands.map(brand => brand._id);
       
       // Create search filter for products
-      // Only search in title and description (category is already filtered above if provided)
+      // Search in title, description, and groups
       const searchConditions = [
         { title: searchRegex },
-        { description: searchRegex }
+        { description: searchRegex },
+        { groups: searchRegex } // Search in groups array - MongoDB will match if any element matches
       ];
       
       // If brands found, add them to the search
@@ -205,6 +215,39 @@ const getProductDetails =async (req,res)=>{
 
 
 
+// Get all unique groups/collections from active products
+const getGroups = async (req, res) => {
+  try {
+    // Get all distinct groups from active products using aggregation
+    // This is more efficient than fetching all products
+    const groupsResult = await Product.aggregate([
+      { $match: { isActive: true, groups: { $exists: true, $ne: [] } } },
+      { $unwind: '$groups' },
+      { $group: { _id: '$groups' } },
+      { $project: { _id: 0, group: '$_id' } },
+      { $sort: { group: 1 } }
+    ]);
+    
+    // Extract group names and filter out empty strings
+    const uniqueGroups = groupsResult
+      .map(item => item.group)
+      .filter(group => group && group.trim().length > 0)
+      .sort();
+    
+    res.status(200).json({
+      success: true,
+      data: uniqueGroups,
+    });
+  } catch (e) {
+    console.log('Error fetching groups:', e);
+    res.status(500).json({
+      success: false,
+      message: 'Some error occurred while fetching groups',
+      error: e.message
+    });
+  }
+};
+
 // Get top sold products from last 30 days
 const getTopSoldProducts = async (req, res) => {
   try {
@@ -257,4 +300,4 @@ const getTopSoldProducts = async (req, res) => {
   }
 };
 
-module.exports = { getFilterProducts, getProductDetails, getBrands, getPriceRange, getTopSoldProducts };
+module.exports = { getFilterProducts, getProductDetails, getBrands, getPriceRange, getTopSoldProducts, getGroups };

@@ -84,7 +84,7 @@ function NotificationSystem() {
       case 'payment_received':
         return <DollarSign className="w-5 h-5 text-blue-500" />;
       case 'low_stock':
-        return <Package className="w-5 h-5 text-yellow-500" />;
+        return <Package className="w-5 h-5 text-pink-500 dark:text-pink-400" />;
       case 'new_review':
         return <TrendingUp className="w-5 h-5 text-purple-500" />;
       default:
@@ -126,7 +126,7 @@ function NotificationSystem() {
 
       {/* Notification Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-12 w-96 bg-navy-950/95 backdrop-blur-xl border elegant-border rounded-xl shadow-2xl z-50 max-h-96 overflow-hidden">
+        <div className="absolute right-0 top-12 w-96 dark:bg-navy-950/95 bg-white/90 backdrop-blur-xl border elegant-border rounded-xl shadow-2xl z-50 max-h-96 overflow-hidden">
           {/* Header */}
           <div className="p-4 border-b elegant-border">
             <div className="flex items-center justify-between">

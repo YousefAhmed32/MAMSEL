@@ -6,9 +6,10 @@ import App from './App.jsx'
 import { Provider } from 'react-redux'
 import store from './store/store.js'
 import { Toaster } from './components/ui/toaster'
+import './i18n/config' // Initialize i18n
 
-// Set dark mode as default
-document.documentElement.classList.add('dark');
+// Set light mode as default
+// Theme will be set by ThemeToggle component based on localStorage or default to light
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

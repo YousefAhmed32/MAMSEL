@@ -16,7 +16,7 @@ const SheetPortal = SheetPrimitive.Portal
 const SheetOverlay = React.forwardRef(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
     className={cn(
-      "fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 transition-all duration-300",
       className
     )}
     {...props}
@@ -46,12 +46,33 @@ const sheetVariants = cva(
 const SheetContent = React.forwardRef(({ side = "right", className, children, ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
-    <SheetPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
+    <SheetPrimitive.Content 
+      ref={ref} 
+      className={cn(sheetVariants({ side }), className)} 
+      {...props}
+      onEscapeKeyDown={(e) => {
+        // Allow ESC key to close
+        if (props.onEscapeKeyDown) {
+          props.onEscapeKeyDown(e);
+        }
+      }}
+      onInteractOutside={(e) => {
+        // Allow clicking outside to close
+        if (props.onInteractOutside) {
+          props.onInteractOutside(e);
+        }
+      }}
+    >
       {children}
       <SheetPrimitive.Close
-        className="absolute right-4 top-4 p-1.5 rounded-md bg-transparent 
-            border border-transparent 
-             focus:outline-none focus:ring-1 focus:ring-gray-800 dark:focus:ring-gray-800 focus:ring-offset-0 transition"
+        className="absolute right-4 top-4 z-10 p-2 rounded-lg 
+          bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm
+          border border-gray-200 dark:border-gray-700
+          text-gray-600 dark:text-gray-400
+          hover:text-gray-900 dark:hover:text-white
+          hover:bg-white dark:hover:bg-gray-800
+          focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2
+          transition-all duration-200 hover:scale-110 active:scale-95"
       >
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>

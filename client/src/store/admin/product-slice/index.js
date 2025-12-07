@@ -22,7 +22,12 @@ export const addNewProduct = createAsyncThunk(
     if (formData.totalStock) data.append('totalStock', formData.totalStock);
     if (formData.size) data.append('size', formData.size);
     if (formData.fragranceType) data.append('fragranceType', formData.fragranceType);
+    if (formData.color) data.append('color', formData.color);
+    if (formData.material) data.append('material', formData.material);
+    if (formData.fit) data.append('fit', formData.fit);
     if (formData.gender) data.append('gender', formData.gender);
+    if (formData.attributes) data.append('attributes', formData.attributes);
+    if (formData.groups) data.append('groups', formData.groups);
     
     // Handle image files
     // If formData has image files (from File objects), append them
@@ -68,7 +73,12 @@ export const editProduct = createAsyncThunk(
     if (formData.totalStock !== undefined) data.append('totalStock', formData.totalStock);
     if (formData.size !== undefined) data.append('size', formData.size);
     if (formData.fragranceType !== undefined) data.append('fragranceType', formData.fragranceType);
+    if (formData.color !== undefined) data.append('color', formData.color);
+    if (formData.material !== undefined) data.append('material', formData.material);
+    if (formData.fit !== undefined) data.append('fit', formData.fit);
     if (formData.gender !== undefined) data.append('gender', formData.gender);
+    if (formData.attributes !== undefined) data.append('attributes', formData.attributes);
+    if (formData.groups !== undefined) data.append('groups', formData.groups);
     if (formData.keepOldImages !== undefined) data.append('keepOldImages', formData.keepOldImages);
     
     // Handle image files if provided

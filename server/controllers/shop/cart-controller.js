@@ -3,7 +3,7 @@ const Product = require('../../models/Product');
 
 const addToCart = async (req, res) => {
     try {
-        const { userId, productId, quantity } = req.body;
+        const { userId, productId, quantity, selectedSize } = req.body;
 
         if (!userId || !productId || quantity <= 0) {
             return res.status(400).json({
@@ -26,12 +26,21 @@ const addToCart = async (req, res) => {
             cart = new Cart({ userId, items: [] });
         }
 
-        const findCurrentProductIndex = cart.items.findIndex(
-            (item) => item.productId.toString() === productId
-        );
+        // For clothes products, check if same product with same size exists
+        // For other products, check if product exists regardless of size
+        const findCurrentProductIndex = cart.items.findIndex((item) => {
+            if (product.category === 'Clothes' && selectedSize) {
+                return item.productId.toString() === productId && item.selectedSize === selectedSize;
+            }
+            return item.productId.toString() === productId;
+        });
 
         if (findCurrentProductIndex === -1) {
-            cart.items.push({ productId, quantity });
+            cart.items.push({ 
+                productId, 
+                quantity,
+                selectedSize: selectedSize || null
+            });
         } else {
             cart.items[findCurrentProductIndex].quantity += quantity;
         }
@@ -101,6 +110,7 @@ const fetchCartItem = async (req, res) => {
             price: item.productId.price,
             salePrice: item.productId.salePrice,
             quantity: item.quantity,
+            selectedSize: item.selectedSize || null,
         }))
 
 
@@ -125,7 +135,7 @@ const fetchCartItem = async (req, res) => {
 
 const updateCartItemQty = async (req, res) => {
     try {
-        const { userId, productId, quantity } = req.body;
+        const { userId, productId, quantity, selectedSize } = req.body;
         if (!userId || !productId || quantity <= 0) {
             return res.status(400).json({
                 success: false,
@@ -141,9 +151,70 @@ const updateCartItemQty = async (req, res) => {
             });
         }
 
-        const findCurrentProductIndex = cart.items.findIndex(
-            item => item.productId.toString() === productId
-        );
+        // Get product info to determine if it's a clothes product
+        const product = await Product.findById(productId);
+        const isClothesProduct = product && product.category === 'Clothes';
+        
+        let findCurrentProductIndex = -1;
+        
+        if (selectedSize !== undefined && selectedSize !== null) {
+            // If we're updating size, first check if there's already an item with the new size
+            if (isClothesProduct) {
+                const existingItemWithNewSize = cart.items.findIndex(item => 
+                    item.productId.toString() === productId && item.selectedSize === selectedSize
+                );
+                
+                if (existingItemWithNewSize !== -1) {
+                    // Item with new size already exists, just update its quantity
+                    cart.items[existingItemWithNewSize].quantity = quantity;
+                    await cart.save();
+                    
+                    await cart.populate({
+                        path: 'items.productId',
+                        select: 'image title price salePrice',
+                    });
+                    
+                    const populateCartItems = cart.items.map((item) => ({
+                        productId: item.productId ? item.productId._id : null,
+                        image: item.productId ? item.productId.image : null,
+                        title: item.productId ? item.productId.title : "Product not found",
+                        price: item.productId ? item.productId.price : null,
+                        salePrice: item.productId ? item.productId.salePrice : null,
+                        quantity: item.quantity,
+                        selectedSize: item.selectedSize || null,
+                    }));
+                    
+                    return res.status(200).json({
+                        success: true,
+                        data: {
+                            ...cart._doc,
+                            items: populateCartItems,
+                        },
+                    });
+                }
+            }
+            
+            // Find item by productId only (for size change - will update the first matching item)
+            findCurrentProductIndex = cart.items.findIndex(item => 
+                item.productId.toString() === productId
+            );
+        } else {
+            // For quantity update: find by productId + selectedSize (if clothes) or productId only
+            if (isClothesProduct) {
+                // For clothes products, we need to match by productId + selectedSize
+                // But since selectedSize is null/undefined here, we need to find the item
+                // that matches the productId. If there are multiple sizes, we'll update the first one.
+                // In practice, when updating quantity, the frontend should send the current selectedSize
+                findCurrentProductIndex = cart.items.findIndex(item => 
+                    item.productId.toString() === productId
+                );
+            } else {
+                // For non-clothes products, find by productId only
+                findCurrentProductIndex = cart.items.findIndex(item => 
+                    item.productId.toString() === productId
+                );
+            }
+        }
 
         if (findCurrentProductIndex === -1) {
             return res.status(404).json({
@@ -152,7 +223,13 @@ const updateCartItemQty = async (req, res) => {
             });
         }
 
+        // Update quantity
         cart.items[findCurrentProductIndex].quantity = quantity;
+        
+        // Update size if provided
+        if (selectedSize !== undefined && selectedSize !== null) {
+            cart.items[findCurrentProductIndex].selectedSize = selectedSize;
+        }
 
         await cart.save();
 
@@ -168,6 +245,7 @@ const updateCartItemQty = async (req, res) => {
             price: item.productId ? item.productId.price : null,
             salePrice: item.productId ? item.productId.salePrice : null,
             quantity: item.quantity,
+            selectedSize: item.selectedSize || null,
         }));
 
         res.status(200).json({
@@ -227,6 +305,7 @@ const deleteCartItem = async (req, res) => {
             price: item.productId ? item.productId.price : null,
             salePrice: item.productId ? item.productId.salePrice : null,
             quantity: item.quantity,
+            selectedSize: item.selectedSize || null,
         }));
 
         res.status(200).json({

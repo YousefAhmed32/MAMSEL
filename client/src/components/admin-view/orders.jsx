@@ -13,6 +13,8 @@ import { Input } from "../ui/input";
 import { useEffect, useState } from "react";
 import AdminOrderDetailsView from "./order-details";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/config";
 import {
   getAllOrdersForAdmin,
   getOrderDetailsForAdmin,
@@ -51,6 +53,8 @@ function AdminOrdersView() {
 
   const { orderList, orderDetails } = useSelector((state) => state.adminOrder);
   const dispatch = useDispatch();
+  const { t: translate } = useTranslation();
+  const t = translate || ((key) => key); // Fallback to return key if t is undefined
 
   function handleFetchOrderDetails(getId) {
     setSelectedOrderId(getId);
@@ -108,7 +112,7 @@ function AdminOrdersView() {
 
   const getStatusBadge = (status) => {
     if (!status) {
-      return <Badge className="bg-muted text-muted-foreground border-border">غير محدد</Badge>;
+      return <Badge className="bg-muted text-muted-foreground border-border">{t('orders.undefined')}</Badge>;
     }
     
     const normalizedStatus = String(status).toLowerCase().trim();
@@ -116,23 +120,23 @@ function AdminOrdersView() {
     switch (normalizedStatus) {
       case "confirmed":
       case "accepted":
-        return <Badge className="bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30">مقبول</Badge>;
+        return <Badge className="bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30">{t('orders.accepted')}</Badge>;
       case "rejected":
-        return <Badge className="bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30">مرفوض</Badge>;
+        return <Badge className="bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30">{t('orders.rejected')}</Badge>;
       case "pending":
-        return <Badge className="bg-yellow-500/10 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border-yellow-500/30">في الانتظار</Badge>;
+        return <Badge className="bg-yellow-500/10 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border-yellow-500/30">{t('orders.pending')}</Badge>;
       case "processing":
-        return <Badge className="bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30">قيد المعالجة</Badge>;
+        return <Badge className="bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30">{t('orders.processing')}</Badge>;
       case "on the way":
-        return <Badge className="bg-purple-500/10 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30">في الطريق</Badge>;
+        return <Badge className="bg-purple-500/10 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30">{t('orders.onTheWay')}</Badge>;
       case "shipped":
-        return <Badge className="bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30">تم الشحن</Badge>;
+        return <Badge className="bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30">{t('orders.shipped')}</Badge>;
       case "delivered":
-        return <Badge className="bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30">تم التسليم</Badge>;
+        return <Badge className="bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30">{t('orders.delivered')}</Badge>;
       case "cancelled":
-        return <Badge className="bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30">ملغي</Badge>;
+        return <Badge className="bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30">{t('orders.cancelled')}</Badge>;
       default:
-        return <Badge className="bg-muted text-muted-foreground border-border">{status || 'غير محدد'}</Badge>;
+        return <Badge className="bg-muted text-muted-foreground border-border">{status || t('orders.undefined')}</Badge>;
     }
   };
 
@@ -150,11 +154,11 @@ function AdminOrdersView() {
               <ShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
-              إدارة الطلبات
+              {t('orders.title')}
             </h1>
           </div>
           <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
-            إدارة وتتبع جميع طلبات العملاء
+            {t('orders.subtitle')}
           </p>
         </div>
 
@@ -167,7 +171,7 @@ function AdminOrdersView() {
               </div>
               <div className="text-right">
                 <h3 className="text-2xl sm:text-3xl font-bold text-foreground">{orderList?.length || 0}</h3>
-                <p className="text-muted-foreground text-xs sm:text-sm">إجمالي الطلبات</p>
+                <p className="text-muted-foreground text-xs sm:text-sm">{t('orders.totalOrders')}</p>
               </div>
             </div>
           </div>
@@ -191,7 +195,7 @@ function AdminOrdersView() {
               </div>
               <div className="text-right">
                 <h3 className="text-2xl sm:text-3xl font-bold text-foreground">{pendingOrders}</h3>
-                <p className="text-muted-foreground text-xs sm:text-sm">في الانتظار</p>
+                <p className="text-muted-foreground text-xs sm:text-sm">{t('orders.pendingOrders')}</p>
               </div>
             </div>
           </div>
@@ -213,14 +217,14 @@ function AdminOrdersView() {
         <div className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm">
           <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-            فلاتر البحث
+            {t('orders.searchFilters')}
           </h3>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 min-w-0">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder="البحث في الطلبات..."
+                  placeholder={t('orders.searchOrders')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 bg-background border-border text-foreground placeholder:text-muted-foreground"
@@ -233,15 +237,15 @@ function AdminOrdersView() {
               onChange={(e) => setFilterStatus(e.target.value)}
               className="px-3 sm:px-4 py-2 rounded-lg bg-background border border-border text-foreground text-sm sm:text-base min-w-[140px]"
             >
-              <option value="all">جميع الحالات</option>
-              <option value="pending">في الانتظار</option>
-              <option value="accepted">مقبول</option>
-              <option value="rejected">مرفوض</option>
-              <option value="processing">قيد المعالجة</option>
-              <option value="on the way">في الطريق</option>
-              <option value="shipped">تم الشحن</option>
-              <option value="delivered">تم التسليم</option>
-              <option value="cancelled">ملغي</option>
+              <option value="all">{t('orders.allStatuses')}</option>
+              <option value="pending">{t('orders.pending')}</option>
+              <option value="accepted">{t('orders.accepted')}</option>
+              <option value="rejected">{t('orders.rejected')}</option>
+              <option value="processing">{t('orders.processing')}</option>
+              <option value="on the way">{t('orders.onTheWay')}</option>
+              <option value="shipped">{t('orders.shipped')}</option>
+              <option value="delivered">{t('orders.delivered')}</option>
+              <option value="cancelled">{t('orders.cancelled')}</option>
             </select>
 
             <select
@@ -249,10 +253,10 @@ function AdminOrdersView() {
               onChange={(e) => setFilterDate(e.target.value)}
               className="px-3 sm:px-4 py-2 rounded-lg bg-background border border-border text-foreground text-sm sm:text-base min-w-[140px]"
             >
-              <option value="all">جميع التواريخ</option>
-              <option value="today">اليوم</option>
-              <option value="week">هذا الأسبوع</option>
-              <option value="month">هذا الشهر</option>
+              <option value="all">{t('orders.allDates')}</option>
+              <option value="today">{t('orders.today')}</option>
+              <option value="week">{t('orders.thisWeek')}</option>
+              <option value="month">{t('orders.thisMonth')}</option>
             </select>
           </div>
         </div>
@@ -271,7 +275,7 @@ function AdminOrdersView() {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-2">
                         <h3 className="text-foreground font-semibold text-base sm:text-lg">
-                          طلب #{orderItem._id.slice(-8)}
+                          {t('orders.orderNumber', { number: orderItem._id.slice(-8) })}
                         </h3>
                         {getStatusIcon(orderItem.orderStatus || 'pending')}
                         {getStatusBadge(orderItem.orderStatus || 'pending')}
@@ -280,7 +284,7 @@ function AdminOrdersView() {
                       <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                          <span>{orderItem.createdAt ? new Date(orderItem.createdAt).toLocaleDateString('ar-EG') : 
+                          <span>{orderItem.createdAt ? new Date(orderItem.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : 'en-US') : 
                                  orderItem.orderDate ? orderItem.orderDate.split("T")[0] : 'N/A'}</span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -291,14 +295,14 @@ function AdminOrdersView() {
                         </div>
                         <div className="flex items-center gap-2">
                           <Package className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                          <span>{orderItem.items?.length || orderItem.cartItems?.length || 0} منتج</span>
+                          <span>{orderItem.items?.length || orderItem.cartItems?.length || 0} {t('orders.products')}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-primary">طريقة الدفع: {orderItem.payment?.method || 'N/A'}</span>
+                          <span className="text-primary">{t('orders.paymentMethod')}: {orderItem.payment?.method || 'N/A'}</span>
                         </div>
                         {orderItem.payment?.method === 'Transfer' && orderItem.payment?.transferInfo && (
                           <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
-                            <span className="truncate">تحويل: {orderItem.payment.transferInfo.fullName}</span>
+                            <span className="truncate">{t('orders.transfer')}: {orderItem.payment.transferInfo.fullName}</span>
                           </div>
                         )}
                       </div>
@@ -311,8 +315,8 @@ function AdminOrdersView() {
                       className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold flex items-center gap-2 px-4 sm:px-6 py-2 text-xs sm:text-sm"
                     >
                       <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span className="hidden sm:inline">عرض التفاصيل</span>
-                      <span className="sm:hidden">عرض</span>
+                      <span className="hidden sm:inline">{t('orders.viewDetails')}</span>
+                      <span className="sm:hidden">{t('orders.view')}</span>
                     </Button>
                     
                     <DropdownMenu>
@@ -324,15 +328,15 @@ function AdminOrdersView() {
                       <DropdownMenuContent align="end" className="bg-popover border-border">
                         <DropdownMenuItem className="text-foreground hover:bg-green-500/10 dark:hover:bg-green-500/20">
                           <CheckCircle className="w-4 h-4 mr-2" />
-                          تأكيد الطلب
+                          {t('orders.confirmOrder')}
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-foreground hover:bg-yellow-500/10 dark:hover:bg-yellow-500/20">
                           <Clock className="w-4 h-4 mr-2" />
-                          وضع في الانتظار
+                          {t('orders.setPending')}
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-foreground hover:bg-red-500/10 dark:hover:bg-red-500/20">
                           <XCircle className="w-4 h-4 mr-2" />
-                          رفض الطلب
+                          {t('orders.rejectOrder')}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -343,8 +347,8 @@ function AdminOrdersView() {
           ) : (
             <div className="text-center py-12 bg-card border border-border rounded-xl">
               <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground mx-auto mb-4" />
-              <p className="text-foreground text-base sm:text-lg font-semibold mb-2">لا توجد طلبات</p>
-              <p className="text-muted-foreground text-sm">لم يتم العثور على طلبات تطابق الفلاتر المحددة</p>
+              <p className="text-foreground text-base sm:text-lg font-semibold mb-2">{t('orders.noOrdersFound')}</p>
+              <p className="text-muted-foreground text-sm">{t('orders.noOrdersMatchFilters')}</p>
             </div>
           )}
         </div>

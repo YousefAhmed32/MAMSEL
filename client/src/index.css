@@ -81,28 +81,50 @@
   animation: slideLeft 0.5s ease-out;
 }
 
+/* Premium Carousel 3D Perspective */
+.perspective-1000 {
+  perspective: 1200px;
+  perspective-origin: center center;
+}
+
+/* Smooth card appearance animation */
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(0) scale(0.8) rotateY(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1) rotateY(0deg);
+  }
+}
+
+.card-enter {
+  animation: cardSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
 @layer base {
   :root {
-    /* Light Mode - Perfume Store Theme */
+    /* Light Mode - Designer Clothing Store - Clean White Background */
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 0 0% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 45 100% 60%;
-    --primary-foreground: 240 100% 2%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 43 96% 56%; /* #D4AF37 */
+    --primary-foreground: 0 0% 10%;
+    --secondary: 0 0% 98%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 45 100% 60%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 43 96% 56%;
     --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -110,59 +132,59 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     
-    /* Custom Perfume Store Colors - Light Mode */
-    --navy-primary: 240 100% 2%;
-    --navy-secondary: 240 50% 8%;
-    --gold-primary: 45 100% 60%;
-    --gold-secondary: 45 80% 50%;
+    /* Custom Designer Store Colors - Light Mode */
+    --navy-primary: 0 0% 10%;
+    --navy-secondary: 0 0% 15%;
+    --gold-primary: 43 96% 56%; /* #D4AF37 */
+    --gold-secondary: 43 90% 50%;
     
     /* Light Mode Specific Colors */
-    --light-text-primary: 240 10% 3.9%;
-    --light-text-secondary: 240 5% 20%;
+    --light-text-primary: 0 0% 10%;
+    --light-text-secondary: 0 0% 30%;
     --light-card-bg: 0 0% 100%;
-    --light-card-border: 240 5.9% 90%;
-    --light-text-strong: 240 10% 1%;
-    --light-text-medium: 240 5% 15%;
+    --light-card-border: 0 0% 90%;
+    --light-text-strong: 0 0% 5%;
+    --light-text-medium: 0 0% 20%;
   }
 
   .dark {
-    /* Dark Mode - Navy Blue & Gold Theme */
-    --background: 240 100% 2%;
+    /* Dark Mode - Designer Clothing Store - Elegant Dark Background */
+    --background: 0 0% 6%;
     --foreground: 0 0% 98%;
-    --card: 240 50% 8%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 50% 8%;
+    --popover: 0 0% 8%;
     --popover-foreground: 0 0% 98%;
-    --primary: 45 100% 60%;
-    --primary-foreground: 240 100% 2%;
-    --secondary: 240 50% 8%;
+    --primary: 43 96% 56%; /* #D4AF37 */
+    --primary-foreground: 0 0% 6%;
+    --secondary: 0 0% 10%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 50% 8%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 50% 8%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 12%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 50% 8%;
-    --input: 240 50% 8%;
-    --ring: 45 100% 60%;
-    --chart-1: 45 100% 60%;
-    --chart-2: 240 50% 40%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 43 96% 56%;
+    --chart-1: 43 96% 56%;
+    --chart-2: 0 0% 40%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     
-    /* Custom Perfume Store Colors - Dark Mode */
-    --navy-primary: 240 100% 2%;
-    --navy-secondary: 240 50% 8%;
-    --gold-primary: 45 100% 60%;
-    --gold-secondary: 45 80% 50%;
+    /* Custom Designer Store Colors - Dark Mode */
+    --navy-primary: 0 0% 6%;
+    --navy-secondary: 0 0% 10%;
+    --gold-primary: 43 96% 56%; /* #D4AF37 */
+    --gold-secondary: 43 90% 50%;
     
     /* Dark Mode Specific Colors */
     --dark-text-primary: 0 0% 98%;
     --dark-text-secondary: 0 0% 85%;
-    --dark-card-bg: 240 50% 8%;
-    --dark-card-border: 240 50% 8%;
+    --dark-card-bg: 0 0% 8%;
+    --dark-card-border: 0 0% 15%;
     --dark-text-strong: 0 0% 100%;
     --dark-text-medium: 0 0% 90%;
   }
@@ -171,10 +193,13 @@
 @layer base {
   * {
     @apply border-border;
-    
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
   }
 }
 /* Remove caret, outline, and focus rings globally */
@@ -287,52 +312,67 @@ select,
   height: 0;
 }
 
-/* Perfume Store Custom Styles */
+/* Designer Clothing Store Custom Styles */
 @layer utilities {
   .glow-text {
-    text-shadow: 0 0 8px hsl(var(--primary) / 0.8);
+    text-shadow: 0 0 8px hsl(var(--primary) / 0.6);
   }
   
   .glow-gold {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.2);
   }
   
   .glow-navy {
-    box-shadow: 0 0 20px hsl(var(--navy-primary) / 0.5);
+    box-shadow: 0 0 20px hsl(var(--navy-primary) / 0.3);
   }
   
-  /* Light mode specific glow effects */
-  .light .glow-text {
-    text-shadow: 0 0 8px hsl(var(--primary) / 0.9);
+  /* Soft shadows for product cards - Light mode */
+  .light .luxury-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.02);
   }
   
-  .light .glow-gold {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.4);
+  .light .luxury-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.04);
   }
   
-  /* Dark mode specific glow effects */
-  .dark .glow-text {
-    text-shadow: 0 0 8px hsl(var(--primary) / 0.8);
+  /* Soft shadows for product cards - Dark mode */
+  .dark .luxury-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
   }
   
-  .dark .glow-gold {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  .dark .luxury-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(212, 175, 55, 0.1);
   }
   
   .luxury-gradient {
     background: hsl(var(--background));
+    transition: background-color 0.3s ease;
   }
   
-  /* Light mode specific gradient */
+  /* Light mode - Clean white background */
   .light .luxury-gradient {
-    background: linear-gradient(135deg, hsl(var(--light-card-bg)) 0%, hsl(var(--secondary)) 50%, hsl(var(--light-card-bg)) 100%);
+    background: hsl(var(--background));
     color: hsl(var(--light-text-strong));
   }
   
-  /* Dark mode specific gradient */
+  /* Dark mode - Elegant dark background */
   .dark .luxury-gradient {
-    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--navy-secondary)) 50%, hsl(var(--background)) 100%);
+    background: hsl(var(--background));
     color: hsl(var(--dark-text-strong));
+  }
+  
+  /* Luxury background utility */
+  .luxury-bg {
+    background: hsl(var(--background));
+    transition: background-color 0.3s ease;
+  }
+  
+  .light .luxury-bg {
+    background: #ffffff;
+  }
+  
+  .dark .luxury-bg {
+    background: #0f0f0f;
   }
   
   /* Light mode specific navy gradients */
@@ -381,6 +421,64 @@ select,
     }
   }
 
+  /* Best Selling Section Swiper Styles */
+  .best-selling-swiper {
+    padding: 20px 60px 40px 60px !important;
+  }
+
+  .best-selling-swiper .swiper-slide {
+    height: auto;
+  }
+
+  .swiper-button-prev-best,
+  .swiper-button-next-best {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .swiper-button-prev-best.swiper-button-disabled,
+  .swiper-button-next-best.swiper-button-disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .swiper-pagination-best {
+    position: relative !important;
+    margin-top: 2rem;
+  }
+
+  .swiper-pagination-best .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: hsl(var(--muted-foreground));
+    opacity: 0.5;
+    transition: all 0.3s ease;
+  }
+
+  .swiper-pagination-best .swiper-pagination-bullet-active {
+    background: #D4AF37;
+    opacity: 1;
+    width: 24px;
+    border-radius: 5px;
+  }
+
+  @media (max-width: 1024px) {
+    .best-selling-swiper {
+      padding: 20px 50px 40px 50px !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .best-selling-swiper {
+      padding: 10px 0 40px 0 !important;
+    }
+
+    .swiper-button-prev-best,
+    .swiper-button-next-best {
+      display: none !important;
+    }
+  }
+
   /* Mobile Carousel Styles */
   
 
@@ -402,36 +500,40 @@ select,
   }
   
   .perfume-card {
-    background: hsl(var(--card) / 0.95);
-    backdrop-filter: blur(10px);
-    border: none;
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
     color: hsl(var(--card-foreground));
+    transition: all 0.3s ease;
   }
   
   .perfume-card:hover {
-    box-shadow: 0 0 30px hsl(var(--primary) / 0.2);
+    transform: translateY(-2px);
   }
   
-  /* Light mode specific card styling */
+  /* Light mode specific card styling - Clean white with soft shadows */
   .light .perfume-card {
-    background: hsl(var(--light-card-bg) / 0.98);
-    border: none;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
     color: hsl(var(--light-text-strong));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.02);
   }
   
   .light .perfume-card:hover {
-    box-shadow: 0 0 30px hsl(var(--primary) / 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.04);
+    border-color: rgba(212, 175, 55, 0.2);
   }
   
-  /* Dark mode specific card styling */
+  /* Dark mode specific card styling - Elegant dark with soft shadows */
   .dark .perfume-card {
-    background: hsl(var(--dark-card-bg) / 0.95);
-    border: none;
+    background: hsl(var(--dark-card-bg));
+    border: 1px solid hsl(var(--dark-card-border));
     color: hsl(var(--dark-text-strong));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
   }
   
   .dark .perfume-card:hover {
-    box-shadow: 0 0 30px hsl(var(--primary) / 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 8px 32px rgba(0, 0, 0, 0.3);
+    border-color: rgba(212, 175, 55, 0.3);
   }
   
   .navy-bg {
@@ -601,19 +703,6 @@ select,
   animation: shimmer 2s infinite;
 }
 
-/* Featured Products Swiper Pagination Styles */
-
-/* ========== 🎯 CLEAN SOLUTION: Fix Button Click Issues ========== */
-
-/* 
-  المشكلة الأساسية: Swiper يضع طبقة تفاعلية فوق المحتوى للسحب
-  الحل: نسمح للـ Swiper بالسحب لكن نرفع الأزرار فوقه بـ z-index
-*/
-
-/* 1. Allow Swiper to be draggable BUT make sure buttons work */
-
-
-/* 6. Pagination should not block content */
 
 
 
@@ -622,8 +711,7 @@ select,
 
 
 
-/* 11. Fix navigation in /shop/home page */
-/* Ensure header navigation always works */
+
 header nav,
 header a,
 header button,
@@ -652,14 +740,7 @@ header label {
   touch-action: pan-y pinch-zoom;
 }
 
-/* Buttons and links in hero section */
-/* .luxury-bg button,
-.luxury-bg a {
-  pointer-events: auto !important;
-  position: relative;
-  z-index: 50;
-  touch-action: manipulation;
-} */
+
 
 /* Prevent any overlay from blocking clicks - BUT allow product sections */
 .luxury-bg > div:first-child [class*="overlay"],
@@ -710,13 +791,14 @@ header label {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #FFD700, #FFA500); /* gold gradient */
+  background: linear-gradient(180deg, #c9c9c9c8, #ffffff, #2d2a2d94,#958888); /* gold gradient */
   border-radius: 8px;
   border: 2px solid rgba(0,0,0,0.2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #FFC700, #FF8C00);
+  
+  background: linear-gradient(180deg, #303030,#c1c1c1, #9e9e9e,#958888);
 }
 
 /* Date input styling for dark/light mode support */

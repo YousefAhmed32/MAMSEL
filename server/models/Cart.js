@@ -7,7 +7,7 @@ const CartSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true
-        }, items: [
+        },         items: [
             {
                 productId: {
                     type: mongoose.Schema.Types.ObjectId,
@@ -18,6 +18,10 @@ const CartSchema = new mongoose.Schema(
                     type: Number,
                     required: true,
                     min: 1,
+                },
+                selectedSize: {
+                    type: String,
+                    default: null // For clothes products
                 }
             }
         ]

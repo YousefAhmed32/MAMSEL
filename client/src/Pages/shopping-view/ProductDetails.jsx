@@ -40,6 +40,7 @@ function ProductDetails() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showLightbox, setShowLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [selectedSize, setSelectedSize] = useState(null);
 
   useEffect(() => {
     if (productId) {
@@ -70,16 +71,27 @@ function ProductDetails() {
       return;
     }
 
+    // Validate size selection for Clothes
+    if (productDetails.category === "Clothes" && !selectedSize) {
+      toast({
+        title: "يرجى اختيار المقاس",
+        description: "يجب اختيار مقاس قبل إضافة المنتج إلى السلة",
+        variant: "destructive"
+      });
+      return;
+    }
+
     dispatch(addToCart({
       userId: user?.id,
       productId: productDetails._id,
-      quantity: quantity
+      quantity: quantity,
+      selectedSize: productDetails.category === "Clothes" ? selectedSize : null
     })).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
         toast({
           title: "تم إضافة المنتج إلى السلة",
-          description: `تم إضافة ${quantity} من ${productDetails.title} إلى السلة`
+          description: `تم إضافة ${quantity} من ${productDetails.title} ${selectedSize ? `- المقاس ${selectedSize}` : ''} إلى السلة`
         });
       }
     });
@@ -94,11 +106,22 @@ function ProductDetails() {
       return;
     }
 
+    // Validate size selection for Clothes
+    if (productDetails.category === "Clothes" && !selectedSize) {
+      toast({
+        title: "يرجى اختيار المقاس",
+        description: "يجب اختيار مقاس قبل الشراء",
+        variant: "destructive"
+      });
+      return;
+    }
+
     // إضافة المنتج إلى السلة ثم الانتقال إلى صفحة الدفع
     dispatch(addToCart({
       userId: user?.id,
       productId: productDetails._id,
-      quantity: quantity
+      quantity: quantity,
+      selectedSize: productDetails.category === "Clothes" ? selectedSize : null
     })).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
@@ -260,7 +283,7 @@ function ProductDetails() {
               </Button>
 
               {/* عداد الصور */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-full border border-luxury-gold/30 backdrop-blur-sm shadow-xl">
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-transparent text-white px-6 py-3 rounded-full border border-luxury-gold/30 backdrop-blur-sm shadow-xl">
                 <span className="text-luxury-gold font-bold">{lightboxIndex + 1}</span>
                 <span className="text-white/70 mx-2">/</span>
                 <span className="text-white">{images.length}</span>
@@ -408,7 +431,7 @@ function ProductDetails() {
 
                 {/* عداد الصور */}
                 {images.length > 1 && (
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/80 dark:bg-navy-950/90 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm border border-white/20 dark:border-luxury-gold/30">
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-transparent dark:bg-navy-950/90 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm border border-white/20 dark:border-luxury-gold/30">
                     {selectedImageIndex + 1} / {images.length}
                   </div>
                 )}
@@ -522,6 +545,35 @@ function ProductDetails() {
             {/* اختيار الكمية والأزرار */}
             {productDetails.totalStock > 0 && (
               <div className="space-y-6">
+                {/* اختيار المقاس للملابس */}
+                {productDetails.category === "Clothes" && productDetails.attributes?.sizes && (
+                  <div>
+                    <span className="text-gray-900 dark:text-white font-semibold mb-3 block">اختر المقاس:</span>
+                    <div className="flex flex-wrap gap-3">
+                      {productDetails.attributes.sizes.map((size) => {
+                        const isSelected = selectedSize === size;
+                        return (
+                          <button
+                            key={size}
+                            type="button"
+                            onClick={() => setSelectedSize(size)}
+                            className={`px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 border-2 ${
+                              isSelected
+                                ? "bg-luxury-gold text-navy-950 border-luxury-gold shadow-[0_0_15px_rgba(210,176,101,0.5)] scale-105"
+                                : "bg-white dark:bg-navy-900/80 border-gray-300 dark:border-luxury-gold/40 text-gray-700 dark:text-luxury-gold hover:border-luxury-gold hover:bg-luxury-gold/10"
+                            }`}
+                          >
+                            {size}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {!selectedSize && (
+                      <p className="text-red-500 text-sm mt-2">يرجى اختيار مقاس</p>
+                    )}
+                  </div>
+                )}
+
                 {/* اختيار الكمية */}
                 <div className="flex items-center gap-4">
                   <span className="text-gray-900 dark:text-white font-semibold">الكمية:</span>
@@ -615,115 +667,116 @@ function ProductDetails() {
 
         {/* الصف الثاني: المنتجات ذات الصلة */}
         {relatedProducts.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="space-y-8"
+  <motion.div
+    initial={{ opacity: 0, y: 40 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay: 0.5 }}
+    className="space-y-8"
+  >
+    <div className="text-center">
+      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">منتجات ذات صلة</h2>
+      <div className="w-24 h-1 bg-black dark:bg-white mx-auto rounded-full" />
+    </div>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {relatedProducts.map((product, index) => (
+        <motion.div
+          key={product._id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 * index }}
+        >
+          <Card
+            className="group bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+            onClick={() => navigate(`/shop/product/${product._id}`)}
           >
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">منتجات ذات صلة</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-luxury-gold to-luxury-gold/50 mx-auto rounded-full" />
-            </div>
+            {/* صورة المنتج */}
+            <div className="relative overflow-hidden h-[500px]">
+              <img
+                src={getProductImageUrl(product)}
+                alt={product.title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((product, index) => (
-                <motion.div
-                  key={product._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 * index }}
+              {/* Action Buttons */}
+              <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="bg-white dark:bg-gray-800 border border-gray-400 dark:border-gray-600 text-black dark:text-white hover:bg-gray-900 hover:text-white transition-all duration-300"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/shop/product/${product._id}`);
+                  }}
+                  title="عرض التفاصيل"
                 >
-                  <Card className="group bg-white dark:bg-navy-950/80 border-2 border-gray-200 dark:border-luxury-gold/40 rounded-2xl overflow-hidden hover:border-luxury-gold dark:hover:border-luxury-gold hover:shadow-2xl dark:shadow-luxury-gold/20 dark:hover:shadow-luxury-gold/40 transition-all duration-300 cursor-pointer transform hover:-translate-y-2 backdrop-blur-sm"
-                    onClick={() => navigate(`/shop/product/${product._id}`)}
-                  >
-                    {/* صورة المنتج */}
-                    <div className="relative overflow-hidden h-64">
-                      <img
-                        src={getProductImageUrl(product)}
-                        alt={product.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
+                  <Eye className="w-4 h-4" />
+                </Button>
+                <RelatedProductWishlistButton product={product} />
+              </div>
 
-                      {/* Action Buttons - Eye and Heart */}
-                      <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-10">
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="bg-luxury-gold/95 dark:bg-luxury-gold border-luxury-gold text-navy-950 hover:bg-luxury-gold hover:scale-110 shadow-xl hover:shadow-2xl dark:shadow-luxury-gold/30 dark:hover:shadow-luxury-gold/50 transition-all duration-300"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/shop/product/${product._id}`);
-                          }}
-                          title="عرض التفاصيل"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <RelatedProductWishlistButton product={product} />
-                      </div>
-
-                      {/* شارة الخصم */}
-                      {product.salePrice && product.salePrice < product.price && (
-                        <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
-                          خصم
-                        </div>
-                      )}
-                    </div>
-
-                    {/* معلومات المنتج */}
-                    <CardContent className="p-6 space-y-4 bg-white dark:bg-navy-950/60">
-                      <div>
-                        <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1 group-hover:text-luxury-gold transition-colors duration-300 line-clamp-1">
-                          {product.title}
-                        </h3>
-                        {product.brand && (
-                          <p className="text-luxury-gold dark:text-luxury-gold text-xs uppercase tracking-wider font-semibold">
-                            {typeof product.brand === 'object' ? product.brand.name : product.brand}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* التقييم */}
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1 bg-gray-100 dark:bg-navy-900/50 px-2 py-1 rounded-lg">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-4 h-4 ${i < 4 ? 'text-luxury-gold fill-current' : 'text-gray-300 dark:text-gray-600'
-                                }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-gray-600 dark:text-white/70 text-xs font-semibold">(4.0)</span>
-                      </div>
-
-                      {/* السعر */}
-                      <div className="flex items-center gap-2 bg-gray-50 dark:bg-navy-900/40 p-3 rounded-lg border border-gray-200 dark:border-luxury-gold/20">
-                        {product.salePrice && product.salePrice < product.price ? (
-                          <>
-                            <span className="text-2xl font-bold text-luxury-gold drop-shadow-sm">
-                              ${product.salePrice}
-                            </span>
-                            <span className="text-gray-500 dark:text-gray-400 line-through text-sm">
-                              ${product.price}
-                            </span>
-                            <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
-                              خصم {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
-                            </span>
-                          </>
-                        ) : (
-                          <span className="text-2xl font-bold text-luxury-gold drop-shadow-sm">
-                            ${product.price}
-                          </span>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+              {/* شارة الخصم */}
+              {product.salePrice && product.salePrice < product.price && (
+                <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow">
+                  خصم
+                </div>
+              )}
             </div>
-          </motion.div>
-        )}
+
+            {/* معلومات المنتج */}
+            <CardContent className="p-6 space-y-4 bg-white dark:bg-black">
+              <div>
+                <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1">
+                  {product.title}
+                </h3>
+                {product.brand && (
+                  <p className="text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider font-semibold">
+                    {typeof product.brand === 'object' ? product.brand.name : product.brand}
+                  </p>
+                )}
+              </div>
+
+              {/* التقييم */}
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-900/50 px-2 py-1 rounded-lg">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${i < 4 ? 'text-black dark:text-white fill-current' : 'text-gray-300 dark:text-gray-600'}`}
+                    />
+                  ))}
+                </div>
+                <span className="text-gray-600 dark:text-white/70 text-xs font-semibold">(4.0)</span>
+              </div>
+
+              {/* السعر */}
+              <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-900/40 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                {product.salePrice && product.salePrice < product.price ? (
+                  <>
+                    <span className="text-2xl font-bold text-black dark:text-white">
+                      ${product.salePrice}
+                    </span>
+                    <span className="text-gray-500 dark:text-gray-400 line-through text-sm">
+                      ${product.price}
+                    </span>
+                    <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                      خصم {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-2xl font-bold text-black dark:text-white">
+                    ${product.price}
+                  </span>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      ))}
+    </div>
+  </motion.div>
+)}
+
       </div>
 
       {/* Lightbox */}

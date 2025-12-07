@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ThemeToggle } from "../ui/theme-toggle";
 import NotificationSystem from "../ui/notification-system";
 import OrderNotifications from "../ui/order-notifications";
+import LanguageSwitcher from "./language-switcher";
 import { useState, useEffect, useRef } from "react";
 import { getAllUsers } from "@/store/admin/users-slice";
 import { getAllOrdersForAdmin } from "@/store/admin/order-slice.js";
@@ -18,11 +19,14 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useTranslation } from "react-i18next";
 
 function AdminHeader({ setOpen }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { user } = useSelector((state) => state.auth);
   const { orderList } = useSelector((state) => state.adminOrder);
   const { couponList } = useSelector((state) => state.adminCoupon);
@@ -45,10 +49,8 @@ function AdminHeader({ setOpen }) {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Clear any local storage
       localStorage.clear();
       sessionStorage.clear();
-      // Navigate to home page and reload to ensure clean state
       window.location.href = "/";
     }
   }
@@ -60,25 +62,34 @@ function AdminHeader({ setOpen }) {
   function getPageTitle() {
     const path = location.pathname;
     const titles = {
-      '/admin/dashboard': 'لوحة التحكم',
-      '/admin/analysis': 'التحليلات',
-      '/admin/banners': 'إدارة البنرات',
-      '/admin/products': 'إدارة المنتجات',
-      '/admin/orders': 'إدارة الطلبات',
-      '/admin/users': 'إدارة المستخدمين',
-      '/admin/coupon': 'إدارة الكوبونات',
+      '/admin/dashboard': t('header.pageTitles.dashboard'),
+      '/admin/analysis': t('header.pageTitles.analysis'),
+      '/admin/banners': t('header.pageTitles.banners'),
+      '/admin/products': t('header.pageTitles.products'),
+      '/admin/orders': t('header.pageTitles.orders'),
+      '/admin/users': t('header.pageTitles.users'),
+      '/admin/coupon': t('header.pageTitles.coupon'),
+      '/admin/brands': t('header.pageTitles.brands'),
     };
-    return titles[path] || 'لوحة التحكم';
+    return titles[path] || t('header.pageTitles.dashboard');
+  }
+
+  // Helper function to get initials
+  function getInitials(userName) {
+    if (!userName) return "AD";
+    const nameStr = String(userName).trim();
+    if (!nameStr || nameStr.length === 0) return "AD";
+    const chars = Array.from(nameStr);
+    if (chars.length === 0) return "AD";
+    return chars.slice(0, 2).join("").toUpperCase() || "AD";
   }
 
   // Load orders and coupons when search opens
   useEffect(() => {
     if (isSearchOpen) {
-      // Fetch orders if not loaded
       if (!orderList || orderList.length === 0) {
         dispatch(getAllOrdersForAdmin());
       }
-      // Fetch coupons if not loaded
       if (!couponList || couponList.length === 0) {
         dispatch(fetchAllCoupons());
       }
@@ -95,12 +106,10 @@ function AdminHeader({ setOpen }) {
 
     setIsSearching(true);
 
-    // Clear previous timeout
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
 
-    // Debounce search
     searchTimeoutRef.current = setTimeout(async () => {
       try {
         const query = searchQuery.trim().toLowerCase();
@@ -120,7 +129,6 @@ function AdminHeader({ setOpen }) {
             })
           );
           
-          // Handle different response formats
           if (productsResponse.payload) {
             const payload = productsResponse.payload;
             if (payload.success && payload.data && Array.isArray(payload.data)) {
@@ -133,7 +141,6 @@ function AdminHeader({ setOpen }) {
           }
         } catch (error) {
           console.error('Error searching products:', error);
-          // Fallback to direct API call if dispatch fails
           try {
             const productsResponse = await axios.get(
               `${import.meta.env.VITE_API_URL}/api/shop/search/${encodeURIComponent(query)}`,
@@ -149,7 +156,7 @@ function AdminHeader({ setOpen }) {
           }
         }
 
-        // Search Orders (from local state or fetch if needed)
+        // Search Orders
         const currentOrderList = orderList || [];
         if (currentOrderList.length > 0) {
           results.orders = currentOrderList
@@ -179,7 +186,7 @@ function AdminHeader({ setOpen }) {
           console.error('Error searching users:', error);
         }
 
-        // Search Coupons (from local state)
+        // Search Coupons
         const currentCouponList = couponList || [];
         if (currentCouponList.length > 0) {
           results.coupons = currentCouponList
@@ -213,7 +220,6 @@ function AdminHeader({ setOpen }) {
     switch (type) {
       case 'product':
         navigate(`/admin/products`);
-        // You can add logic to highlight the product in the products page
         break;
       case 'order':
         navigate(`/admin/orders`);
@@ -235,70 +241,75 @@ function AdminHeader({ setOpen }) {
                       searchResults.coupons.length;
 
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between px-3 sm:px-4 md:px-6 py-3 bg-background/95 dark:bg-background/95 backdrop-blur-xl border-b border-border shadow-sm">
-      <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+    <header className="sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50 shadow-sm">
+      {/* Left Section */}
+      <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
         <Button
           onClick={() => setOpen(true)}
           variant="ghost"
           size="icon"
-          className="lg:hidden h-9 w-9 hover:bg-primary/10 dark:hover:bg-primary/20"
+          className="lg:hidden h-10 w-10 hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/20 transition-all duration-200 hover:scale-110"
         >
           <AlignJustify className="w-5 h-5" />
           <span className="sr-only">Toggle Menu</span>
         </Button>
         
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="flex items-center gap-3 min-w-0">
           <Button
             onClick={() => navigate('/admin/dashboard')}
             variant="ghost"
             size="icon"
-            className="h-9 w-9 hover:bg-primary/10 dark:hover:bg-primary/20 hidden sm:flex"
+            className="h-10 w-10 hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/20 transition-all duration-200 hover:scale-110 hidden sm:flex"
           >
             <Home className="w-4 h-4" />
           </Button>
           
           <div className="hidden md:block min-w-0">
-            <h1 className="text-lg sm:text-xl font-bold text-foreground truncate">{getPageTitle()}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
+              {getPageTitle()}
+            </h1>
           </div>
           
-          {/* Mobile title */}
           <div className="md:hidden">
-            <h1 className="text-base font-bold text-foreground truncate max-w-[120px]">{getPageTitle()}</h1>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[140px]">
+              {getPageTitle()}
+            </h1>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-1 sm:gap-2 md:gap-4 flex-shrink-0">
+      {/* Right Section */}
+      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
         {/* Search */}
         <DropdownMenu open={isSearchOpen} onOpenChange={setIsSearchOpen}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="relative h-9 w-full sm:w-[200px] md:w-[300px] justify-start text-sm text-muted-foreground border-border hover:bg-muted"
+              className="relative h-10 w-full sm:w-[240px] md:w-[320px] justify-start text-sm text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:border-[#D4AF37]/50 dark:hover:border-[#D4AF37]/50 transition-all duration-200 group"
               onClick={() => {
                 setIsSearchOpen(true);
                 setTimeout(() => searchInputRef.current?.focus(), 100);
               }}
             >
-              <Search className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">ابحث عن منتج، طلب، مستخدم...</span>
-              <span className="sm:hidden">بحث</span>
+              <Search className="mr-2 h-4 w-4 group-hover:text-[#D4AF37] transition-colors" />
+              <span className="hidden sm:inline">{t('header.search.placeholder')}</span>
+              <span className="sm:hidden">{t('header.search.placeholderMobile')}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent 
-            className="w-[90vw] sm:w-[400px] md:w-[500px] p-0 max-h-[500px] overflow-y-auto" 
+            className="w-[90vw] sm:w-[420px] md:w-[520px] p-0 max-h-[500px] overflow-y-auto bg-white dark:bg-[#0f0f0f] border-gray-200 dark:border-gray-800 shadow-xl" 
             align="end"
             sideOffset={5}
           >
-            <div className="p-2 border-b border-border">
+            <div className="p-3 border-b border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
               <div className="relative">
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500 z-10 pointer-events-none" />
                 <Input
                   ref={searchInputRef}
-                  placeholder="ابحث عن منتج، طلب، مستخدم، أو كوبون..."
+                  placeholder={t('header.search.placeholderFull')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-10 bg-background border-border text-foreground"
+                  className="h-10 bg-white dark:bg-[#0a0a0a] border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20 transition-all"
                   style={{ 
                     paddingRight: '2.5rem', 
                     paddingLeft: searchQuery ? '2.5rem' : '0.75rem' 
@@ -308,7 +319,7 @@ function AdminHeader({ setOpen }) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 h-7 w-7 z-20 hover:bg-muted rounded-full"
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 h-7 w-7 z-20 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
@@ -316,7 +327,6 @@ function AdminHeader({ setOpen }) {
                       setTimeout(() => searchInputRef.current?.focus(), 50);
                     }}
                     type="button"
-                    title="مسح البحث"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -326,38 +336,38 @@ function AdminHeader({ setOpen }) {
             
             <div className="p-2">
               {isSearching ? (
-                <div className="flex items-center justify-center py-6">
-                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                  <span className="mr-2 text-muted-foreground">جاري البحث...</span>
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-5 w-5 animate-spin text-[#D4AF37]" />
+                  <span className="mr-2 text-gray-500 dark:text-gray-400">{t('header.search.searching')}</span>
                 </div>
               ) : searchQuery.trim().length < 2 ? (
-                <div className="py-6 text-center text-sm text-muted-foreground">
-                  ابدأ الكتابة للبحث (حد أدنى حرفين)
+                <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                  {t('header.search.minChars')}
                 </div>
               ) : totalResults === 0 ? (
-                <div className="py-6 text-center text-sm text-muted-foreground">
-                  لم يتم العثور على نتائج
+                <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                  {t('header.search.noResults')}
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-1">
                   {/* Products Results */}
                   {searchResults.products.length > 0 && (
                     <div>
-                      <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                        المنتجات ({searchResults.products.length})
+                      <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        {t('header.search.products')} ({searchResults.products.length})
                       </div>
                       {searchResults.products.map((product) => (
                         <div
                           key={product._id}
                           onClick={() => handleResultClick('product', product)}
-                          className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-all duration-200 group"
                         >
-                          <Package className="h-4 w-4 text-primary flex-shrink-0" />
+                          <Package className="h-4 w-4 text-[#D4AF37] flex-shrink-0 group-hover:scale-110 transition-transform" />
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-foreground truncate">{product.title || product.name}</div>
-                            <div className="text-xs text-muted-foreground truncate">{product.category}</div>
+                            <div className="font-medium text-gray-900 dark:text-white truncate">{product.title || product.name}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{product.category}</div>
                           </div>
-                          <div className="text-sm font-semibold text-primary flex-shrink-0">${product.price}</div>
+                          <div className="text-sm font-semibold text-[#D4AF37] flex-shrink-0">${product.price}</div>
                         </div>
                       ))}
                     </div>
@@ -366,21 +376,21 @@ function AdminHeader({ setOpen }) {
                   {/* Orders Results */}
                   {searchResults.orders.length > 0 && (
                     <div>
-                      <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                        الطلبات ({searchResults.orders.length})
+                      <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        {t('header.search.orders')} ({searchResults.orders.length})
                       </div>
                       {searchResults.orders.map((order) => (
                         <div
                           key={order._id}
                           onClick={() => handleResultClick('order', order)}
-                          className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-all duration-200 group"
                         >
-                          <ShoppingCart className="h-4 w-4 text-primary flex-shrink-0" />
+                          <ShoppingCart className="h-4 w-4 text-[#D4AF37] flex-shrink-0 group-hover:scale-110 transition-transform" />
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-foreground truncate">
-                              طلب #{order._id?.toString().slice(-8)}
+                            <div className="font-medium text-gray-900 dark:text-white truncate">
+                              {t('header.search.order')} #{order._id?.toString().slice(-8)}
                             </div>
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
                               {order.orderStatus || 'pending'} • ${order.totalAmount || order.total || 0}
                             </div>
                           </div>
@@ -392,21 +402,21 @@ function AdminHeader({ setOpen }) {
                   {/* Users Results */}
                   {searchResults.users.length > 0 && (
                     <div>
-                      <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                        المستخدمين ({searchResults.users.length})
+                      <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        {t('header.search.users')} ({searchResults.users.length})
                       </div>
-                      {searchResults.users.map((user) => (
+                      {searchResults.users.map((userItem) => (
                         <div
-                          key={user._id}
-                          onClick={() => handleResultClick('user', user)}
-                          className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                          key={userItem._id}
+                          onClick={() => handleResultClick('user', userItem)}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-all duration-200 group"
                         >
-                          <Users className="h-4 w-4 text-primary flex-shrink-0" />
+                          <Users className="h-4 w-4 text-[#D4AF37] flex-shrink-0 group-hover:scale-110 transition-transform" />
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-foreground truncate">{user.userName || user.name || user.email}</div>
-                            <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+                            <div className="font-medium text-gray-900 dark:text-white truncate">{userItem.userName || userItem.name || userItem.email}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{userItem.email}</div>
                           </div>
-                          <div className="text-xs text-muted-foreground flex-shrink-0">{user.role || 'user'}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">{userItem.role || 'user'}</div>
                         </div>
                       ))}
                     </div>
@@ -415,19 +425,19 @@ function AdminHeader({ setOpen }) {
                   {/* Coupons Results */}
                   {searchResults.coupons.length > 0 && (
                     <div>
-                      <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         الكوبونات ({searchResults.coupons.length})
                       </div>
                       {searchResults.coupons.map((coupon) => (
                         <div
                           key={coupon._id}
                           onClick={() => handleResultClick('coupon', coupon)}
-                          className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-all duration-200 group"
                         >
-                          <Ticket className="h-4 w-4 text-primary flex-shrink-0" />
+                          <Ticket className="h-4 w-4 text-[#D4AF37] flex-shrink-0 group-hover:scale-110 transition-transform" />
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-foreground truncate">{coupon.code}</div>
-                            <div className="text-xs text-muted-foreground">
+                            <div className="font-medium text-gray-900 dark:text-white truncate">{coupon.code}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
                               {coupon.discountType === 'percent' ? `${coupon.amount}%` : `$${coupon.amount}`}
                             </div>
                           </div>
@@ -441,18 +451,24 @@ function AdminHeader({ setOpen }) {
           </DropdownMenuContent>
         </DropdownMenu>
 
+        {/* Refresh Button */}
         <Button
           onClick={handleRefresh}
           variant="ghost"
           size="icon"
-          className="h-9 w-9 hover:bg-primary/10 dark:hover:bg-primary/20"
-          title="تحديث"
+          className="h-10 w-10 hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/20 transition-all duration-200 hover:scale-110"
+          title={t('header.refresh')}
         >
           <RefreshCw className="w-4 h-4" />
         </Button>
 
-        <ThemeToggle />
+        {/* Language Switcher */}
+        {/* <LanguageSwitcher /> */}
+
+        {/* Theme Toggle */}
+        {/* <ThemeToggle /> */}
         
+        {/* Notifications */}
         <div className="hidden sm:block">
           <NotificationSystem />
         </div>
@@ -461,27 +477,37 @@ function AdminHeader({ setOpen }) {
           <OrderNotifications />
         </div>
         
+        {/* Settings */}
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 hover:bg-primary/10 dark:hover:bg-primary/20 hidden md:flex"
-          title="الإعدادات"
+          className="h-10 w-10 hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/20 transition-all duration-200 hover:scale-110 hidden md:flex"
+          title={t('header.settings')}
         >
           <Settings className="w-5 h-5" />
         </Button>
 
-        <div className="hidden xl:flex items-center gap-2 text-muted-foreground">
-          <span className="text-sm whitespace-nowrap">مرحباً، {user?.userName}</span>
+        {/* User Avatar */}
+        <div className="hidden xl:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-gray-100/50 dark:bg-gray-800/50">
+          <Avatar className="h-8 w-8 border-2 border-[#D4AF37]/30">
+            <AvatarFallback className="bg-[#D4AF37]/10 dark:bg-[#D4AF37]/20 text-[#D4AF37] font-semibold text-xs">
+              {getInitials(user?.userName)}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+            {user?.userName || 'Admin'}
+          </span>
         </div>
 
+        {/* Logout Button */}
         <Button
           onClick={handleLogout}
           variant="destructive"
           size="sm"
-          className="hidden sm:inline-flex gap-2 items-center h-9 px-3 sm:px-4 text-sm"
+          className="hidden sm:inline-flex gap-2 items-center h-10 px-4 text-sm hover:scale-105 transition-all duration-200"
         >
           <LogOut className="w-4 h-4" />
-          <span className="hidden md:inline">تسجيل الخروج</span>
+          <span className="hidden md:inline">{t('header.logout')}</span>
         </Button>
         
         {/* Mobile logout button */}
@@ -489,8 +515,8 @@ function AdminHeader({ setOpen }) {
           onClick={handleLogout}
           variant="destructive"
           size="icon"
-          className="sm:hidden h-9 w-9"
-          title="تسجيل الخروج"
+          className="sm:hidden h-10 w-10"
+          title={t('header.logout')}
         >
           <LogOut className="w-4 h-4" />
         </Button>

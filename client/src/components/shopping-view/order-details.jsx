@@ -156,7 +156,7 @@ function ShoppingOrderDetailsView({ orderDetails }) {
               <CardContent className="p-0">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-purple-500/20">
-                    <Package className="w-5 h-5 text-purple-400" />
+                    <Package className="w-5 h-5 text-pink-500 dark:text-pink-400" />
                   </div>
                   <div>
                     <p className="text-gold-300 text-sm">عدد المنتجات</p>
@@ -173,7 +173,7 @@ function ShoppingOrderDetailsView({ orderDetails }) {
           <Card className="perfume-card">
             <CardHeader className="border-b border-white/10">
               <CardTitle className="text-white flex items-center gap-2">
-                <Package className="w-5 h-5 text-gold-950" />
+                <Package className="w-5 h-5 text-pink-500 dark:text-pink-400" />
                 منتجات الطلب
               </CardTitle>
             </CardHeader>
@@ -199,7 +199,7 @@ function ShoppingOrderDetailsView({ orderDetails }) {
                                 }}
                               />
                             ) : (
-                              <Package className="w-8 h-8 text-gold-500" />
+                              <Package className="w-8 h-8 text-pink-500 dark:text-pink-400" />
                             )}
                           </div>
                           <div>

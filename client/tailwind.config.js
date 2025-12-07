@@ -7,6 +7,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'serif': ['Playfair Display', 'serif'],
+        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
       borderRadius: {
         'lg': 'var(--radius)',
         'md': 'calc(var(--radius) - 2px)',
@@ -26,7 +30,7 @@ export default {
           700: '#4338ca',
           800: '#3730a3',
           900: '#312e81',
-          950: '#000012', // Navy Blue - Main background
+          950: '#0a0a0f', // Dark elegant background
         },
         gold: {
           50: '#fffbeb',
@@ -39,17 +43,17 @@ export default {
           700: '#b45309',
           800: '#92400e',
           900: '#78350f',
-          950: '#D2B065', // Luxury Gold - Accent color
+          950: '#D4AF37', // Luxury Gold - Designer clothing store
         },
-        // Luxury theme colors
+        // Luxury theme colors - Updated for designer clothing store
         'luxury-gold': {
-          DEFAULT: '#D2B065',
-          'light': '#E6C884',
-          'dark': '#B8965A',
+          DEFAULT: '#D4AF37',
+          'light': '#E5C158',
+          'dark': '#B8942A',
         },
         'luxury-navy': {
-          DEFAULT: '#000012',
-          'light': '#1a1a2e',
+          DEFAULT: '#0a0a0f',
+          'light': '#1a1a24',
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

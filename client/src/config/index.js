@@ -142,42 +142,32 @@
   export const shoppingViewHeaderMenuItem = [
     {
       id : 'home',
-      label:'الرئيسية',
+      label:'Home',
       path : '/shop/home'
     },
-       {
+    {
       id : 'products',
-      label:'المنتجات',
+      label:'Mamsel couture',
       path : '/shop/listing'
     },
-    //  {
-    //   id : 'men',
-    //   label:'رجالي',
-    //   path : '/shop/listing'
-    // },
-    // {
-    //   id : 'women',
-    //   label:'نسائي',
-    //   path : '/shop/listing'
-    // },
-    // {
-    //   id : 'kids',
-    //   label:'أطفال',
-    //   path : '/shop/listing'
-    // },
-    // {
-    //   id : 'footwear',
-    //   label:'أحذية',
-    //   path : '/shop/listing'
-    // },
-    // {
-    //   id : 'accessories',
-    //   label:'إكسسوارات',
-    //   path : '/shop/listing'
-    // },
+    {
+      id : 'corset',
+      label:'Corset',
+      path : '/shop/collection/corset'
+    },
+    {
+      id : 'ramadan',
+      label:'Ramadan Collection',
+      path : '/shop/collection/ramadan'
+    },
+    {
+      id : 'giveaways',
+      label:'Giveaways',
+      path : '/shop/collection/giveaways'
+    },
     {
       id : 'search',
-      label:'بحث',
+      label:'search',
       path : '/shop/search'
     },
   ]
