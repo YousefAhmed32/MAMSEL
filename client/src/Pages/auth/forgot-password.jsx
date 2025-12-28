@@ -58,7 +58,7 @@ function ForgotPassword() {
               <div className="relative">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#E5C158] flex items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.3)]">
                   <img 
-                    src="/assets/logo3.png" 
+                    src="/assets/logo-c.png" 
                     alt="MAMSEL" 
                     className="w-12 h-12 object-cover rounded-full"
                   />
@@ -132,7 +132,7 @@ function ForgotPassword() {
                 className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-[#D4AF37] transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>العودة إلى تسجيل الدخول</span>
+                <span>Back to Login</span>
               </Link>
             </div>
           </div>

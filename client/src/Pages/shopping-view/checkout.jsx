@@ -194,15 +194,15 @@ function ShoppingCheckout() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-              إتمام الطلب
+              Complete order
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-              خطوة أخيرة للحصول على طلبك
+              Last step to get your order
             </p>
           </div>
           <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
             <span className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full font-medium">
-              {cartItems?.items?.length || 0} منتج
+              {cartItems?.items?.length || 0} Product
             </span>
           </div>
         </div>
@@ -210,7 +210,7 @@ function ShoppingCheckout() {
     </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+       
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Progress Steps */}
@@ -222,9 +222,9 @@ function ShoppingCheckout() {
             >
               <div className="flex items-center justify-between">
                 {[
-                  { icon: ShoppingBag, label: "السلة", completed: true, step: 1 },
-                  { icon: MapPin, label: "العنوان", completed: !!currentSelectedAddress, step: 2 },
-                  { icon: CreditCard, label: "الدفع", completed: false, step: 3 }
+                  { icon: ShoppingBag, label: "Cart", completed: true, step: 1 },
+                  { icon: MapPin, label: "Address", completed: !!currentSelectedAddress, step: 2 },
+                  { icon: CreditCard, label: "Payment", completed: false, step: 3 }
                 ].map((step, index) => (
                   <div key={index} className="flex items-center flex-1">
                     <div className="flex flex-col items-center flex-1">
@@ -272,10 +272,10 @@ function ShoppingCheckout() {
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-                    عنوان التسليم
+                    Delivery address
                   </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    اختر عنوان التسليم المفضل لديك
+                    Choose your preferred delivery address
                   </p>
                 </div>
               </div>
@@ -298,10 +298,10 @@ function ShoppingCheckout() {
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-                    عناصر الطلب
+                    Order items
                   </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    {cartItems?.items?.length || 0} منتج في السلة
+                    {cartItems?.items?.length || 0} Product in the cart
                   </p>
                 </div>
               </div>
@@ -320,7 +320,7 @@ function ShoppingCheckout() {
                 ) : (
                   <div className="text-center py-12">
                     <ShoppingBag className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-700" />
-                    <p className="text-gray-500 dark:text-gray-400">السلة فارغة</p>
+                    <p className="text-gray-500 dark:text-gray-400">The cart is empty</p>
                   </div>
                 )}
               </div>
@@ -331,55 +331,10 @@ function ShoppingCheckout() {
           </div>
 
           {/* Right Column - Order Summary */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 space-y-6">
-              {/* Coupon Section */}
-              {/* <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm transition-colors duration-300"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 rounded-lg bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 border border-pink-200 dark:border-pink-800/30">
-                    <Tag className="w-5 h-5 text-pink-600 dark:text-pink-400" />
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">كود الخصم</h3>
-                </div>
-                <div className="space-y-3">
-                  <div className="relative">
-                    <input
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value)}
-                      placeholder="أدخل كود الخصم"
-                      className="w-full p-3.5 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 dark:focus:border-pink-500 transition-all"
-                    />
-                    {couponCode && (
-                      <Sparkles className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-pink-500" />
-                    )}
-                  </div>
-                  <Button 
-                    onClick={handleApplyCoupon}
-                    disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-semibold py-3.5 text-sm shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isLoading ? (
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 animate-spin" />
-                        جاري التحقق...
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <Zap className="w-4 h-4" />
-                        تطبيق الخصم
-                      </div>
-                    )}
-                  </Button>
-                </div>
-              </motion.div> */}
-
-             
-               <motion.div 
+        
+          
+       
+        <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
@@ -391,19 +346,19 @@ function ShoppingCheckout() {
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-                    طريقة الدفع
+                    Payment method
                   </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    اختر طريقة الدفع المناسبة
+                    Choose the appropriate payment method
                   </p>
                 </div>
               </div>
               
               <div className="space-y-3">
                 {[
-                  { value: "COD", icon: Banknote, label: "الدفع عند الاستلام", desc: "ادفع عند استلام الطلب" },
+                  { value: "COD", icon: Banknote, label: "Payment on delivery", desc: "Pay on delivery" },
                   // { value: "Free Sample", icon: Gift, label: "تجربة مجانية", desc: "للعينات المجانية فقط" },
-                  { value: "Transfer", icon: CreditCard, label: "تحويل بنكي / عبر الهاتف", desc: "تحويل مباشر" }
+                  { value: "Transfer", icon: CreditCard, label: "Bank transfer / Phone transfer", desc: "Direct transfer" }
                 ].map((method) => (
                   <motion.label
                     key={method.value}
@@ -461,11 +416,11 @@ function ShoppingCheckout() {
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium uppercase tracking-wider">رقم الهاتف</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium uppercase tracking-wider">Phone number</p>
                       <p className="text-gray-900 dark:text-white font-semibold text-base">01012345678</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium uppercase tracking-wider">رقم الحساب البنكي</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium uppercase tracking-wider">Bank account number</p>
                       <p className="text-gray-900 dark:text-white font-semibold text-base">1234567890123456</p>
                     </div>
                   </div>
@@ -473,13 +428,13 @@ function ShoppingCheckout() {
                   <div>
                     <label className="text-gray-900 dark:text-white font-semibold mb-2 block flex items-center gap-2 text-sm">
                       <Star className="w-4 h-4 text-pink-600 dark:text-pink-400" />
-                      الاسم الكامل
+                        Full name
                     </label>
                     <input
                       type="text"
                       value={transferFullName}
                       onChange={(e) => setTransferFullName(e.target.value)}
-                      placeholder="أدخل الاسم الكامل كما هو في التحويل"
+                      placeholder="Enter the full name as it appears in the transfer"
                       className="w-full p-3.5 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 dark:focus:border-pink-500 transition-all"
                     />
                   </div>
@@ -487,13 +442,13 @@ function ShoppingCheckout() {
                   <div>
                     <label className="text-gray-900 dark:text-white font-semibold mb-2 block flex items-center gap-2 text-sm">
                       <Star className="w-4 h-4 text-pink-600 dark:text-pink-400" />
-                      المبلغ المحوّل
+                      Transfer amount
                     </label>
                     <input
                       type="number"
                       value={transferAmount}
                       onChange={(e) => setTransferAmount(e.target.value)}
-                      placeholder="أدخل المبلغ المحوّل"
+                      placeholder="Enter the transfer amount"
                       className="w-full p-3.5 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 dark:focus:border-pink-500 transition-all"
                     />
                   </div>
@@ -501,7 +456,7 @@ function ShoppingCheckout() {
                   <div>
                     <label className="text-gray-900 dark:text-white font-semibold mb-2 block flex items-center gap-2 text-sm">
                       <Upload className="w-4 h-4 text-pink-600 dark:text-pink-400" />
-                      صورة التحويل
+                      Transfer proof
                     </label>
                     {transferImagePreview ? (
                       <div className="relative group">
@@ -521,8 +476,8 @@ function ShoppingCheckout() {
                     ) : (
                       <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:border-pink-400 dark:hover:border-pink-600 transition-all duration-200 group">
                         <Upload className="w-10 h-10 text-gray-400 dark:text-gray-600 mb-3 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors" />
-                        <span className="text-gray-600 dark:text-gray-400 text-sm font-medium">اضغط لرفع صورة التحويل</span>
-                        <span className="text-gray-400 dark:text-gray-600 text-xs mt-1">PNG, JPG حتى 5MB</span>
+                          <span className="text-gray-600 dark:text-gray-400 text-sm font-medium">Click to upload the transfer proof</span>
+                        <span className="text-gray-400 dark:text-gray-600 text-xs mt-1">PNG, JPG up to 5MB</span>
                         <input
                           type="file"
                           accept="image/*"
@@ -539,6 +494,56 @@ function ShoppingCheckout() {
 
 
             </motion.div>
+
+            <div className="lg:col-span-1">
+            <div className="sticky top-24 space-y-6">
+              {/* Coupon Section */}
+              {/* <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm transition-colors duration-300"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2.5 rounded-lg bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 border border-pink-200 dark:border-pink-800/30">
+                    <Tag className="w-5 h-5 text-pink-600 dark:text-pink-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Discount code</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="relative">
+                    <input
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="Enter discount code"
+                      className="w-full p-3.5 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 dark:focus:border-pink-500 transition-all"
+                    />
+                    {couponCode && (
+                      <Sparkles className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-pink-500" />
+                    )}
+                  </div>
+                  <Button 
+                    onClick={handleApplyCoupon}
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-semibold py-3.5 text-sm shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 animate-spin" />
+                        Processing...
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Zap className="w-4 h-4" />
+                        Apply discount
+                      </div>
+                    )}
+                  </Button>
+                </div>
+              </motion.div> */}
+
+             
+              
              {/* Order Summary */}
              <motion.div 
                 initial={{ opacity: 0, y: 20 }}
@@ -550,24 +555,24 @@ function ShoppingCheckout() {
                   <div className="p-2.5 rounded-lg bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 border border-pink-200 dark:border-pink-800/30">
                     <CreditCard className="w-5 h-5 text-pink-600 dark:text-pink-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">ملخص الطلب</h3>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Request summary</h3>
                 </div>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center py-2.5 border-b border-gray-200 dark:border-gray-800">
-                    <span className="text-gray-600 dark:text-gray-400 text-sm">المجموع الفرعي</span>
+                    <span className="text-gray-600 dark:text-gray-400 text-sm">Subtotal</span>
                     <span className="text-gray-900 dark:text-white font-semibold">{totalCartAmount.toFixed(2)} QR</span>
                   </div>
                   
                   <div className="flex justify-between items-center py-2.5 border-b border-gray-200 dark:border-gray-800">
-                    <span className="text-gray-600 dark:text-gray-400 text-sm">التوصيل</span>
+                    <span className="text-gray-600 dark:text-gray-400 text-sm">Delivery</span>
                     <span className={`font-semibold text-sm ${
                       shipping === 0 ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white'
                     }`}>
                       {shipping === 0 ? (
                         <span className="flex items-center gap-1">
                           <CheckCircle className="w-4 h-4" />
-                          مجاني
+                          Free
                         </span>
                       ) : (
                         `${shipping.toFixed(2)} QR`
@@ -583,14 +588,14 @@ function ShoppingCheckout() {
                     >
                       <span className="text-green-600 dark:text-green-400 font-semibold flex items-center gap-2 text-sm">
                         <Tag className="w-4 h-4" />
-                        الخصم
+                        Discount
                       </span>
                       <span className="text-green-600 dark:text-green-400 font-bold">- {discountAmount.toFixed(2)} QR</span>
                     </motion.div>
                   )}
                   
                   <div className="flex justify-between items-center py-4 mt-2 border-t-2 border-gray-200 dark:border-gray-800">
-                    <span className="text-gray-900 dark:text-white font-bold text-lg">المجموع الكلي</span>
+                    <span className="text-gray-900 dark:text-white font-bold text-lg">Total</span>
                     <span className="text-pink-600 dark:text-pink-400 font-black text-xl">
                       {discountedTotal.toFixed(2)} QR
                     </span>
@@ -600,9 +605,9 @@ function ShoppingCheckout() {
                 {/* Security Features */}
                 <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800 space-y-2.5">
                   {[
-                    { icon: Shield, text: "دفع آمن ومحمي" },
-                    { icon: Truck, text: "توصيل سريع خلال 2-3 أيام" },
-                    { icon: Lock, text: "ضمان استرداد المبلغ" }
+                    { icon: Shield, text: "Secure and protected payment" },
+                    { icon: Truck, text: "Fast delivery within 2-3 days" },
+                    { icon: Lock, text: "Guaranteed refund" }
                   ].map((feature, index) => (
                     <div key={index} className="flex items-center gap-2.5 text-xs text-gray-600 dark:text-gray-400">
                       <feature.icon className="w-4 h-4 text-pink-600 dark:text-pink-400 flex-shrink-0" />
@@ -622,20 +627,23 @@ function ShoppingCheckout() {
                     {isLoading ? (
                       <div className="flex items-center justify-center gap-2 relative z-10">
                         <Clock className="w-5 h-5 animate-spin" />
-                        <span>جاري المعالجة...</span>
+                          <span>Processing...</span>
                       </div>
                     ) : (
                       <div className="flex items-center justify-center gap-2 relative z-10">
                         <CheckCircle className="w-5 h-5" />
-                        <span>تأكيد الطلب</span>
+                        <span>Confirm order</span>
                       </div>
                     )}
                   </Button>
                 </div>
+
+                
               </motion.div>
+              
             </div>
+            
           </div>
-        </div>
       </div>
     </div>
   );

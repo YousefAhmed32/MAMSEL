@@ -184,7 +184,7 @@ const RandomProducts = ({ onViewDetails, onAddToCart }) => {
                     e.stopPropagation();
                     onViewDetails(product._id);
                   }}
-                  className="bg-white/95 dark:bg-[#0f0f0f]/95 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-[#D4AF37] hover:border-[#D4AF37] hover:text-[#0a0a0f] transition-all duration-300"
+                  className="bg-white/95 dark:bg-[#0f0f0f]/95 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-[#eab308] hover:border-[#eab308] hover:text-[#0a0a0f] transition-all duration-300"
                   title="View Details"
                 >
                   <Eye className="w-4 h-4" />
@@ -217,7 +217,7 @@ const RandomProducts = ({ onViewDetails, onAddToCart }) => {
                         });
                     }
                   }}
-                  className="bg-white/95 dark:bg-[#0f0f0f]/95 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-[#D4AF37] hover:border-[#D4AF37] hover:text-[#0a0a0f] transition-all duration-300"
+                  className="bg-white/95 dark:bg-[#0f0f0f]/95 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-[#eab308] hover:border-[#eab308] hover:text-[#0a0a0f] transition-all duration-300"
                   disabled={product.totalStock === 0}
                   title="Add to Cart"
                 >

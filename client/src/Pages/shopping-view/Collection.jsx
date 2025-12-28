@@ -61,8 +61,8 @@ function Collection() {
   function handleAddToCart(productId, totalStock) {
     if (!user) {
       toast({
-        title: "يجب تسجيل الدخول أولاً",
-        description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
+        title: "Please login first",
+        description: "Please login to add the product to the cart",
         variant: "destructive"
       });
       return;
@@ -78,8 +78,8 @@ function Collection() {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
         if (getQuantity + 1 > totalStock) {
           toast({
-            title: `يمكن إضافة ${getQuantity} كمية فقط لهذا المنتج`,
-            variant: "destructive"
+            title: `Only ${getQuantity} quantity can be added for this product`,
+            variant: "destructive"  
           });
           return;
         }
@@ -92,8 +92,8 @@ function Collection() {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
         toast({
-          title: "تمت إضافة المنتج إلى السلة",
-          description: "تمت إضافة المنتج بنجاح"
+          title: "Product added to cart successfully",
+          description: "Product added successfully"
         });
       }
     });
@@ -119,13 +119,13 @@ function Collection() {
                   {displayName}
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                  اكتشف مجموعتنا المميزة
+                  Discover our unique collection
                 </p>
               </div>
             </div>
             <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
               <span className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full font-medium">
-                {productList?.length || 0} منتج
+                {productList?.length || 0} products
               </span>
             </div>
           </div>
@@ -150,7 +150,7 @@ function Collection() {
                   {displayName}
                 </h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  {productList?.length || 0} منتج متاح
+                  {productList?.length || 0} products available
                 </p>
               </div>
             </div>
@@ -159,7 +159,7 @@ function Collection() {
               <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800/30">
                 <Sparkles className="w-4 h-4 text-pink-600 dark:text-pink-400" />
                 <span className="text-sm font-semibold text-pink-700 dark:text-pink-300">
-                  {productList?.length || 0} منتج
+                  {productList?.length || 0} products available
                 </span>
               </div>
 
@@ -171,7 +171,7 @@ function Collection() {
                     className="flex items-center gap-2 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300"
                   >
                     <ArrowUpDownIcon className="h-4 w-4" />
-                    <span className="font-semibold">ترتيب</span>
+                    <span className="font-semibold">Sort</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[220px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-xl">
@@ -201,7 +201,7 @@ function Collection() {
                 <div className="animate-spin rounded-full h-16 w-16 border-4 border-pink-500 border-t-transparent absolute top-0 left-1/2 transform -translate-x-1/2"></div>
               </div>
               <p className="text-pink-600 dark:text-pink-400 font-semibold mt-4">
-                جاري تحميل المنتجات...
+                Loading products...
               </p>
             </div>
           </div>
@@ -237,16 +237,16 @@ function Collection() {
               <Package className="w-16 h-16 text-pink-500 dark:text-pink-400" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              لا توجد منتجات في هذه المجموعة
+              No products found in this collection
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-sm max-w-md mb-6">
-              لم يتم العثور على منتجات في مجموعة {displayName}
+              No products found in collection {displayName}
             </p>
             <Button
               onClick={() => navigate('/shop/listing')}
               className="bg-pink-600 hover:bg-pink-700 text-white"
             >
-              تصفح جميع المنتجات
+              Browse All Products
             </Button>
           </motion.div>
         )}

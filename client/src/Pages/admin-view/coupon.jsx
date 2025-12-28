@@ -21,7 +21,7 @@ function AdminCoupon() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validation
     if (!formData.code || !formData.discountType || !formData.discountValue || !formData.expiryDate) {
       toast({
@@ -57,7 +57,7 @@ function AdminCoupon() {
       };
 
       const result = await dispatch(addCoupon(couponData));
-      
+
       if (result.payload?.success) {
         toast({
           title: t('common.success'),
@@ -94,7 +94,7 @@ function AdminCoupon() {
     if (!window.confirm(t('coupons.deleteConfirm'))) {
       return;
     }
-    
+
     try {
       const result = await dispatch(deleteCoupon({ id: couponId }));
       if (result.payload?.success) {
@@ -127,10 +127,10 @@ function AdminCoupon() {
     if (!dateString) return t('coupons.noExpiry');
     const date = new Date(dateString);
     const locale = i18n.language === 'ar' ? 'ar-EG' : 'en-US';
-    return date.toLocaleDateString(locale, { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString(locale, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
@@ -161,28 +161,28 @@ function AdminCoupon() {
           {/* Form Section */}
           <div className="bg-card border border-border shadow-sm p-4 sm:p-6 rounded-xl space-y-4 sm:space-y-6">
             <h3 className="text-xl sm:text-2xl font-semibold text-foreground mb-4 flex items-center gap-2">
-              <PlusCircle className="text-primary" size={24} /> 
+              <PlusCircle className="text-primary" size={24} />
               {t('coupons.createNew')}
             </h3>
 
-          <CommonForm
-            formControls={addCouponFormElements}
-            formData={formData}
-            setFormData={setFormData}
-            onSubmit={handleSubmit}
-            buttonText={
-              submitting ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="animate-spin" size={18} /> {t('coupons.adding')}
-                </span>
-              ) : (
-                t('coupons.addCoupon')
-              )
-            }
-            isBtnDisabled={submitting}
-            labelClassName="text-muted-foreground text-sm font-medium mb-2 block"
-            inputClassName="bg-background dark:bg-background border border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary rounded-lg px-4 py-2 w-full transition duration-150 [&[type='date']]:text-foreground [&[type='date']]:bg-background [&[type='date']]:dark:bg-background [&[type='date']]:dark:text-foreground [&[type='date']]:pr-10"
-          />
+            <CommonForm
+              formControls={addCouponFormElements}
+              formData={formData}
+              setFormData={setFormData}
+              onSubmit={handleSubmit}
+              buttonText={
+                submitting ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="animate-spin" size={18} /> {t('coupons.adding')}
+                  </span>
+                ) : (
+                  t('coupons.addCoupon')
+                )
+              }
+              isBtnDisabled={submitting}
+              labelClassName="text-muted-foreground text-sm font-medium mb-2 block"
+              inputClassName="bg-background dark:bg-background border border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary rounded-lg px-4 py-2 w-full transition duration-150 [&[type='date']]:text-foreground [&[type='date']]:bg-background [&[type='date']]:dark:bg-background [&[type='date']]:dark:text-foreground [&[type='date']]:pr-10"
+            />
 
             {/* Preview */}
             <div className="mt-6 bg-muted/50 dark:bg-muted/30 p-5 rounded-xl border border-border">
@@ -219,7 +219,7 @@ function AdminCoupon() {
           {/* Coupon List Section */}
           <div className="bg-card border border-border shadow-sm p-6 rounded-xl">
             <h3 className="text-2xl font-semibold text-foreground mb-6 flex items-center gap-2">
-              <Ticket className="text-primary" size={24} /> 
+              <Ticket className="text-primary" size={24} />
               جميع الكوبونات ({couponList?.length || 0})
             </h3>
 
@@ -239,22 +239,25 @@ function AdminCoupon() {
                   const expired = isExpired(coupon.expiresAt || coupon.expiryDate);
                   const discountType = coupon.discountType || (coupon.discount === 'percentage' ? 'percent' : 'fixed');
                   const discountValue = coupon.amount || coupon.discountValue || 0;
-                  
+
                   return (
                     <div
                       key={coupon._id}
-                      className={`bg-muted/50 dark:bg-muted/30 hover:bg-muted/70 dark:bg-muted/50 transition-all p-5 rounded-xl border-2 ${
-                        expired 
-                          ? 'border-red-500/30 opacity-60' 
-                          : 'border-border hover:border-gold-950/50'
-                      }`}
+                      className={
+                        `bg-muted/50 dark:bg-muted/30 hover:bg-muted/70 dark:bg-muted/50 transition-all p-5 rounded-xl border-2 ` +
+                        (
+                          expired
+                            ? 'border-red-500/30 opacity-60'
+                            : 'border-border hover:border-black dark:hover:border-black'
+                        )
+                      }
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <Ticket 
-                              size={20} 
-                              className={expired ? 'text-red-400' : 'text-primary'} 
+                            <Ticket
+                              size={20}
+                              className={expired ? 'text-red-400' : 'text-primary'}
                             />
                             <p className="text-xl font-bold text-foreground flex items-center gap-2">
                               {coupon.code}
@@ -276,7 +279,7 @@ function AdminCoupon() {
                               </span>
                             )}
                           </div>
-                          
+
                           <div className="space-y-1 text-sm">
                             <p className="text-muted-foreground">
                               <span className="text-primary">الخصم:</span>{" "}
@@ -300,7 +303,7 @@ function AdminCoupon() {
                             </p>
                           </div>
                         </div>
-                        
+
                         <div className="flex flex-col gap-2">
                           <Button
                             onClick={() => handleDeleteCoupon(coupon._id)}

@@ -213,7 +213,7 @@ function SearchBar() {
               <Input
                 ref={searchInputRef}
                 type="text"
-                placeholder="ابحث عن منتج..."
+                placeholder="Search for a product..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pr-10 pl-4 py-2 bg-white dark:bg-[#0f0f0f] border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all"
@@ -238,15 +238,15 @@ function SearchBar() {
             {isSearching ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-[#D4AF37]" />
-                <span className="mr-2 text-gray-600 dark:text-gray-400">جاري البحث...</span>
+                <span className="mr-2 text-gray-600 dark:text-gray-400">Searching...</span>
               </div>
             ) : searchQuery.trim().length < 2 ? (
               <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                ابدأ الكتابة للبحث (حد أدنى حرفين)
+               search for at least 2 characters
               </div>
             ) : searchResults.length === 0 ? (
               <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                لم يتم العثور على نتائج
+                No results found
               </div>
             ) : (
               <div className="p-2">
@@ -347,27 +347,59 @@ function MenuItems({ isMobile = false }) {
 
   return (
     <nav
-      className={`flex flex-col ${
-        isMobile ? "gap-4" : "lg:flex-row gap-6 lg:items-center"
-      }`}
-    >
-      {shoppingViewHeaderMenuItem
-        .filter((item) => item.id !== "search") // Remove search from menu items
-        .map((item) => (
-          <Label
-            key={item.id}
-            onClick={() => handleNavigate(item)}
-            className="relative group text-sm font-medium cursor-pointer transition-all duration-300
-                       text-gray-700 dark:text-gray-300 
-                       hover:text-[#D4AF37] dark:hover:text-[#D4AF37]"
-          >
-            <span className="relative px-4 py-2 block z-10 transition-colors duration-300">
-              {item.label}
-              <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
-            </span>
-          </Label>
-        ))}
-    </nav>
+  className={`flex flex-col ${
+    isMobile ? "gap-4" : "lg:flex-row gap-8 lg:items-center"
+  }`}
+>
+  {shoppingViewHeaderMenuItem
+    .filter((item) => item.id !== "search")
+    .map((item) => (
+      <Label
+        key={item.id}
+        onClick={() => handleNavigate(item)}
+        className="
+          relative group cursor-pointer
+          text-[13px] font-semibold uppercase tracking-widest
+          text-gray-800 dark:text-gray-300
+          transition-all duration-500
+        "
+      >
+        {/* خلفية خفيفة جدًا */}
+        <span
+          className="
+            absolute inset-0 rounded-xl
+            bg-gradient-to-r from-gray-950/5 via-gray-950/10 to-gray-950/5
+            opacity-0 group-hover:opacity-100
+            blur-sm transition-all duration-500
+          "
+        />
+
+        {/* النص */}
+        <span
+          className="
+            relative z-10 px-5 py-2 block
+            transition-all duration-300
+            group-hover:text-gray-950 dark:group-hover:text-white
+          "
+        >
+          {item.label}
+
+          {/* الخط السفلي – فضائي فاضي */}
+          <span
+            className="
+              absolute left-1/2 bottom-0 h-[1px] w-0
+              bg-gradient-to-r from-transparent via-gray-950 to-transparent
+              transition-all duration-500
+              group-hover:w-full group-hover:left-0
+              opacity-60
+            "
+          />
+        </span>
+      </Label>
+    ))}
+</nav>
+
+
   );
 }
 
@@ -393,14 +425,14 @@ function HeaderRightContent({ isMobile = false }) {
       variant="outline"
       size={isMobile ? "sm" : "md"}
       className="
-        border border-[#D4AF37] text-[#D4AF37] dark:text-[#D4AF37]
+        border border-[gray-950] text-[gray-950] dark:text-[gray-950]
         font-medium rounded-sm px-6 py-2
-        hover:bg-[#D4AF37] hover:text-[#0a0a0f] dark:hover:bg-[#D4AF37] dark:hover:text-[#0a0a0f]
+        hover:bg-[gray-800] hover:text-[#0a0a0f] dark:hover:bg-[gray-950] dark:hover:text-[#0a0a0f]
         transition-all duration-300
         flex items-center gap-2 justify-center
       "
     >
-      <span>تسجيل الدخول</span>
+      <span>Login</span>
       <LogIn className="w-4 h-4 transition-colors" />
     </Button>
   );
@@ -412,7 +444,7 @@ function HeaderRightContent({ isMobile = false }) {
 
         {!isMobile && (
           <>
-            <ThemeToggle />
+            {/* <ThemeToggle />
             <Button
               onClick={() => navigate("/shop/wishlist")}
               variant="ghost"
@@ -425,7 +457,7 @@ function HeaderRightContent({ isMobile = false }) {
                   {wishlistCount}
                 </span>
               )}
-            </Button>
+            </Button> */}
           </>
         )}
       </div>
@@ -438,8 +470,8 @@ function HeaderRightContent({ isMobile = false }) {
         isMobile ? "flex-col gap-4" : "lg:items-center lg:flex-row flex-col gap-4"
       }`}
     >
-      <ThemeToggle />
-
+      {/* <ThemeToggle /> */}
+{/* 
       <Button
         onClick={() => navigate("/shop/wishlist")}
         variant="ghost"
@@ -452,14 +484,14 @@ function HeaderRightContent({ isMobile = false }) {
             {wishlistCount}
           </span>
         )}
-      </Button>
+      </Button> */}
 
       <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
         <SheetTrigger asChild>
           <Button
             variant="ghost"
             size="icon"
-            className="relative hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 group"
+            className=" relative hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 group"
           >
             <ShoppingBag className="w-5 h-5 text-gray-700 dark:text-gray-300 group-hover:text-[#D4AF37] dark:group-hover:text-[#D4AF37] transition-colors duration-300" />
             {cartItems?.items?.length > 0 && (
@@ -554,7 +586,7 @@ function ShoppingHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // تَقليل ارتفاع الهيدر: تقليل h-12 إلى h-10 و md:h-24 إلى md:h-16
+
   return (
     <header className="sticky top-0 z-[100] w-full bg-white/95 dark:bg-[#0f0f0f]/95 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50 transition-all duration-300" style={{ isolation: 'isolate' }}>
       <div className="flex h-10 md:h-16 items-center justify-between px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto">

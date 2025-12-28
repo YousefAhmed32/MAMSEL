@@ -31,7 +31,7 @@ function CheckAuth({ isAuthenticated, user, children }) {
     }
 
     return user?.role === "admin"
-      ? <Navigate to="/admin/analysis" replace />
+      ? <Navigate to="/admin/dashboard" replace />
       : <Navigate to="/shop/home" replace />;
   }
 
@@ -42,7 +42,7 @@ function CheckAuth({ isAuthenticated, user, children }) {
 
   // Admin tries to access shop pages
   if (isAuthenticated && user?.role === "admin" && path.includes("/shop")) {
-    return <Navigate to="/admin/analysis" replace />;
+    return <Navigate to="/admin/dashboard" replace />;
   }
 
   return <>{children}</>;

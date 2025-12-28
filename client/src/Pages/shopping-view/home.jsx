@@ -61,8 +61,8 @@ function ShoppingHome() {
   function handleAddToCart(getCurrentProductId) {
     if (!user) {
       toast({
-        title: "يجب تسجيل الدخول أولاً",
-        description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
+        title: "Please login first",
+        description: "Please login to add product to cart",
         variant: "destructive"
       });
       return;
@@ -73,13 +73,13 @@ function ShoppingHome() {
         if (data?.payload?.success) {
           dispatch(fetchCartItems(user?.id));
           toast({
-            title: "تمت إضافة المنتج إلى السلة",
-            description: "تم إضافة المنتج بنجاح"
+            title: "Product added to cart successfully",
+            description: "Product added to cart successfully"
           });
         } else {
           toast({
-            title: "خطأ في الإضافة",
-            description: data?.payload?.message || "فشل إضافة المنتج إلى السلة",
+            title: "Error adding to cart",
+            description: data?.payload?.message || "Failed to add product to cart",
             variant: "destructive"
           });
         }
@@ -87,8 +87,8 @@ function ShoppingHome() {
       .catch((error) => {
         console.error("Error adding to cart:", error);
         toast({
-          title: "خطأ في الإضافة",
-          description: "حدث خطأ أثناء إضافة المنتج إلى السلة",
+          title: "Error adding to cart",
+          description: "An error occurred while adding the product to the cart",
           variant: "destructive"
         });
       });
@@ -117,7 +117,7 @@ function ShoppingHome() {
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-[#0f0f0f] transition-colors duration-300 ">
       {/* Minimalist Hero Section */}
-      <div className="relative w-full h-[60vh] sm:h-[70vh] md:h-[75vh] lg:h-[100vh] xl:h-[160vh] overflow-hidden bg-white dark:bg-[#0f0f0f]">
+      <div className="relative w-full h-[60vh] sm:h-[70vh] md:h-[75vh] lg:h-[100vh] xl:h-[250vh] overflow-hidden bg-white dark:bg-[#0f0f0f]">
 
         {/* Mobile Swipeable Image */}
         <div className="block sm:hidden w-full h-full relative">
@@ -174,45 +174,89 @@ function ShoppingHome() {
             ))}
           </div>
 
-          {/* Hero Content for Desktop - Minimalist */}
-          <div className="absolute inset-0 flex items-center z-20 pointer-events-auto">
-            <div className="container mx-auto px-6 sm:px-8 lg:px-12">
-              <div className="max-w-2xl">
-                <h1 className="text-4xl  sm:text-5xl md:text-6xl  lg:text-7xl font-serif font-semibold text-white/90 mb-4 sm:mb-6 leading-tight pointer-events-none">
-                  Elegance
-                </h1>
+        {/* Hero Content for Desktop – Luxury Minimal */}
+        {/* <div className="absolute inset-0 z-20 flex items-center ms-20">
+  <div className="container mx-auto px-6 sm:px-8 lg:px-12">
+    <div className="max-w-2xl space-y-7">
 
-                <h2 className="text-lg sm:text-xl md:text-2xl font-light text-white/90 mb-3 sm:mb-4 font-serif pointer-events-none">
-                  Where luxury meets designer clothing
-                </h2>
-                <p className="text-white/80 mb-8 sm:mb-10 text-base sm:text-lg leading-relaxed max-w-lg pointer-events-none">
-                  Discover our exclusive collection of designer pieces, each a work of art.
-                </p>
+  
+      <h1 className="
+        text-4xl sm:text-5xl md:text-6xl lg:text-7xl
+        font-serif font-semibold tracking-tight
+        text-white leading-[1.1]
+        drop-shadow-[0_10px_30px_rgba(0,0,0,0.4)]
+      ">
+        Elegance
+      </h1>
 
-                <div className="flex flex-col sm:flex-row gap-4 pointer-events-auto">
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate('/shop/listing');
-                    }}
-                    className="bg-[#D4AF37] text-[#0a0a0f] hover:bg-[#E5C158] px-8 py-4 text-base font-medium relative z-30 transition-all duration-300"
-                  >
-                    Shop Now
-                  </Button>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate('/shop/listing');
-                    }}
-                    variant="outline"
-                    className="border border-white text-white hover:bg-white hover:text-[#0a0a0f] px-8 py-4 text-base relative z-30 transition-all duration-300"
-                  >
-                    View Collection
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
+  
+      <h2 className="
+        text-lg sm:text-xl md:text-2xl
+        font-light font-serif tracking-wider
+        text-white/80
+      ">
+        Where luxury meets designer clothing
+      </h2>
+
+     
+      <p className="
+        text-white/65 text-base sm:text-lg
+        leading-relaxed max-w-lg
+      ">
+        Discover our exclusive collection of designer pieces,
+        crafted with precision and timeless sophistication.
+      </p>
+
+ 
+      <div className="flex flex-col sm:flex-row gap-5 pt-6">
+
+   
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate("/shop/listing");
+          }}
+          className="
+            bg-white
+            text-black
+            px-10 py-4
+            text-sm sm:text-base font-medium tracking-wide
+            rounded-none
+            shadow-lg shadow-black/30
+            hover:scale-[1.04]
+            hover:bg-white/90
+            transition-all duration-300
+          "
+        >
+          Shop Now
+        </Button>
+
+    
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate("/shop/listing");
+          }}
+          variant="outline"
+          className="
+            border-white/50
+            text-white
+            px-10 py-4
+            text-sm sm:text-base tracking-wide
+            rounded-none
+            hover:bg-white hover:text-black
+            transition-all duration-300
+          "
+        >
+          View Collection
+        </Button>
+
+      </div>
+    </div>
+  </div>
+</div> */}
+
+
 
           {/* Navigation Buttons - Minimalist */}
           <Button
@@ -282,12 +326,12 @@ function ShoppingHome() {
         showBestSellingLabel={true}
         maxProducts={4}
       />
-      <section className="relative w-full py-5 sm:py-24 bg-gradient-to-b from-white via-gray-50/50 to-white dark:from-[#0f0f0f] dark:via-[#1a1a1a] dark:to-[#0f0f0f] transition-colors duration-300 overflow-hidden">
+      {/* <section className="relative w-full py-5 sm:py-24 bg-gradient-to-b from-white via-gray-50/50 to-white dark:from-[#0f0f0f] dark:via-[#1a1a1a] dark:to-[#0f0f0f] transition-colors duration-300 overflow-hidden">
         <PremiumProductCarousel
           onViewDetails={handleGetProductDetails}
           onAddToCart={handleAddToCart}
         />
-      </section>
+      </section> */}
       {/* Best Selling Products Section */}
       {/* <section className="container mx-auto px-6 sm:px-8 lg:px-12 mt-16 sm:mt-20">
         <BestSellingSection

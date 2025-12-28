@@ -207,7 +207,8 @@ const editProduct = async (req, res) => {
       gender,
       attributes,
       groups,
-      keepOldImages // Optional: if true, keep old images when new ones are uploaded
+      keepOldImages, // Optional: if true, keep old images when new ones are uploaded
+      oldImageUrls // Optional: JSON string array of old image URLs to keep (only these will be kept, not all old images)
     } = req.body;
 
     const findProduct = await Product.findById(id);
@@ -258,7 +259,7 @@ const editProduct = async (req, res) => {
     }
 
     // Handle image updates
-    if (files.length > 0) {
+    if (files.length > 0 || oldImageUrls) {
       // Process new uploaded images
       const newImageObjects = files.map(file => ({
         filename: file.filename,
@@ -270,7 +271,35 @@ const editProduct = async (req, res) => {
 
       // If keepOldImages is true, combine old and new images
       if (keepOldImages === 'true' || keepOldImages === true) {
-        findProduct.images = [...oldImages, ...newImageObjects];
+        let imagesToKeep = [];
+        
+        // If oldImageUrls is provided, only keep those specific old images
+        if (oldImageUrls) {
+          try {
+            const parsedOldImageUrls = typeof oldImageUrls === 'string' ? JSON.parse(oldImageUrls) : oldImageUrls;
+            if (Array.isArray(parsedOldImageUrls)) {
+              // Find matching old images by URL
+              imagesToKeep = oldImages.filter(oldImg => {
+                const oldImgUrl = typeof oldImg === 'string' ? oldImg : oldImg.url;
+                return parsedOldImageUrls.some(url => {
+                  // Compare URLs (handle both full URLs and relative paths)
+                  const normalizedOldUrl = oldImgUrl.replace(/^.*\/uploads\//, '/uploads/');
+                  const normalizedNewUrl = url.replace(/^.*\/uploads\//, '/uploads/');
+                  return normalizedOldUrl === normalizedNewUrl;
+                });
+              });
+            }
+          } catch (e) {
+            console.error('Error parsing oldImageUrls:', e);
+            // Fallback to keeping all old images if parsing fails
+            imagesToKeep = oldImages;
+          }
+        } else {
+          // If no oldImageUrls provided, keep all old images (backward compatibility)
+          imagesToKeep = oldImages;
+        }
+        
+        findProduct.images = [...imagesToKeep, ...newImageObjects];
       } else {
         findProduct.images = newImageObjects;
       }
@@ -282,6 +311,41 @@ const editProduct = async (req, res) => {
 
       // Note: In production, you might want to delete old image files here
       // For now, we keep them to avoid breaking existing references
+    } else if (oldImageUrls !== undefined) {
+      // Handle case where only old images are being updated (no new files)
+      // This allows removing images without adding new ones
+      try {
+        const parsedOldImageUrls = typeof oldImageUrls === 'string' ? JSON.parse(oldImageUrls) : oldImageUrls;
+        if (Array.isArray(parsedOldImageUrls)) {
+          if (parsedOldImageUrls.length === 0) {
+            // All old images were deleted
+            findProduct.images = [];
+            findProduct.image = '';
+          } else {
+            // Find matching old images by URL
+            const imagesToKeep = oldImages.filter(oldImg => {
+              const oldImgUrl = typeof oldImg === 'string' ? oldImg : oldImg.url;
+              return parsedOldImageUrls.some(url => {
+                const normalizedOldUrl = oldImgUrl.replace(/^.*\/uploads\//, '/uploads/');
+                const normalizedNewUrl = url.replace(/^.*\/uploads\//, '/uploads/');
+                return normalizedOldUrl === normalizedNewUrl;
+              });
+            });
+            findProduct.images = imagesToKeep;
+            
+            // Update main image
+            if (findProduct.images.length > 0) {
+              findProduct.image = typeof findProduct.images[0] === 'string' 
+                ? findProduct.images[0] 
+                : findProduct.images[0].url;
+            } else {
+              findProduct.image = '';
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Error parsing oldImageUrls:', e);
+      }
     }
 
     await findProduct.save();

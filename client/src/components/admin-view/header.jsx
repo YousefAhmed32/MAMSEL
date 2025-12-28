@@ -248,9 +248,9 @@ function AdminHeader({ setOpen }) {
           onClick={() => setOpen(true)}
           variant="ghost"
           size="icon"
-          className="lg:hidden h-10 w-10 hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/20 transition-all duration-200 hover:scale-110"
+          className="lg:hidden h-10 w-10 hover:bg-black/10 dark:hover:bg-black/20 transition-all duration-200 hover:scale-110"
         >
-          <AlignJustify className="w-5 h-5" />
+          <AlignJustify className="w-5 h-5 text-black dark:text-white" />
           <span className="sr-only">Toggle Menu</span>
         </Button>
         
@@ -259,9 +259,9 @@ function AdminHeader({ setOpen }) {
             onClick={() => navigate('/admin/dashboard')}
             variant="ghost"
             size="icon"
-            className="h-10 w-10 hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/20 transition-all duration-200 hover:scale-110 hidden sm:flex"
+            className="h-10 w-10 hover:bg-black/10 dark:hover:bg-black/20 transition-all duration-200 hover:scale-110 hidden sm:flex"
           >
-            <Home className="w-4 h-4" />
+            <Home className="w-4 h-4 text-black dark:text-white" />
           </Button>
           
           <div className="hidden md:block min-w-0">
@@ -285,13 +285,13 @@ function AdminHeader({ setOpen }) {
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="relative h-10 w-full sm:w-[240px] md:w-[320px] justify-start text-sm text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:border-[#D4AF37]/50 dark:hover:border-[#D4AF37]/50 transition-all duration-200 group"
+              className="relative h-10 w-full sm:w-[240px] md:w-[320px] justify-start text-sm text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:border-black/50 dark:hover:border-black/50 transition-all duration-200 group"
               onClick={() => {
                 setIsSearchOpen(true);
                 setTimeout(() => searchInputRef.current?.focus(), 100);
               }}
             >
-              <Search className="mr-2 h-4 w-4 group-hover:text-[#D4AF37] transition-colors" />
+              <Search className="mr-2 h-4 w-4 group-hover:text-black dark:group-hover:text-white transition-colors" />
               <span className="hidden sm:inline">{t('header.search.placeholder')}</span>
               <span className="sm:hidden">{t('header.search.placeholderMobile')}</span>
             </Button>
@@ -309,7 +309,7 @@ function AdminHeader({ setOpen }) {
                   placeholder={t('header.search.placeholderFull')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-10 bg-white dark:bg-[#0a0a0a] border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20 transition-all"
+                  className="h-10 bg-white dark:bg-[#0a0a0a] border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-black focus:ring-1 focus:ring-black/20 transition-all"
                   style={{ 
                     paddingRight: '2.5rem', 
                     paddingLeft: searchQuery ? '2.5rem' : '0.75rem' 
@@ -337,7 +337,7 @@ function AdminHeader({ setOpen }) {
             <div className="p-2">
               {isSearching ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-5 w-5 animate-spin text-[#D4AF37]" />
+                  <Loader2 className="h-5 w-5 animate-spin text-black dark:text-white" />
                   <span className="mr-2 text-gray-500 dark:text-gray-400">{t('header.search.searching')}</span>
                 </div>
               ) : searchQuery.trim().length < 2 ? (
@@ -362,12 +362,12 @@ function AdminHeader({ setOpen }) {
                           onClick={() => handleResultClick('product', product)}
                           className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-all duration-200 group"
                         >
-                          <Package className="h-4 w-4 text-[#D4AF37] flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <Package className="h-4 w-4 text-black dark:text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
                           <div className="flex-1 min-w-0">
                             <div className="font-medium text-gray-900 dark:text-white truncate">{product.title || product.name}</div>
                             <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{product.category}</div>
                           </div>
-                          <div className="text-sm font-semibold text-[#D4AF37] flex-shrink-0">${product.price}</div>
+                          <div className="text-sm font-semibold text-black dark:text-white flex-shrink-0">${product.price}</div>
                         </div>
                       ))}
                     </div>
@@ -385,7 +385,7 @@ function AdminHeader({ setOpen }) {
                           onClick={() => handleResultClick('order', order)}
                           className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-all duration-200 group"
                         >
-                          <ShoppingCart className="h-4 w-4 text-[#D4AF37] flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <ShoppingCart className="h-4 w-4 text-black dark:text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
                           <div className="flex-1 min-w-0">
                             <div className="font-medium text-gray-900 dark:text-white truncate">
                               {t('header.search.order')} #{order._id?.toString().slice(-8)}
@@ -411,7 +411,7 @@ function AdminHeader({ setOpen }) {
                           onClick={() => handleResultClick('user', userItem)}
                           className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-all duration-200 group"
                         >
-                          <Users className="h-4 w-4 text-[#D4AF37] flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <Users className="h-4 w-4 text-black dark:text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
                           <div className="flex-1 min-w-0">
                             <div className="font-medium text-gray-900 dark:text-white truncate">{userItem.userName || userItem.name || userItem.email}</div>
                             <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{userItem.email}</div>
@@ -434,7 +434,7 @@ function AdminHeader({ setOpen }) {
                           onClick={() => handleResultClick('coupon', coupon)}
                           className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-all duration-200 group"
                         >
-                          <Ticket className="h-4 w-4 text-[#D4AF37] flex-shrink-0 group-hover:scale-110 transition-transform" />
+                          <Ticket className="h-4 w-4 text-black dark:text-white flex-shrink-0 group-hover:scale-110 transition-transform" />
                           <div className="flex-1 min-w-0">
                             <div className="font-medium text-gray-900 dark:text-white truncate">{coupon.code}</div>
                             <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -456,10 +456,10 @@ function AdminHeader({ setOpen }) {
           onClick={handleRefresh}
           variant="ghost"
           size="icon"
-          className="h-10 w-10 hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/20 transition-all duration-200 hover:scale-110"
+          className="h-10 w-10 hover:bg-black/10 dark:hover:bg-black/20 transition-all duration-200 hover:scale-110"
           title={t('header.refresh')}
         >
-          <RefreshCw className="w-4 h-4" />
+          <RefreshCw className="w-4 h-4 text-black dark:text-white" />
         </Button>
 
         {/* Language Switcher */}
@@ -481,16 +481,16 @@ function AdminHeader({ setOpen }) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-10 w-10 hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/20 transition-all duration-200 hover:scale-110 hidden md:flex"
+          className="h-10 w-10 hover:bg-black/10 dark:hover:bg-black/20 transition-all duration-200 hover:scale-110 hidden md:flex"
           title={t('header.settings')}
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="w-5 h-5 text-black dark:text-white" />
         </Button>
 
         {/* User Avatar */}
         <div className="hidden xl:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-gray-100/50 dark:bg-gray-800/50">
-          <Avatar className="h-8 w-8 border-2 border-[#D4AF37]/30">
-            <AvatarFallback className="bg-[#D4AF37]/10 dark:bg-[#D4AF37]/20 text-[#D4AF37] font-semibold text-xs">
+          <Avatar className="h-8 w-8 border-2 border-black/30 dark:border-white/30">
+            <AvatarFallback className="bg-black/10 dark:bg-white/10 text-black dark:text-white font-semibold text-xs">
               {getInitials(user?.userName)}
             </AvatarFallback>
           </Avatar>

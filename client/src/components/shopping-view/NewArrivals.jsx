@@ -126,9 +126,9 @@ const NewArrivals = ({ onViewDetails, onAddToCart }) => {
     if (!user) {
       navigate("/auth/login", { state: { from: location.pathname } });
 
-      toast({
+      toast({ 
         title: "يجب تسجيل الدخول أولاً",
-        description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
+        description: "Please login to add the product to the cart",
         variant: "destructive"
       });
 

@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { Badge } from "../ui/badge";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
-import { getProductImageUrl } from "@/utils/imageUtils";
+import { getProductImageUrl, getProductImages } from "@/utils/imageUtils";
 import { Heart, Eye, ShoppingCart, Star } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleWishlistItem, selectIsInWishlist } from "@/store/shop/wishlist-slice";
@@ -16,19 +17,29 @@ function ShoppingProductTitle({
   handleAddToCart,
 }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  const { user } = useSelector((state) => state.auth);
   const productId = product?._id || product?.id;
   const isInWishlist = useSelector((state) => selectIsInWishlist(state, productId));
+  const [isHovered, setIsHovered] = useState(false);
+  
+  // Get all product images
+  const productImages = getProductImages(product);
+  const firstImage = productImages[0] || getProductImageUrl(product);
+  const secondImage = productImages[1] || firstImage;
+  const currentImage = isHovered && secondImage !== firstImage ? secondImage : firstImage;
 
   const handleWishlistToggle = (e) => {
     e.stopPropagation();
     const wasInWishlist = isInWishlist;
     dispatch(toggleWishlistItem(product));
     toast({
-      title: wasInWishlist ? "تم الحذف من المفضلة" : "تمت الإضافة للمفضلة",
+      title: wasInWishlist ? "Removed from wishlist" : "Added to wishlist",
       description: wasInWishlist 
-        ? `تم حذف ${product?.title} من قائمة المفضلة`
-        : `تم إضافة ${product?.title} إلى قائمة المفضلة`,
+        ? `Removed ${product?.title} from the wishlist`
+        : `Added ${product?.title} to the wishlist`,
     });
   };
 
@@ -44,29 +55,47 @@ function ShoppingProductTitle({
         <div 
           onClick={() => handleGetProductDetails(product?._id)} 
           className="relative cursor-pointer z-10 flex-shrink-0"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
-          <div className="relative overflow-hidden bg-gray-100 dark:bg-gray-900">
+          <div className="relative overflow-hidden bg-gray-100 dark:bg-gray-900 h-[280px]">
+            {/* First Image */}
             <img
-              src={getProductImageUrl(product)}
+              src={firstImage}
               alt={product?.title}
-              className="w-full h-[280px] object-cover transform group-hover:scale-105 transition-transform duration-500 relative z-10"
+              className={`w-full h-full object-cover transform group-hover:scale-105 transition-all duration-500 absolute inset-0 ${
+                isHovered && secondImage !== firstImage ? 'opacity-0' : 'opacity-100'
+              }`}
               onError={(e) => {
                 e.target.src = '/placeholder-product.jpg';
               }}
             />
+            {/* Second Image (shown on hover) */}
+            {secondImage !== firstImage && (
+              <img
+                src={secondImage}
+                alt={product?.title}
+                className={`w-full h-full object-cover transform group-hover:scale-105 transition-all duration-500 absolute inset-0 ${
+                  isHovered ? 'opacity-100' : 'opacity-0'
+                }`}
+                onError={(e) => {
+                  e.target.src = '/placeholder-product.jpg';
+                }}
+              />
+            )}
 
             {/* Badge */}
             {product?.totalStock === 0 ? (
-              <Badge className="absolute top-3 left-3 bg-gray-900 hover:bg-gray-800 dark:bg-gray-800 text-white/90 shadow-md z-20 border border-gray-700">
-                نفدت الكمية
+              <Badge className="absolute top-1  left-1 bg-gray-900 hover:bg-gray-800 dark:bg-gray-800 text-white/90 shadow-md z-20 border border-gray-700">
+                Out of Stock
               </Badge>
             ) : product?.totalStock < 10 ? (
-              <Badge className="absolute top-3 left-3 bg-gray-800 dark:bg-gray-700 text-white/90 shadow-md z-20 border border-gray-600">
-                متبقي {product?.totalStock} فقط
+              <Badge className="absolute top-1 left-1 bg-gray-800 dark:bg-gray-700 text-white/90 shadow-md z-20 border border-gray-600">
+                Remaining {product?.totalStock} only
               </Badge>
             ) : product?.salePrice > 0 && product?.salePrice < product?.price ? (
-              <Badge className="absolute top-3 left-3 bg-[#f56565] text-white shadow-md z-20 border border-[red-500]">
-                خصم {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
+              <Badge className="absolute top-1 left-1 bg-[#f56565] text-white shadow-md z-20 border border-[red-500] ">
+                Discount {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
               </Badge>
             ) : null}
 
@@ -80,7 +109,7 @@ function ShoppingProductTitle({
                   handleGetProductDetails(product?._id);
                 }}
                 className="h-10 w-10 bg-white dark:bg-[#0a0a0a] hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white shadow-md hover:scale-105 transition-all duration-300"
-                title="عرض التفاصيل"
+                title="View Details"
               >
                 <Eye className="h-4 w-4" />
               </Button>
@@ -93,8 +122,8 @@ function ShoppingProductTitle({
                   if (!user) {
                     navigate("/auth/login", { state: { from: location.pathname } });
                     toast({
-                      title: "يجب تسجيل الدخول أولاً",
-                      description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة",
+                      title: "You must login first",
+                      description: "Please login to add product to cart",
                       variant: "destructive"
                     });
                     return;
@@ -105,7 +134,7 @@ function ShoppingProductTitle({
                 }}
                 disabled={product?.totalStock === 0}
                 className="h-10 w-10 bg-white dark:bg-[#0a0a0a] hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white shadow-md hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="أضف إلى السلة"
+                title="Add to Cart"
               >
                 <ShoppingCart className="h-4 w-4" />
               </Button>
@@ -119,7 +148,7 @@ function ShoppingProductTitle({
                     ? "bg-[#f56565] hover:bg-[#e53e3e] border-[#f56565] text-white"
                     : "bg-white dark:bg-[#0a0a0a] hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white"
                 }`}
-                title={isInWishlist ? "إزالة من المفضلة" : "إضافة للمفضلة"}
+                title={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
               >
                 <Heart
                   className={`h-4 w-4 transition-all duration-300 ${
@@ -177,7 +206,7 @@ function ShoppingProductTitle({
                   </span>
                 </div>
                 <Badge className="bg-[#f56565] text-white border border-[#f56565]">
-                  خصم
+                  Discount
                 </Badge>
               </>
             ) : (
@@ -195,7 +224,7 @@ function ShoppingProductTitle({
               className="w-full opacity-50 cursor-not-allowed bg-gray-400 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-700 text-white font-medium"
               disabled
             >
-              نفدت الكمية
+              Out of Stock
             </Button>
           ) : (
             <Button
@@ -204,7 +233,7 @@ function ShoppingProductTitle({
             >
               <span className="flex items-center gap-2">
                 <ShoppingCart className="w-4 h-4" />
-                أضف إلى السلة
+                Add to Cart
               </span>
             </Button>
           )}

@@ -1,123 +1,75 @@
 import { Link } from "react-router-dom";
-import { Instagram, Facebook, Youtube, Mail, MapPin, Phone, Send } from "lucide-react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { Instagram, Facebook, Twitter, Mail, MapPin, Phone, Heart, Sparkles, MessageCircle } from "lucide-react";
+
+const handleYansyClick = () => {
+  window.open('https://wa.me/201090385390', '_blank');
+};
 
 function Footer() {
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
-
-  const handleNewsletterSubmit = async (e) => {
-    e.preventDefault();
-    if (!email.trim()) {
-      toast({
-        title: "Email Required",
-        description: "Please enter your email address",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setEmail("");
-      toast({
-        title: "Subscribed Successfully",
-        description: "Thank you for subscribing to our newsletter"
-      });
-    }, 1000);
-  };
-
   return (
-    <footer className="relative bg-white dark:bg-[#0a0a0a] text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12 py-16 sm:py-20">
-        
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 mb-16">
-          
-          {/* Brand Section */}
-          <div className="space-y-6 lg:col-span-1">
-            <Link 
-              to="/shop/home" 
-              className="inline-block group transition-transform duration-300 hover:scale-105"
-            >
-              <div className="w-[140px] h-auto overflow-hidden flex items-center justify-center">
+    <footer className="relative bg-white dark:bg-[#0f0f0f] text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+      <div className="container mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
+
+        {/* ====== Grid Sections ====== */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 mb-12">
+
+          {/* === Logo & About === */}
+          <div className="space-y-6">
+            <Link to="/shop/home" className="flex items-center gap-3 group transition-all duration-300">
+              <div className="w-[140px] h-12 rounded-full overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
                 <img
                   src="/assets/mamsal-logo1.png"
                   alt="Designer Store"
                   className="w-full h-full object-cover"
                 />
               </div>
+             
             </Link>
-            
-            <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400 max-w-xs font-light">
-              Discover luxury designer clothing curated with elegance and sophistication for the modern connoisseur.
+
+            <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400 max-w-xs">
+              Discover luxury designer clothing curated with elegance and sophistication.
             </p>
 
-            {/* Social Media Icons */}
             <div className="flex gap-3 pt-2">
+              {/* Instagram */}
               <a
                 href="https://www.instagram.com/oud_alwajba?igsh=ZnJ0M3UwYXM5b2E2"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-sm hover:bg-gray-900 hover:border-gray-900 hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black transition-all duration-300 group"
+                className="w-9 h-9 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300"
                 aria-label="Instagram"
               >
-                <Instagram className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
+                <Instagram className="w-4 h-4 transition-colors duration-300" />
               </a>
+              {/* WhatsApp */}
               <a
-                href="https://www.facebook.com"
+                href="https://wa.me/97451227772"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-sm hover:bg-gray-900 hover:border-gray-900 hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black transition-all duration-300 group"
-                aria-label="Facebook"
+                className="w-9 h-9 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300"
+                aria-label="WhatsApp"
               >
-                <Facebook className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
-              </a>
-              <a
-                href="https://www.tiktok.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-sm hover:bg-gray-900 hover:border-gray-900 hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black transition-all duration-300 group"
-                aria-label="TikTok"
-              >
-                <svg className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                </svg>
-              </a>
-              <a
-                href="https://www.youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-sm hover:bg-gray-900 hover:border-gray-900 hover:text-white dark:hover:bg-white dark:hover:border-white dark:hover:text-black transition-all duration-300 group"
-                aria-label="YouTube"
-              >
-                <Youtube className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
+                <MessageCircle className="w-4 h-4 transition-colors duration-300" />
               </a>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* === Quick Links === */}
           <div>
-            <h3 className="text-gray-900 dark:text-white font-serif font-semibold text-base mb-6 tracking-wide">
+            <h3 className="text-gray-900 dark:text-white font-serif font-semibold text-base mb-6">
               Quick Links
             </h3>
-            <ul className="space-y-4 text-sm">
+            <ul className="space-y-3 text-sm">
               {[
                 { to: "/shop/home", label: "Home" },
-                { to: "/shop/listing", label: "Shop" },
+                { to: "/shop/listing", label: "All Products" },
                 { to: "/shop/account", label: "My Account" },
-                { to: "/shop/wishlist", label: "Wishlist" },
+                { to: "/shop/checkout", label: "Checkout" },
               ].map((item, idx) => (
                 <li key={idx}>
                   <Link
                     to={item.to}
-                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-light inline-block hover:translate-x-1 transition-transform duration-300"
+                    className="text-gray-600 dark:text-gray-400 hover:text-[#D4AF37] transition-colors duration-300"
                   >
                     {item.label}
                   </Link>
@@ -126,81 +78,74 @@ function Footer() {
             </ul>
           </div>
 
-          {/* About & Support */}
+          {/* === Categories === */}
           <div>
-            <h3 className="text-gray-900 dark:text-white font-serif font-semibold text-base mb-6 tracking-wide">
-              About
+            <h3 className="text-gray-900 dark:text-white font-serif font-semibold text-base mb-6">
+              Categories
+            </h3>
+            <ul className="space-y-3 text-sm">
+              {[
+                { to: "/shop/listing?category=men", label: "Men's Collection" },
+                { to: "/shop/listing?category=women", label: "Women's Collection" },
+                { to: "/shop/listing?category=unisex", label: "Unisex" },
+                { to: "/shop/listing?category=luxury", label: "Luxury Collection" },
+              ].map((item, idx) => (
+                <li key={idx}>
+                  <Link
+                    to={item.to}
+                    className="text-gray-600 dark:text-gray-400 hover:text-[#D4AF37] transition-colors duration-300"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* === Contact Info === */}
+          <div>
+            <h3 className="text-gray-900 dark:text-white font-serif font-semibold text-base mb-6">
+              Contact Us
             </h3>
             <ul className="space-y-4 text-sm">
-              {[
-                { to: "/shop/listing", label: "About Us" },
-                { to: "/shop/listing", label: "Contact" },
-                { to: "/shop/listing", label: "FAQ" },
-                { to: "/shop/listing", label: "Shipping & Returns" },
-              ].map((item, idx) => (
-                <li key={idx}>
-                  <Link
-                    to={item.to}
-                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-light inline-block hover:translate-x-1 transition-transform duration-300"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Newsletter Section */}
-          <div>
-            <h3 className="text-gray-900 dark:text-white font-serif font-semibold text-base mb-6 tracking-wide">
-              Newsletter
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 font-light leading-relaxed">
-              Subscribe to receive updates on new collections and exclusive offers.
-            </p>
-            <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="Your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-gray-900 dark:focus:border-white focus:ring-0 rounded-sm text-sm font-light"
-                />
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 border border-gray-900 dark:border-white rounded-sm px-4 transition-all duration-300 hover:scale-105 disabled:opacity-50"
+              <li className="flex items-center gap-3">
+                <a
+                  href="https://wa.me/97451227772"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-[#D4AF37] transition-colors duration-300"
                 >
-                  <Send className="w-4 h-4" />
-                </Button>
-              </div>
-            </form>
+                  <Phone className="w-4 h-4" />
+                  <span>+97451227772</span>
+                </a>
+              </li>
+              <li className="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">
+                <Mail className="w-4 h-4" />
+                <span>info@designerstore.com</span>
+              </li>
+              <li className="flex items-center gap-3 text-gray-600 dark:text-gray-400">
+                <MapPin className="w-4 h-4" />
+                <span>Qatar, Doha</span>
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-gray-200 dark:border-gray-800 mb-8"></div>
-
-        {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-sm text-gray-600 dark:text-gray-400 font-light">
-            © {new Date().getFullYear()} Designer Store. All rights reserved.
+        {/* ====== Bottom Section ====== */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-gray-200 dark:border-gray-800">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            © {new Date().getFullYear()} MAMSEL. All rights reserved.
           </p>
-          <div className="flex items-center gap-6 text-sm">
-            <Link 
-              to="/shop/listing" 
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-light"
+          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <span>Developed by</span>
+            <a
+              href="https://wa.me/201090385390"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#D4AF37] hover:text-[#E5C158] transition-colors duration-300 font-medium"
             >
-              Privacy Policy
-            </Link>
-            <span className="text-gray-400 dark:text-gray-600">|</span>
-            <Link 
-              to="/shop/listing" 
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 font-light"
-            >
-              Terms of Service
-            </Link>
+              YANSY
+            </a>
           </div>
         </div>
       </div>

@@ -60,13 +60,13 @@ function AdminProducts() {
             ...formData,
             image: mainImage,
             images: images,
-          },
+          },  
         })
       ).then((data) => {
         if (data?.payload?.success) {
           dispatch(fetchAllProduct());
           resetForm();
-          toast({ title: "✅ تم تحديث المنتج بنجاح" });
+          toast({ title: "✅ Product updated successfully" });
         }
       });
     } else {
@@ -80,7 +80,7 @@ function AdminProducts() {
         if (data?.payload?.success) {
           dispatch(fetchAllProduct());
           resetForm();
-          toast({ title: "✅ تم إضافة المنتج بنجاح" });
+          toast({ title: "✅ Product added successfully" });
         }
       });
     }
@@ -163,7 +163,7 @@ function AdminProducts() {
             onClick={() => setOpenCreateProductDialog(true)}
             className="bg-gradient-to-r from-luxury-gold to-luxury-gold-light hover:from-luxury-gold-light hover:to-luxury-gold text-luxury-navy font-bold flex items-center gap-3 glow-gold py-4 text-xl rounded-xl shadow-[0_0_20px_rgba(210,176,101,0.4)] transition-all duration-300 hover:scale-105"
           >
-            <PlusCircle size={24} /> إضافة منتج جديد
+            <PlusCircle size={24} /> Add new product
           </Button>
         </div>
 
@@ -174,9 +174,9 @@ function AdminProducts() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-luxury-gold/70 text-sm font-medium">إجمالي المنتجات</p>
+                  <p className="text-luxury-gold/70 text-sm font-medium">Total products</p>
                   <p className="text-3xl font-bold text-white mt-2">{productList?.length || 0}</p>
-                  <p className="text-green-400 text-xs mt-1">+12% من الشهر الماضي</p>
+                  <p className="text-green-400 text-xs mt-1">+12% from last month</p>
                 </div>
                 <div className="p-3 rounded-xl bg-luxury-gold/20">
                   <Package className="w-8 h-8 text-luxury-gold" />
@@ -190,7 +190,7 @@ function AdminProducts() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-luxury-gold/70 text-sm font-medium">المنتجات النشطة</p>
+                  <p className="text-luxury-gold/70 text-sm font-medium">Active products</p>
                   <p className="text-3xl font-bold text-white mt-2">
                     {productList?.filter(p => p.totalStock > 0).length || 0}
                   </p>
@@ -208,11 +208,11 @@ function AdminProducts() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-luxury-gold/70 text-sm font-medium">نفذ المخزون</p>
+                  <p className="text-luxury-gold/70 text-sm font-medium">Stock out</p>  
                   <p className="text-3xl font-bold text-white mt-2">
                     {productList?.filter(p => p.totalStock === 0).length || 0}
                   </p>
-                  <p className="text-red-400 text-xs mt-1">يحتاج إعادة تموين</p>
+                  <p className="text-red-400 text-xs mt-1">Needs to be restocked</p>
                 </div>
                 <div className="p-3 rounded-xl bg-red-500/20">
                   <AlertTriangle className="w-8 h-8 text-red-400" />
@@ -230,7 +230,7 @@ function AdminProducts() {
                   <p className="text-3xl font-bold text-white mt-2">
                     {new Set(productList?.map(p => p.category)).size || 0}
                   </p>
-                  <p className="text-blue-400 text-xs mt-1">فئات متنوعة</p>
+                  <p className="text-blue-400 text-xs mt-1">Different categories</p>
                 </div>
                 <div className="p-3 rounded-xl bg-blue-500/20">
                   <Tags className="w-8 h-8 text-blue-400" />
@@ -249,15 +249,15 @@ function AdminProducts() {
                 <Package className="w-8 h-8 text-luxury-gold" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white">منتجات المتجر</h3>
-                <p className="text-luxury-gold/70">إدارة شاملة لجميع منتجاتك</p>
+                <h3 className="text-2xl font-bold text-white">Products in the store</h3>
+                <p className="text-luxury-gold/70">Manage all your products</p>  
               </div>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="bg-luxury-navy/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-luxury-gold/20">
                 <span className="text-luxury-gold font-semibold">
-                  إجمالي المنتجات: {productList?.length || 0}
+                  Total products: {productList?.length || 0}
                 </span>
               </div>
             </div>
@@ -287,12 +287,12 @@ function AdminProducts() {
                     <div className="absolute top-3 left-3 flex flex-col gap-2">
                       {productItem.salePrice && productItem.salePrice < productItem.price && (
                         <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                          خصم
+                          Discount
                         </span>
                       )}
                       {productItem.totalStock === 0 && (
                         <span className="bg-red-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                          نفذ المخزون
+                          Out of Stock
                         </span>
                       )}
                     </div>
@@ -311,7 +311,7 @@ function AdminProducts() {
                           setOpenCreateProductDialog(true);
                         }}
                         className="bg-luxury-gold/95 border-luxury-gold text-luxury-navy hover:bg-luxury-gold-light hover:text-luxury-navy shadow-[0_0_15px_rgba(210,176,101,0.6)] backdrop-blur-sm"
-                        title="تعديل المنتج"
+                        title="Edit product"
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -320,7 +320,7 @@ function AdminProducts() {
                         variant="outline"
                         onClick={() => handleDelete(productItem._id)}
                         className="bg-red-500/95 border-red-500 text-white hover:bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.6)] backdrop-blur-sm"
-                        title="حذف المنتج"
+                        title="Delete product"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -363,15 +363,15 @@ function AdminProducts() {
                             ? 'bg-green-500/20 text-green-400' 
                             : 'bg-red-500/20 text-red-400'
                         }`}>
-                          {productItem.totalStock > 0 ? `${productItem.totalStock} متوفر` : 'نفذ المخزون'}
+                          {productItem.totalStock > 0 ? `${productItem.totalStock} available` : 'Out of Stock'}
                         </span>
                       </div>
                     </div>
 
                     {/* Category and Gender */}
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-white/70">الفئة: {productItem.category}</span>
-                      <span className="text-white/70">الجنس: {productItem.gender}</span>
+                      <span className="text-white/70">Category: {productItem.category}</span>
+                      <span className="text-white/70">Gender: {productItem.gender}</span>
                     </div>
 
                     {/* Quick Actions */}
@@ -390,7 +390,7 @@ function AdminProducts() {
                         className="flex-1 bg-luxury-gold/20 border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-luxury-navy text-xs"
                       >
                         <Pencil className="w-3 h-3 mr-1" />
-                        تعديل
+                        Edit
                       </Button>
                       <Button
                         size="sm"
@@ -399,7 +399,7 @@ function AdminProducts() {
                         className="bg-red-500/20 border-red-500 text-red-400 hover:bg-red-500 hover:text-white text-xs"
                       >
                         <Trash2 className="w-3 h-3 mr-1" />
-                        حذف
+                        Delete
                       </Button>
                     </div>
                   </div>
@@ -412,14 +412,14 @@ function AdminProducts() {
                 <div className="w-24 h-24 bg-luxury-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Package className="w-12 h-12 text-luxury-gold/50" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">لا توجد منتجات</h3>
-                <p className="text-luxury-gold/70 mb-8">ابدأ بإضافة منتج جديد لبناء متجرك</p>
+                <h3 className="text-2xl font-bold text-white mb-4">No products found</h3>
+                <p className="text-luxury-gold/70 mb-8">Start by adding a new product to build your store</p>
                 <Button
                   onClick={() => setOpenCreateProductDialog(true)}
                   className="bg-luxury-gold text-luxury-navy hover:bg-luxury-gold-light font-bold px-8 py-3 rounded-xl shadow-[0_0_20px_rgba(210,176,101,0.4)]"
                 >
                   <PlusCircle className="w-5 h-5 mr-2" />
-                  إضافة أول منتج
+                  Add first product
                 </Button>
               </div>
             </div>
@@ -447,8 +447,8 @@ function AdminProducts() {
                           <Pencil className="w-10 h-10 text-luxury-gold" />
                         </div>
                         <div>
-                          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white glow-text mb-2">تعديل المنتج</h2>
-                          <p className="text-luxury-gold/70 text-sm sm:text-base lg:text-lg">قم بتحديث معلومات المنتج</p>
+                          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white glow-text mb-2">Edit product</h2>
+                          <p className="text-luxury-gold/70 text-sm sm:text-base lg:text-lg">Update product information</p>
                         </div>
                       </>
                     ) : (
@@ -457,8 +457,8 @@ function AdminProducts() {
                           <PlusCircle className="w-10 h-10 text-luxury-gold" />
                         </div>
                         <div>
-                          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white glow-text mb-2">إضافة منتج جديد</h2>
-                          <p className="text-luxury-gold/70 text-sm sm:text-base lg:text-lg">أضف منتج جديد إلى المتجر</p>
+                          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white glow-text mb-2">Add new product</h2>
+                          <p className="text-luxury-gold/70 text-sm sm:text-base lg:text-lg">Add new product to the store</p>
                         </div>
                       </>
                     )}
@@ -486,8 +486,8 @@ function AdminProducts() {
                         <ImageIcon className="w-8 h-8 sm:w-10 sm:h-10 text-luxury-gold" />
                       </div>
                       <div>
-                        <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2">صور المنتج</h3>
-                        <p className="text-luxury-gold/70 text-sm sm:text-base lg:text-lg">ارفع صور متعددة للمنتج (صورة رئيسية + صور إضافية)</p>
+                        <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2">Product images</h3>
+                        <p className="text-luxury-gold/70 text-sm sm:text-base lg:text-lg">Upload multiple images for the product (main image + additional images)</p>
                       </div>
                     </div>
 
@@ -508,9 +508,9 @@ function AdminProducts() {
                         <div className="bg-luxury-navy/30 rounded-2xl p-3 sm:p-4 lg:p-6 border border-luxury-gold/20">
                           <h4 className="text-base sm:text-lg lg:text-xl font-bold text-white mb-2 sm:mb-3 flex items-center gap-2 sm:gap-3">
                             <div className="w-2 h-2 bg-luxury-gold rounded-full shadow-[0_0_10px_rgba(210,176,101,0.5)]"></div>
-                            الرفع التقليدي
+                            Traditional upload
                           </h4>
-                          <p className="text-luxury-gold/70 text-xs sm:text-sm mb-4 sm:mb-6">استخدم هذا الخيار للرفع التقليدي</p>
+                          <p className="text-luxury-gold/70 text-xs sm:text-sm mb-4 sm:mb-6">Use this option for traditional upload</p>
                           <ProductImageUpload
                             imageFile={imageFile}
                             setImageFile={setImageFile}
@@ -533,7 +533,7 @@ function AdminProducts() {
                     <div className="bg-luxury-navy/20 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-6 border border-luxury-gold/20 shadow-[0_0_30px_rgba(210,176,101,0.1)]">
                       <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 lg:mb-6">
                         <div className="w-4 h-4 bg-luxury-gold rounded-full shadow-[0_0_15px_rgba(210,176,101,0.6)]"></div>
-                        المعلومات الأساسية
+                        Basic information
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
                         {addProductFormElements.slice(0, 4).map((control, index) => (
@@ -553,7 +553,7 @@ function AdminProducts() {
                     <div className="bg-luxury-navy/20 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-6 border border-luxury-gold/20 shadow-[0_0_30px_rgba(210,176,101,0.1)]">
                       <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 lg:mb-6">
                         <div className="w-4 h-4 bg-luxury-gold rounded-full shadow-[0_0_15px_rgba(210,176,101,0.6)]"></div>
-                        التسعير والمخزون
+                        Pricing and stock
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
                         {addProductFormElements.slice(4, 7).map((control, index) => (
@@ -573,7 +573,7 @@ function AdminProducts() {
                     <div className="bg-luxury-navy/20 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-6 border border-luxury-gold/20 shadow-[0_0_30px_rgba(210,176,101,0.1)]">
                       <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 lg:mb-6">
                         <div className="w-4 h-4 bg-luxury-gold rounded-full shadow-[0_0_15px_rgba(210,176,101,0.6)]"></div>
-                        تفاصيل المنتج
+                        Product details
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
                         {addProductFormElements.slice(7).map((control, index) => (
@@ -593,8 +593,8 @@ function AdminProducts() {
                     <div className="pt-6 sm:pt-8 lg:pt-10 border-t border-luxury-gold/20">
                       <div className="bg-luxury-navy/20 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-6 border border-luxury-gold/20 shadow-[0_0_30px_rgba(210,176,101,0.1)]">
                         <div className="text-center mb-4 sm:mb-6">
-                          <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2">جاهز للحفظ؟</h3>
-                          <p className="text-luxury-gold/70 text-sm sm:text-base">تأكد من صحة جميع البيانات قبل الحفظ</p>
+                          <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2">Ready to save?</h3>
+                          <p className="text-luxury-gold/70 text-sm sm:text-base">Check all the data before saving</p>
                         </div>
                         
                         <Button
@@ -606,12 +606,12 @@ function AdminProducts() {
                           {currentEditId ? (
                             <>
                               <Pencil className="w-6 h-6 sm:w-8 sm:h-8" />
-                              تحديث المنتج
+                              Update product
                             </>
                           ) : (
                             <>
                               <PlusCircle className="w-6 h-6 sm:w-8 sm:h-8" />
-                              إضافة المنتج
+                            Add product
                             </>
                           )}
                         </Button>
@@ -622,10 +622,10 @@ function AdminProducts() {
                               <div className="w-5 h-5 sm:w-6 sm:h-6 bg-red-500 rounded-full flex items-center justify-center">
                                 <span className="text-white text-xs sm:text-sm font-bold">!</span>
                               </div>
-                              <h4 className="text-red-400 font-bold text-sm sm:text-base lg:text-lg">تحقق من البيانات</h4>
+                              <h4 className="text-red-400 font-bold text-sm sm:text-base lg:text-lg">Check the data</h4>
                             </div>
                             <p className="text-red-400 text-center font-medium text-xs sm:text-sm">
-                              يرجى ملء جميع الحقول المطلوبة وتحميل صورة المنتج
+                            Please fill all the required fields and upload the product image
                             </p>
                           </div>
                         )}

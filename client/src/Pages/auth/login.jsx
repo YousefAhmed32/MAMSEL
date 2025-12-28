@@ -46,20 +46,20 @@ function AuthLogin() {
       setIsLoading(false);
       if (data?.payload?.success) {
         toast({
-          title: "مرحباً بك في MAMSEL",
-          description: "تم تسجيل الدخول بنجاح"
+            title: "Welcome to MAMSEL",
+          description: "Login successful"
         });
         setTimeout(() => {
           if (data?.payload?.user?.role === "admin") {
-            navigate("/admin/analysis", { replace: true });
+            navigate("/admin/dashboard", { replace: true });
           } else {
             navigate(savedPath, { replace: true });
           }
         }, 500);
       } else {
         toast({
-          title: "خطأ في تسجيل الدخول",
-          description: data?.payload?.message || "يرجى التحقق من البيانات المدخلة",
+          title: "Error logging in",
+          description: data?.payload?.message || "Please check your credentials",
           variant: "destructive" 
         });
       }
@@ -69,8 +69,8 @@ function AuthLogin() {
   function handleGoogleLogin() {
     // TODO: Implement Google OAuth
     toast({
-      title: "قريباً",
-      description: "تسجيل الدخول عبر Google سيكون متاحاً قريباً",
+      title: "Soon",
+      description: "Login with Google will be available soon",
     });
   }
 
@@ -103,7 +103,7 @@ function AuthLogin() {
                 <div className="relative inline-block">
                   <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#E5C158] flex items-center justify-center shadow-[0_0_40px_rgba(212,175,55,0.3)]">
                     <img 
-                      src="/assets/logo3.png" 
+                      src="/assets/logo-c.png" 
                       alt="MAMSEL" 
                       className="w-14 h-14 object-cover rounded-full"
                     />
@@ -117,7 +117,7 @@ function AuthLogin() {
                   </h1>
                   <div className="h-px w-24 bg-gradient-to-r from-[#D4AF37] to-transparent"></div>
                   <p className="text-lg text-gray-600 dark:text-gray-400 font-light tracking-wide max-w-md">
-                    استكشف عالم الأزياء الفاخرة معنا، حيث تلتقي الأناقة بالجودة العالية
+                    Explore the world of luxury fashion with us, where elegance meets high quality
                   </p>
                 </div>
               </div>
@@ -127,22 +127,22 @@ function AuthLogin() {
                 <div className="flex items-start gap-4 group">
                   <div className="w-1 h-12 bg-gradient-to-b from-[#D4AF37] to-transparent group-hover:h-16 transition-all duration-300"></div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">تجربة فريدة</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">تصميمات حصرية من أفضل المصممين</p>
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">Unique Experience</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Exclusive designs from the best designers</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 group">
                   <div className="w-1 h-12 bg-gradient-to-b from-[#D4AF37] to-transparent group-hover:h-16 transition-all duration-300"></div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">جودة عالية</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">منتجات مختارة بعناية فائقة</p>
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">High Quality</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Products chosen with meticulous care</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 group">
                   <div className="w-1 h-12 bg-gradient-to-b from-[#D4AF37] to-transparent group-hover:h-16 transition-all duration-300"></div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">خدمة متميزة</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">دعم عملاء على مدار الساعة</p>
+                      <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">Exceptional Service</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Customer support 24/7</p>
                   </div>
                 </div>
               </div>
@@ -157,7 +157,7 @@ function AuthLogin() {
                   <div className="relative">
                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#E5C158] flex items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.3)]">
                       <img 
-                        src="/assets/logo3.png" 
+                        src="/assets/logo-c.png" 
                         alt="MAMSEL" 
                         className="w-12 h-12 object-cover rounded-full"
                       />
@@ -168,10 +168,10 @@ function AuthLogin() {
                 {/* Form Header */}
                 <div className="mb-10">
                   <h2 className="text-3xl font-light tracking-wide text-gray-900 dark:text-white mb-2">
-                    تسجيل الدخول
+                    Login
                   </h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    ادخل بياناتك للوصول إلى حسابك
+                    Enter your credentials to access your account
                   </p>
                 </div>
 
@@ -183,7 +183,7 @@ function AuthLogin() {
                   className="w-full mb-6 h-12 border-gray-300 dark:border-gray-700 bg-white dark:bg-[#0a0a0a] hover:bg-gray-50 dark:hover:bg-[#0f0f0f] text-gray-700 dark:text-gray-300 transition-all duration-300 group"
                 >
                   <Chrome className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                  <span>المتابعة مع Google</span>
+                  <span>Continue with Google</span>
                 </Button>
 
                 {/* Divider */}
@@ -192,7 +192,7 @@ function AuthLogin() {
                     <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white dark:bg-[#0f0f0f] px-2 text-gray-500 dark:text-gray-400">أو</span>
+                      <span className="bg-white dark:bg-[#0f0f0f] px-2 text-gray-500 dark:text-gray-400">Or</span>
                   </div>
                 </div>
 
@@ -201,7 +201,7 @@ function AuthLogin() {
                   {/* Email Field */}
                   <div className="space-y-2">
                     <label className="text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                      البريد الإلكتروني
+                      Email
                     </label>
                     <div className="relative group">
                       <Mail className={`absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors duration-300 ${
@@ -229,13 +229,13 @@ function AuthLogin() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <label className="text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                        كلمة المرور
+                        Password
                       </label>
                       <Link
                         to="/auth/forgot-password"
                         className="text-xs text-[#D4AF37] hover:text-[#E5C158] transition-colors"
                       >
-                        نسيت كلمة المرور؟
+                        Forgot password?
                       </Link>
                     </div>
                     <div className="relative group">
@@ -276,11 +276,11 @@ function AuthLogin() {
                     {isLoading ? (
                       <div className="flex items-center gap-2">
                         <div className="animate-spin rounded-full h-5 w-5 border-2 border-white dark:border-gray-900 border-t-transparent"></div>
-                        <span>جاري تسجيل الدخول...</span>
+                        <span>Logging in...</span>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <span>تسجيل الدخول</span>
+                        <span>Login</span>
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </div>
                     )}
@@ -290,12 +290,12 @@ function AuthLogin() {
                 {/* Register Link */}
                 <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    ليس لديك حساب؟{" "}
+                    Don't have an account?{" "}
                     <Link
                       to="/auth/register"
                       className="font-medium text-[#D4AF37] hover:text-[#E5C158] transition-colors underline-offset-4 hover:underline"
                     >
-                      إنشاء حساب جديد
+                      Create an account
                     </Link>
                   </p>
                 </div>

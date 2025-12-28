@@ -41,11 +41,11 @@ function ProductDetails() {
   const [showLightbox, setShowLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [hoveredProductId, setHoveredProductId] = useState(null);
 
   useEffect(() => {
     if (productId) {
       dispatch(fetchProductDetails(productId));
-      // جلب جميع المنتجات للحصول على المنتجات ذات الصلة
       dispatch(fetchAllFilteredProducts({
         filtersParams: {},
         sortParams: "title-atoz",
@@ -56,26 +56,25 @@ function ProductDetails() {
   const handleAddToCart = () => {
     if (!user) {
       toast({
-        title: "يجب تسجيل الدخول أولاً",
-        description: "يرجى تسجيل الدخول لإضافة المنتج إلى السلة"
+        title: "Login required",
+        description: "Please login to add product to cart"
       });
       return;
     }
 
     if (productDetails.totalStock === 0) {
       toast({
-        title: "المنتج غير متوفر",
-        description: "هذا المنتج غير متوفر حالياً",
+        title: "Product not available",
+        description: "This product is not available currently",
         variant: "destructive"
       });
       return;
     }
 
-    // Validate size selection for Clothes
     if (productDetails.category === "Clothes" && !selectedSize) {
       toast({
-        title: "يرجى اختيار المقاس",
-        description: "يجب اختيار مقاس قبل إضافة المنتج إلى السلة",
+        title: "Please select the size",
+        description: "Please select the size before adding the product to the cart",
         variant: "destructive"
       });
       return;
@@ -90,8 +89,8 @@ function ProductDetails() {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
         toast({
-          title: "تم إضافة المنتج إلى السلة",
-          description: `تم إضافة ${quantity} من ${productDetails.title} ${selectedSize ? `- المقاس ${selectedSize}` : ''} إلى السلة`
+          title: "Product added to cart",
+          description: `Added ${quantity} of ${productDetails.title} ${selectedSize ? `- Size ${selectedSize}` : ''} to the cart`
         });
       }
     });
@@ -100,23 +99,21 @@ function ProductDetails() {
   const handleBuyNow = () => {
     if (!user) {
       toast({
-        title: "يجب تسجيل الدخول أولاً",
-        description: "يرجى تسجيل الدخول للشراء"
+        title: "Login required",
+        description: "Please login to buy"
       });
       return;
     }
 
-    // Validate size selection for Clothes
     if (productDetails.category === "Clothes" && !selectedSize) {
       toast({
-        title: "يرجى اختيار المقاس",
-        description: "يجب اختيار مقاس قبل الشراء",
+        title: "Please select the size",
+        description: "Please select the size before buying",
         variant: "destructive"
       });
       return;
     }
 
-    // إضافة المنتج إلى السلة ثم الانتقال إلى صفحة الدفع
     dispatch(addToCart({
       userId: user?.id,
       productId: productDetails._id,
@@ -137,7 +134,6 @@ function ProductDetails() {
     }
   };
 
-  // الحصول على صور المنتج
   const getImageUrls = () => {
     if (!productDetails) return [];
     const allImages = getProductImages(productDetails);
@@ -147,7 +143,6 @@ function ProductDetails() {
   const images = getImageUrls();
   const currentImage = images[selectedImageIndex] || images[0] || '/placeholder-product.jpg';
 
-  // الحصول على المنتجات ذات الصلة (نفس الفئة أو الماركة)
   const getRelatedProducts = () => {
     if (!productDetails || !productList) return [];
 
@@ -162,26 +157,23 @@ function ProductDetails() {
 
   const relatedProducts = getRelatedProducts();
 
-  // Check if current product is in wishlist
   const isProductInWishlist = useSelector((state) =>
     productDetails ? selectIsInWishlist(state, productDetails._id) : false
   );
 
-  // Handle wishlist toggle for main product
   const handleWishlistToggle = () => {
     if (!productDetails) return;
 
     const wasInWishlist = isProductInWishlist;
     dispatch(toggleWishlistItem(productDetails));
     toast({
-      title: wasInWishlist ? "تم الحذف من المفضلة" : "تمت الإضافة للمفضلة",
+      title: wasInWishlist ? "Removed from wishlist" : "Added to wishlist",
       description: wasInWishlist
-        ? `تم حذف ${productDetails.title} من قائمة المفضلة`
-        : `تم إضافة ${productDetails.title} إلى قائمة المفضلة`,
+        ? `Removed ${productDetails.title} from wishlist`
+        : `Added ${productDetails.title} to wishlist`,
     });
   };
 
-  // Wishlist Button Component for Related Products
   const RelatedProductWishlistButton = ({ product }) => {
     const productId = product._id || product.id;
     const isInWishlist = useSelector((state) => selectIsInWishlist(state, productId));
@@ -191,10 +183,10 @@ function ProductDetails() {
       const wasInWishlist = isInWishlist;
       dispatch(toggleWishlistItem(product));
       toast({
-        title: wasInWishlist ? "تم الحذف من المفضلة" : "تمت الإضافة للمفضلة",
+        title: wasInWishlist ? "Removed from wishlist" : "Added to wishlist",
         description: wasInWishlist
-          ? `تم حذف ${product?.title} من قائمة المفضلة`
-          : `تم إضافة ${product?.title} إلى قائمة المفضلة`,
+          ? `Removed ${product?.title} from wishlist`
+          : `Added ${product?.title} to wishlist`,
       });
     };
 
@@ -203,28 +195,25 @@ function ProductDetails() {
         size="icon"
         variant="outline"
         onClick={handleWishlistToggle}
-        className={`backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-2
+        className={`backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-none 
           ${isInWishlist
-            ? "bg-red-500/90 hover:bg-red-600 border-red-400 text-white dark:bg-red-500/80 dark:hover:bg-red-600 dark:text-white"
-            : "bg-white/95 hover:bg-gray-100 border-gray-300 text-luxury-gold hover:text-navy-950 dark:bg-luxury-gold dark:hover:bg-luxury-gold/20 dark:text-gray-950 border-luxury-gold dark:border-luxury-gold/70"
+            ? "bg-red-500/90 hover:bg-red-600  text-white dark:bg-red-500/80 dark:hover:bg-red-600 dark:text-white"
+            : "bg-white/95 hover:bg-gray-100 text-black hover:text-black dark:bg-black dark:hover:bg-black/20 dark:text-gray-950 "
           }
         `}
-        title={isInWishlist ? "إزالة من المفضلة" : "إضافة للمفضلة"}
+        title={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
         tabIndex={0}
       >
         <Heart
           className={`w-4 h-4 transition-colors duration-200 ${isInWishlist
               ? "fill-red-500 text-white dark:fill-red-400 dark:text-white"
-              : "fill-none text-luxury-gold dark:text-gray-950"
+              : "fill-none text-black dark:text-gray-950"
             }`}
         />
       </Button>
     );
-
-
   };
 
-  // مكون Lightbox
   const Lightbox = () => {
     if (!showLightbox) return null;
 
@@ -237,7 +226,6 @@ function ProductDetails() {
         onClick={() => setShowLightbox(false)}
       >
         <div className="relative max-w-7xl max-h-full">
-          {/* زر الإغلاق */}
           <Button
             onClick={() => setShowLightbox(false)}
             className="absolute top-4 right-4 bg-white/20 hover:bg-red-500 hover:text-white text-white border border-white/30 hover:border-red-500 z-10 transition-all duration-300 shadow-lg hover:shadow-xl"
@@ -246,7 +234,6 @@ function ProductDetails() {
             <X className="w-6 h-6" />
           </Button>
 
-          {/* الصورة */}
           <motion.img
             key={lightboxIndex}
             initial={{ scale: 0.9, opacity: 0 }}
@@ -258,7 +245,6 @@ function ProductDetails() {
             onClick={(e) => e.stopPropagation()}
           />
 
-          {/* أزرار التنقل */}
           {images.length > 1 && (
             <>
               <Button
@@ -266,7 +252,7 @@ function ProductDetails() {
                   e.stopPropagation();
                   setLightboxIndex((prev) => (prev - 1 + images.length) % images.length);
                 }}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-luxury-gold hover:text-navy-950 text-white border border-white/30 hover:border-luxury-gold transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-black hover:text-white text-white border border-white/30 hover:border-black transition-all duration-300 shadow-lg hover:shadow-xl"
                 size="icon"
               >
                 <ChevronLeft className="w-6 h-6" />
@@ -276,15 +262,13 @@ function ProductDetails() {
                   e.stopPropagation();
                   setLightboxIndex((prev) => (prev + 1) % images.length);
                 }}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-luxury-gold hover:text-navy-950 text-white border border-white/30 hover:border-luxury-gold transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-black hover:text-white text-white border border-white/30 hover:border-black transition-all duration-300 shadow-lg hover:shadow-xl"
                 size="icon"
               >
                 <ChevronRight className="w-6 h-6" />
               </Button>
-
-              {/* عداد الصور */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-transparent text-white px-6 py-3 rounded-full border border-luxury-gold/30 backdrop-blur-sm shadow-xl">
-                <span className="text-luxury-gold font-bold">{lightboxIndex + 1}</span>
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-transparent text-white px-6 py-3 rounded-full border border-black/30 backdrop-blur-sm shadow-xl">
+                <span className="text-black font-bold">{lightboxIndex + 1}</span>
                 <span className="text-white/70 mx-2">/</span>
                 <span className="text-white">{images.length}</span>
               </div>
@@ -301,14 +285,14 @@ function ProductDetails() {
         <div className="text-center">
           <div className="relative">
             <div className="animate-spin rounded-full h-20 w-20 border-4 border-gray-200 dark:border-navy-700 mx-auto mb-6"></div>
-            <div className="animate-spin rounded-full h-20 w-20 border-4 border-luxury-gold border-t-transparent absolute top-0 left-1/2 transform -translate-x-1/2"></div>
+            <div className="animate-spin rounded-full h-20 w-20 border-4 border-black border-t-transparent absolute top-0 left-1/2 transform -translate-x-1/2"></div>
           </div>
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-luxury-gold text-lg font-semibold"
+            className="text-black text-lg font-semibold"
           >
-            جاري تحميل تفاصيل المنتج...
+            Loading product details...
           </motion.p>
         </div>
       </div>
@@ -321,65 +305,60 @@ function ProductDetails() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center bg-white dark:bg-navy-950/80 p-12 rounded-2xl shadow-2xl border border-gray-200 dark:border-luxury-gold/30"
+          className="text-center bg-white dark:bg-navy-950/80 p-12 rounded-2xl shadow-2xl border border-gray-200 dark:border-black/30"
         >
           <div className="w-24 h-24 bg-gray-100 dark:bg-navy-900 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Eye className="w-12 h-12 text-gray-400 dark:text-luxury-gold/50" />
+            <Eye className="w-12 h-12 text-gray-400 dark:text-black/50" />
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            عذراً، هذا العود غير متوفر
+            Sorry, this oud is not available
           </h1>
 
           <p className="text-gray-600 dark:text-white/70 mb-6">
-            لم نتمكن من العثور على المنتج المطلوب، ولكن مجموعتنا الأخرى من العود الفاخر بانتظارك.
+            We couldn't find the requested product, but our other collection of luxury oud is waiting for you.
           </p>
 
           <Button
             onClick={() => navigate('/shop/listing')}
-            className="bg-luxury-gold text-navy-950 hover:bg-luxury-gold/90 font-bold px-8 py-3 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+            className="bg-black text-white hover:bg-black/90 font-bold px-8 py-3 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
           >
-            تصفح العود الفاخر
+            Browse Luxury Oud
           </Button>
         </motion.div>
       </div>
-
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50  dark:bg-gray-950">
-      {/* رأس الصفحة */}
-      <div className="bg-white/95 dark:bg-gray-950 backdrop-blur-sm border-b border-gray-200 dark:border-luxury-gold/20 sticky top-0 z-40 shadow-sm dark:shadow-luxury-gold/10">
+      <div className="bg-white/95 dark:bg-gray-950 backdrop-blur-sm border-b border-gray-200 dark:border-black/20 sticky top-0 z-40 shadow-sm dark:shadow-black/10">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
             <Button
               onClick={() => navigate(-1)}
               variant="outline"
-              className="border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-navy-950 font-semibold shadow-md hover:shadow-lg transition-all duration-300"
+              className="border-black text-black hover:bg-black hover:text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              العودة
+              Back
             </Button>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">تفاصيل المنتج</h1>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Product details</h1>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-6 py-8 bg-gray-50 dark:bg-gray-950">
-        {/* الصف الأول: معرض الصور وتفاصيل المنتج */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16"
         >
-          {/* معرض الصور - النصف الأيسر */}
           <div className="space-y-6">
-            {/* الصورة الرئيسية */}
             <motion.div
               layout
-              className="relative group bg-white dark:bg-gray-950 rounded-2xl overflow-hidden border border-gray-200 dark:border-luxury-gold/30 shadow-lg hover:shadow-xl dark:shadow-luxury-gold/20 dark:hover:shadow-luxury-gold/30 transition-all duration-300"
+              className="relative group bg-white dark:bg-gray-950 rounded-2xl overflow-hidden border border-gray-200 dark:border-black/30 shadow-lg hover:shadow-xl dark:shadow-black/20 dark:hover:shadow-black/30 transition-all duration-300"
             >
               <div className="aspect-square relative overflow-hidden">
                 <motion.img
@@ -396,32 +375,30 @@ function ProductDetails() {
                   }}
                 />
 
-                {/* زر التكبير */}
                 <Button
                   onClick={() => {
                     setLightboxIndex(selectedImageIndex);
                     setShowLightbox(true);
                   }}
-                  className="absolute top-4 right-4 bg-white/95 dark:bg-navy-950/95 hover:bg-luxury-gold hover:text-navy-950 border border-gray-300 dark:border-luxury-gold/50 text-gray-800 dark:text-luxury-gold shadow-lg hover:shadow-xl dark:shadow-luxury-gold/20 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                  className="absolute top-4 right-4 bg-white/95 dark:bg-navy-950/95 hover:bg-black hover:text-white border border-gray-300 dark:border-black/50 text-gray-800 dark:text-black shadow-lg hover:shadow-xl dark:shadow-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300"
                   size="icon"
-                  title="تكبير الصورة"
+                  title="Enlarge Image"
                 >
                   <ZoomIn className="w-4 h-4" />
                 </Button>
 
-                {/* أزرار التنقل للصور */}
                 {images.length > 1 && (
                   <>
                     <Button
                       onClick={() => setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length)}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/95 dark:bg-navy-950/95 hover:bg-luxury-gold hover:text-navy-950 border border-gray-300 dark:border-luxury-gold/50 text-gray-800 dark:text-luxury-gold shadow-lg hover:shadow-xl dark:shadow-luxury-gold/20 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/95 dark:bg-navy-950/95 hover:bg-black hover:text-white border border-gray-300 dark:border-black/50 text-gray-800 dark:text-black shadow-lg hover:shadow-xl dark:shadow-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300"
                       size="icon"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </Button>
                     <Button
                       onClick={() => setSelectedImageIndex((prev) => (prev + 1) % images.length)}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/95 dark:bg-navy-950/95 hover:bg-luxury-gold hover:text-navy-950 border border-gray-300 dark:border-luxury-gold/50 text-gray-800 dark:text-luxury-gold shadow-lg hover:shadow-xl dark:shadow-luxury-gold/20 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/95 dark:bg-navy-950/95 hover:bg-black hover:text-white border border-gray-300 dark:border-black/50 text-gray-800 dark:text-black shadow-lg hover:shadow-xl dark:shadow-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300"
                       size="icon"
                     >
                       <ChevronRight className="w-5 h-5" />
@@ -429,16 +406,14 @@ function ProductDetails() {
                   </>
                 )}
 
-                {/* عداد الصور */}
                 {images.length > 1 && (
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-transparent dark:bg-navy-950/90 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm border border-white/20 dark:border-luxury-gold/30">
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-transparent dark:bg-navy-950/90 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm border border-white/20 dark:border-black/30">
                     {selectedImageIndex + 1} / {images.length}
                   </div>
                 )}
               </div>
             </motion.div>
 
-            {/* الصور المصغرة */}
             {images.length > 1 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -451,8 +426,8 @@ function ProductDetails() {
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
                     className={`flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border-2 transition-all bg-white dark:bg-navy-900/50 hover:scale-105 ${index === selectedImageIndex
-                        ? 'border-luxury-gold shadow-lg dark:shadow-luxury-gold/30 scale-105'
-                        : 'border-gray-300 dark:border-luxury-gold/30 hover:border-luxury-gold/60 dark:hover:border-luxury-gold/70'
+                        ? 'border-black shadow-lg dark:shadow-black/30 scale-105'
+                        : 'border-gray-300 dark:border-black/30 hover:border-black/60 dark:hover:border-black/70'
                       }`}
                   >
                     <img
@@ -466,32 +441,29 @@ function ProductDetails() {
             )}
           </div>
 
-          {/* تفاصيل المنتج - النصف الأيمن */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="space-y-6 bg-white dark:bg-navy-950/50 p-8 rounded-2xl shadow-lg dark:shadow-luxury-gold/10 border border-gray-100 dark:border-luxury-gold/20 backdrop-blur-sm"
+            className="space-y-6 bg-white dark:bg-navy-950/50 p-8 rounded-2xl shadow-lg dark:shadow-black/10 border border-gray-100 dark:border-black/20 backdrop-blur-sm"
           >
-            {/* اسم المنتج والماركة */}
             <div>
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
                 {productDetails.title}
               </h1>
 
               {productDetails.brand && (
-                <Badge className="bg-luxury-gold/20 text-luxury-gold border-luxury-gold/30 mb-4">
+                <Badge className="bg-black/10 text-black border-black/30 mb-4">
                   {typeof productDetails.brand === 'object' ? productDetails.brand.name : productDetails.brand}
                 </Badge>
               )}
 
-              {/* التقييم */}
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-5 h-5 ${i < 4 ? 'text-luxury-gold fill-current' : 'text-gray-300'
+                      className={`w-5 h-5 ${i < 4 ? 'text-black fill-current' : 'text-gray-300'
                         }`}
                     />
                   ))}
@@ -500,55 +472,50 @@ function ProductDetails() {
               </div>
             </div>
 
-            {/* السعر */}
             <div className="space-y-2">
               {productDetails.salePrice && productDetails.salePrice < productDetails.price ? (
                 <div className="flex items-center gap-4">
-                  <span className="text-4xl font-bold text-luxury-gold">
+                  <span className="text-4xl font-bold text-black">
                     QR{productDetails.salePrice}
                   </span>
                   <span className="text-2xl text-gray-500 line-through">
                     QR{productDetails.price}
                   </span>
                   <Badge className="bg-red-500/20 text-red-600 border-red-500/30">
-                    خصم {Math.round(((productDetails.price - productDetails.salePrice) / productDetails.price) * 100)}%
+                    Discount {Math.round(((productDetails.price - productDetails.salePrice) / productDetails.price) * 100)}%
                   </Badge>
                 </div>
               ) : (
-                <span className="text-4xl font-bold text-luxury-gold">
+                <span className="text-4xl font-bold text-black">
                   QR{productDetails.price}
                 </span>
               )}
             </div>
 
-            {/* الوصف */}
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">الوصف</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">Description</h3>
               <p className="text-gray-700 dark:text-white/80 leading-relaxed">
                 {productDetails.description}
               </p>
             </div>
 
-            {/* حالة المخزون */}
             <div className="flex items-center gap-2">
               {productDetails.totalStock > 0 ? (
                 <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
-                  متوفر ({productDetails.totalStock} قطعة)
+                  Available ({productDetails.totalStock} pcs)
                 </Badge>
               ) : (
                 <Badge className="bg-red-500/20 text-red-600 border-red-500/30">
-                  غير متوفر
+                  Not available
                 </Badge>
               )}
             </div>
 
-            {/* اختيار الكمية والأزرار */}
             {productDetails.totalStock > 0 && (
               <div className="space-y-6">
-                {/* اختيار المقاس للملابس */}
                 {productDetails.category === "Clothes" && productDetails.attributes?.sizes && (
                   <div>
-                    <span className="text-gray-900 dark:text-white font-semibold mb-3 block">اختر المقاس:</span>
+                    <span className="text-gray-900 dark:text-white font-semibold mb-3 block">Select Size:</span>
                     <div className="flex flex-wrap gap-3">
                       {productDetails.attributes.sizes.map((size) => {
                         const isSelected = selectedSize === size;
@@ -559,8 +526,8 @@ function ProductDetails() {
                             onClick={() => setSelectedSize(size)}
                             className={`px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 border-2 ${
                               isSelected
-                                ? "bg-luxury-gold text-navy-950 border-luxury-gold shadow-[0_0_15px_rgba(210,176,101,0.5)] scale-105"
-                                : "bg-white dark:bg-navy-900/80 border-gray-300 dark:border-luxury-gold/40 text-gray-700 dark:text-luxury-gold hover:border-luxury-gold hover:bg-luxury-gold/10"
+                                ? "bg-black text-white border-black shadow-[0_0_15px_rgba(0,0,0,0.5)] scale-105"
+                                : "bg-white dark:bg-navy-900/80 border-gray-300 dark:border-black/40 text-gray-700 dark:text-black hover:border-black hover:bg-black/10"
                             }`}
                           >
                             {size}
@@ -569,30 +536,29 @@ function ProductDetails() {
                       })}
                     </div>
                     {!selectedSize && (
-                      <p className="text-red-500 text-sm mt-2">يرجى اختيار مقاس</p>
+                      <p className="text-red-500 text-sm mt-2">Please choose a size</p>
                     )}
                   </div>
                 )}
 
-                {/* اختيار الكمية */}
                 <div className="flex items-center gap-4">
-                  <span className="text-gray-900 dark:text-white font-semibold">الكمية:</span>
+                  <span className="text-gray-900 dark:text-white font-semibold">Quantity:</span>
                   <div className="flex items-center gap-2">
                     <Button
                       onClick={() => handleQuantityChange(-1)}
                       disabled={quantity <= 1}
-                      className="bg-white dark:bg-navy-900/80 border-2 border-gray-300 dark:border-luxury-gold/40 text-gray-700 dark:text-luxury-gold hover:bg-luxury-gold hover:text-navy-950 hover:border-luxury-gold disabled:opacity-50 transition-all duration-300 shadow-md hover:shadow-lg"
+                      className="bg-white dark:bg-navy-900/80 border-2 border-gray-300 dark:border-black/40 text-gray-700 dark:text-black hover:bg-black hover:text-white hover:border-black disabled:opacity-50 transition-all duration-300 shadow-md hover:shadow-lg"
                       size="icon"
                     >
                       <Minus className="w-4 h-4" />
                     </Button>
-                    <span className="text-gray-900 dark:text-white font-bold px-6 py-3 bg-gray-100 dark:bg-navy-900/60 rounded-xl min-w-[4rem] text-center border-2 border-gray-200 dark:border-luxury-gold/30 text-lg shadow-inner">
+                    <span className="text-gray-900 dark:text-white font-bold px-6 py-3 bg-gray-100 dark:bg-navy-900/60 rounded-xl min-w-[4rem] text-center border-2 border-gray-200 dark:border-black/30 text-lg shadow-inner">
                       {quantity}
                     </span>
                     <Button
                       onClick={() => handleQuantityChange(1)}
                       disabled={quantity >= productDetails.totalStock}
-                      className="bg-white dark:bg-navy-900/80 border-2 border-gray-300 dark:border-luxury-gold/40 text-gray-700 dark:text-luxury-gold hover:bg-luxury-gold hover:text-navy-950 hover:border-luxury-gold disabled:opacity-50 transition-all duration-300 shadow-md hover:shadow-lg"
+                      className="bg-white dark:bg-navy-900/80 border-2 border-gray-300 dark:border-black/40 text-gray-700 dark:text-black hover:bg-black hover:text-white hover:border-black disabled:opacity-50 transition-all duration-300 shadow-md hover:shadow-lg"
                       size="icon"
                     >
                       <Plus className="w-4 h-4" />
@@ -600,7 +566,6 @@ function ProductDetails() {
                   </div>
                 </div>
 
-                {/* الأزرار الرئيسية */}
                 <div className="flex gap-4">
                   <Button
                     onClick={() => {
@@ -610,28 +575,27 @@ function ProductDetails() {
                       }
                       handleAddToCart();
                     }}
-                    className="flex-1 bg-gradient-to-r from-luxury-gold to-luxury-gold/90 text-navy-950 hover:from-luxury-gold/90 hover:to-luxury-gold font-bold py-4 text-lg shadow-xl hover:shadow-2xl dark:shadow-luxury-gold/30 dark:hover:shadow-luxury-gold/40 transition-all duration-300 transform hover:-translate-y-1 border-2 border-luxury-gold"
+                    className="flex-1 bg-gradient-to-r from-black to-gray-800 text-white hover:from-black/90 hover:to-gray-800 font-bold py-4 text-lg shadow-xl hover:shadow-2xl dark:shadow-black/30 dark:hover:shadow-black/40 transition-all duration-300 transform hover:-translate-y-1 border-2 border-black"
                   >
                     <ShoppingCart className="w-5 h-5 mr-2" />
-                    أضف إلى السلة
+                    Add to Cart
                   </Button>
                   <Button
                     onClick={handleBuyNow}
                     variant="outline"
-                    className="flex-1 border-2 border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-navy-950 font-bold py-4 text-lg transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl dark:shadow-luxury-gold/20 dark:hover:shadow-luxury-gold/30 bg-white dark:bg-navy-900/50"
+                    className="flex-1 border-2 border-black text-black hover:bg-black hover:text-white font-bold py-4 text-lg transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl dark:shadow-black/20 dark:hover:shadow-black/30 bg-white dark:bg-navy-900/50"
                   >
-                    اشترِ الآن
+                    Buy Now
                   </Button>
                 </div>
 
-                {/* أزرار إضافية */}
-                <div className="flex gap-3">
+                {/* <div className="flex gap-3">
                   <Button
                     onClick={handleWishlistToggle}
                     variant="outline"
                     className={`flex-1 border-2 transition-all duration-300 ${isProductInWishlist
                         ? "border-red-500 dark:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/20 hover:bg-red-100 dark:hover:bg-red-500/30"
-                        : "border-gray-300 dark:border-luxury-gold text-gray-700 dark:text-luxury-gold hover:bg-gray-100 dark:hover:bg-luxury-gold/10 hover:border-luxury-gold bg-white dark:bg-navy-900/30"
+                        : "border-gray-300 dark:border-black text-gray-700 dark:text-black hover:bg-gray-100 dark:hover:bg-black/10 hover:border-black bg-white dark:bg-navy-900/30"
                       }`}
                     size="sm"
                   >
@@ -641,31 +605,29 @@ function ProductDetails() {
                           : "fill-none"
                         }`}
                     />
-                    {isProductInWishlist ? "إزالة من المفضلة" : "إضافة للمفضلة"}
+                    {isProductInWishlist ? "Remove from wishlist" : "Add to wishlist"}
                   </Button>
-                </div>
+                </div> */}
               </div>
             )}
 
-            {/* مميزات إضافية */}
-            <div className="space-y-4 pt-6 border-t border-gray-200 dark:border-luxury-gold/20">
+            <div className="space-y-4 pt-6 border-t border-gray-200 dark:border-black/20">
               <div className="flex items-center gap-3 text-gray-700 dark:text-white/80">
-                <Truck className="w-5 h-5 text-luxury-gold" />
-                <span>شحن مجاني للطلبات أكثر من $100</span>
+                <Truck className="w-5 h-5 text-black" />
+                <span>Free shipping for orders over $100</span>
               </div>
               <div className="flex items-center gap-3 text-gray-700 dark:text-white/80">
-                <Shield className="w-5 h-5 text-luxury-gold" />
-                <span>ضمان الجودة 100%</span>
+                <Shield className="w-5 h-5 text-black" />
+                <span>100% quality guarantee</span>
               </div>
               <div className="flex items-center gap-3 text-gray-700 dark:text-white/80">
-                <RotateCcw className="w-5 h-5 text-luxury-gold" />
-                <span>إمكانية الإرجاع خلال 30 يوم</span>
+                <RotateCcw className="w-5 h-5 text-black" />
+                <span>Returnable within 30 days</span>
               </div>
             </div>
           </motion.div>
         </motion.div>
 
-        {/* الصف الثاني: المنتجات ذات الصلة */}
         {relatedProducts.length > 0 && (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
@@ -674,7 +636,7 @@ function ProductDetails() {
     className="space-y-8"
   >
     <div className="text-center">
-      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">منتجات ذات صلة</h2>
+      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Related Products </h2>
       <div className="w-24 h-1 bg-black dark:bg-white mx-auto rounded-full" />
     </div>
 
@@ -690,15 +652,44 @@ function ProductDetails() {
             className="group bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
             onClick={() => navigate(`/shop/product/${product._id}`)}
           >
-            {/* صورة المنتج */}
-            <div className="relative overflow-hidden h-[500px]">
-              <img
-                src={getProductImageUrl(product)}
-                alt={product.title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
+              <div 
+              className="relative overflow-hidden h-[500px]"
+              onMouseEnter={() => setHoveredProductId(product._id)}
+              onMouseLeave={() => setHoveredProductId(null)}
+            >
+              {(() => {
+                const productImages = getProductImages(product);
+                const firstImage = productImages[0] || getProductImageUrl(product);
+                const secondImage = productImages[1] || firstImage;
+                const isHovered = hoveredProductId === product._id;
+                const hasMultipleImages = productImages.length > 1;
+                
+                return (
+                  <>
+                    <img
+                      src={firstImage}
+                      alt={product.title}
+                      className={`w-full h-full object-cover transition-all duration-500 absolute inset-0 ${
+                        isHovered && hasMultipleImages 
+                          ? 'opacity-0 scale-105' 
+                          : 'opacity-100 scale-100'
+                      } group-hover:scale-105`}
+                    />
+                    {hasMultipleImages && (
+                      <img
+                        src={secondImage}
+                        alt={product.title}
+                        className={`w-full h-full object-cover transition-all duration-500 absolute inset-0 ${
+                          isHovered 
+                            ? 'opacity-100 scale-100' 
+                            : 'opacity-0 scale-105'
+                        } group-hover:scale-105`}
+                      />
+                    )}
+                  </>
+                );
+              })()}
 
-              {/* Action Buttons */}
               <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
                 <Button
                   size="icon"
@@ -708,22 +699,20 @@ function ProductDetails() {
                     e.stopPropagation();
                     navigate(`/shop/product/${product._id}`);
                   }}
-                  title="عرض التفاصيل"
+                  title="View details"
                 >
                   <Eye className="w-4 h-4" />
                 </Button>
-                <RelatedProductWishlistButton product={product} />
+                {/* <RelatedProductWishlistButton product={product} /> */}
               </div>
 
-              {/* شارة الخصم */}
               {product.salePrice && product.salePrice < product.price && (
                 <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow">
-                  خصم
+                  Discount
                 </div>
               )}
             </div>
 
-            {/* معلومات المنتج */}
             <CardContent className="p-6 space-y-4 bg-white dark:bg-black">
               <div>
                 <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1">
@@ -736,7 +725,6 @@ function ProductDetails() {
                 )}
               </div>
 
-              {/* التقييم */}
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-900/50 px-2 py-1 rounded-lg">
                   {[...Array(5)].map((_, i) => (
@@ -749,7 +737,6 @@ function ProductDetails() {
                 <span className="text-gray-600 dark:text-white/70 text-xs font-semibold">(4.0)</span>
               </div>
 
-              {/* السعر */}
               <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-900/40 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                 {product.salePrice && product.salePrice < product.price ? (
                   <>
@@ -760,7 +747,7 @@ function ProductDetails() {
                       ${product.price}
                     </span>
                     <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
-                      خصم {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
+                      Discount {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
                     </span>
                   </>
                 ) : (
@@ -778,8 +765,6 @@ function ProductDetails() {
 )}
 
       </div>
-
-      {/* Lightbox */}
       <Lightbox />
     </div>
   );

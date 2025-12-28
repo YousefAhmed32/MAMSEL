@@ -23,133 +23,168 @@ function ShoppingOrders() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
-  const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
+  const { orderList, orderDetails } = useSelector(
+    (state) => state.shopOrder
+  );
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  function handleFetchOrderDetails(getId) {
-    setSelectedOrderId(getId);
-    dispatch(getOrderDetails(getId));
+  function handleFetchOrderDetails(id) {
+    setSelectedOrderId(id);
+    dispatch(getOrderDetails(id));
   }
 
   useEffect(() => {
-    dispatch(getAllOrderByUserId(user?.id));
+    if (user?.id) {
+      dispatch(getAllOrderByUserId(user.id));
+    }
   }, [dispatch, user?.id]);
 
   useEffect(() => {
-    if (orderDetails !== null) setOpenDetailsDialog(true);
+    if (orderDetails) setOpenDetailsDialog(true);
   }, [orderDetails]);
 
-  // Helper function to get status badge
+  /* =========================
+     Helpers
+  ========================= */
+
   function getStatusBadge(orderStatus) {
-    const status = orderStatus || 'pending';
-    const normalizedStatus = String(status).toLowerCase().trim();
-    
-    let badgeClass = "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30";
-    let badgeText = status;
-    
-    if (normalizedStatus === "accepted" || normalizedStatus === "confirmed" || normalizedStatus === "delivered") {
-      badgeClass = "bg-green-500/20 text-green-400 border border-green-500/50";
-      badgeText = normalizedStatus === "accepted" || normalizedStatus === "confirmed" ? "مقبول" : "تم التسليم";
-    } else if (normalizedStatus === "rejected") {
-      badgeClass = "bg-red-500/20 text-red-400 border border-red-500/50";
-      badgeText = "مرفوض";
-    } else if (normalizedStatus === "on the way" || normalizedStatus === "shipped") {
-      badgeClass = "bg-blue-500/20 text-blue-400 border border-blue-500/50";
-      badgeText = normalizedStatus === "on the way" ? "في الطريق" : "تم الشحن";
-    } else if (normalizedStatus === "processing") {
-      badgeClass = "bg-purple-500/20 text-purple-400 border border-purple-500/50";
-      badgeText = "قيد المعالجة";
-    } else if (normalizedStatus === "cancelled") {
-      badgeClass = "bg-red-500/20 text-red-400 border border-red-500/50";
-      badgeText = "ملغي";
-    } else {
-      badgeText = "في الانتظار";
+    const status = orderStatus || "pending";
+    const normalized = String(status).toLowerCase().trim();
+
+    let badgeClass =
+      "bg-gray-100 text-gray-700 border border-gray-300 dark:bg-white/5 dark:text-white/70 dark:border-white/10";
+    let badgeText = "Pending";
+
+    if (["accepted", "confirmed", "delivered"].includes(normalized)) {
+      badgeClass =
+        "bg-black text-white border border-black dark:bg-white dark:text-black dark:border-white";
+      badgeText = normalized === "delivered" ? "Delivered" : "Accepted";
+    } else if (normalized === "rejected") {
+      badgeClass =
+        "bg-red-100 text-red-700 border border-red-300 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30";
+      badgeText = "Rejected";
+    } else if (["on the way", "shipped"].includes(normalized)) {
+      badgeClass =
+        "bg-blue-100 text-blue-700 border border-blue-300 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/30";
+      badgeText = normalized === "shipped" ? "Shipped" : "On the way";
+    } else if (normalized === "processing") {
+      badgeClass =
+        "bg-purple-100 text-purple-700 border border-purple-300 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/30";
+      badgeText = "Processing";
     }
-    
+
     return { badgeClass, badgeText };
   }
 
-  // Helper function to format date
   function formatDate(orderItem) {
     if (orderItem?.createdAt) {
-      return new Date(orderItem.createdAt).toLocaleDateString('ar-EG');
+      return new Date(orderItem.createdAt).toLocaleDateString("ar-EG");
     }
     if (orderItem?.orderDate) {
       return orderItem.orderDate.split("T")[0];
     }
-    return 'N/A';
+    return "—";
   }
 
-  // Helper function to get total amount
   function getTotalAmount(orderItem) {
-    return orderItem?.total || orderItem?.totalAfterDiscount || orderItem?.totalAmount || 0;
+    return (
+      orderItem?.total ||
+      orderItem?.totalAfterDiscount ||
+      orderItem?.totalAmount ||
+      0
+    );
   }
+
+  /* =========================
+     UI
+  ========================= */
 
   return (
     <>
-      <Card className="perfume-card backdrop-blur-md shadow-[0_0_20px_rgba(210,176,101,0.3)] text-white rounded-2xl">
+      <Card
+        className="
+          rounded-2xl
+          backdrop-blur-md
+          bg-white dark:bg-[#0b0b0b]
+          text-gray-900 dark:text-white
+          shadow-lg dark:shadow-[0_0_25px_rgba(0,0,0,0.6)]
+          border border-gray-200 dark:border-white/10
+        "
+      >
         <CardHeader>
-          <CardTitle className="text-gold-950 tracking-wider text-xl sm:text-2xl glow-text text-center sm:text-right">
-            سجل الطلبات
+          <CardTitle className="text-xl sm:text-2xl tracking-wide text-center sm:text-right">
+            Order History
           </CardTitle>
         </CardHeader>
 
         <CardContent className="p-2 sm:p-6">
-          {/* Mobile/Tablet Card View */}
+          {/* ================= Mobile / Tablet ================= */}
           <div className="block lg:hidden space-y-3">
-            {orderList && orderList.length > 0 ? (
+            {orderList?.length > 0 ? (
               orderList.map((orderItem) => {
-                const { badgeClass, badgeText } = getStatusBadge(orderItem?.orderStatus);
+                const { badgeClass, badgeText } = getStatusBadge(
+                  orderItem?.orderStatus
+                );
+
                 return (
                   <div
                     key={orderItem?._id}
-                    className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10 hover:bg-white/10 transition-all"
+                    className="
+                      rounded-xl p-4
+                      bg-gray-50 dark:bg-white/5
+                      border border-gray-200 dark:border-white/10
+                      hover:bg-gray-100 dark:hover:bg-white/10
+                      transition-all
+                    "
                   >
                     <div className="flex flex-col gap-3">
-                      {/* Order ID and Date Row */}
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-white/50">رقم الطلب:</span>
-                          <span className="font-mono text-sm text-white">{orderItem?._id?.toString().substring(0, 8)}...</span>
-                        </div>
-                        <span className="text-sm text-white/70">{formatDate(orderItem)}</span>
-                      </div>
-
-                      {/* Status Badge */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-white/50">الحالة:</span>
-                        <Badge className={`py-1 px-3 text-xs rounded-xl font-medium shadow-md ${badgeClass}`}>
-                          {badgeText}
-                        </Badge>
-                      </div>
-
-                      {/* Payment Method */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-white/50">طريقة الدفع:</span>
-                        <span className="text-sm text-white/70">
-                          {orderItem?.payment?.method || orderItem?.paymentMethod || 'N/A'}
+                      <div className="flex justify-between flex-wrap gap-2">
+                        <span className="text-sm font-mono">
+                          #{orderItem?._id?.substring(0, 8)}…
+                        </span>
+                        <span className="text-sm text-gray-500 dark:text-white/60">
+                          {formatDate(orderItem)}
                         </span>
                       </div>
 
-                      {/* Amount */}
-                      <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                      <Badge
+                        className={`w-fit py-1 px-3 rounded-xl text-xs ${badgeClass}`}
+                      >
+                        {badgeText}
+                      </Badge>
+
+                      <div className="text-sm text-gray-600 dark:text-white/70">
+                        Payment Method:{" "}
+                        {orderItem?.payment?.method ||
+                          orderItem?.paymentMethod ||
+                          "—"}
+                      </div>
+
+                      <div className="flex justify-between items-end pt-3 border-t border-gray-200 dark:border-white/10">
                         <div>
-                          <span className="text-xs text-white/50 block mb-1">المبلغ:</span>
-                          <span className="text-lg font-semibold text-green-300">
+                          <p className="text-lg font-semibold">
                             {getTotalAmount(orderItem)} QR
-                          </span>
+                          </p>
                           {orderItem?.appliedCoupon?.discountAmount > 0 && (
-                            <span className="text-xs text-gold-300 block mt-1">
-                              خصم: {orderItem.appliedCoupon.discountAmount} QR
-                            </span>
+                            <p className="text-xs text-gray-500 dark:text-white/50">
+                              Discount: {orderItem.appliedCoupon.discountAmount} QR
+                            </p>
                           )}
                         </div>
+
                         <Button
-                          onClick={() => handleFetchOrderDetails(orderItem?._id)}
-                          className="bg-gold-950 hover:bg-gold-800 text-navy-950 px-4 py-2 text-xs sm:text-sm rounded-xl shadow-md transition-all glow-gold whitespace-nowrap"
+                          onClick={() =>
+                            handleFetchOrderDetails(orderItem?._id)
+                          }
+                          className="
+                            bg-black text-white
+                            dark:bg-white dark:text-black
+                            hover:opacity-90
+                            px-4 py-2 rounded-xl
+                          "
                         >
-                          عرض التفاصيل
+                          Details
                         </Button>
                       </div>
                     </div>
@@ -157,65 +192,75 @@ function ShoppingOrders() {
                 );
               })
             ) : (
-              <div className="text-center py-8 text-white/60">
-                لا توجد طلبات.
-              </div>
+              <p className="text-center py-8 text-gray-500 dark:text-white/60">
+                No orders found
+              </p>
             )}
           </div>
 
-          {/* Desktop Table View */}
+          {/* ================= Desktop ================= */}
           <div className="hidden lg:block overflow-x-auto">
-            <Table className="text-white">
+            <Table className="text-gray-900 dark:text-white">
               <TableHeader>
-                <TableRow className="border-b border-white/10">
-                  <TableHead className="text-white/70">رقم الطلب</TableHead>
-                  <TableHead className="text-white/70">التاريخ</TableHead>
-                  <TableHead className="text-white/70">الحالة</TableHead>
-                  <TableHead className="text-white/70">طريقة الدفع</TableHead>
-                  <TableHead className="text-white/70">المبلغ</TableHead>
-                  <TableHead>
-                    <span className="sr-only">التفاصيل</span>
-                  </TableHead>
+                <TableRow className="border-b border-gray-200 dark:border-white/10">
+                  <TableHead>Order ID</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Payment Method</TableHead>
+                  <TableHead>Total Amount</TableHead>
+                  <TableHead />
                 </TableRow>
               </TableHeader>
 
               <TableBody>
-                {orderList && orderList.length > 0 ? (
+                {orderList?.length > 0 ? (
                   orderList.map((orderItem) => {
-                    const { badgeClass, badgeText } = getStatusBadge(orderItem?.orderStatus);
+                    const { badgeClass, badgeText } = getStatusBadge(
+                      orderItem?.orderStatus
+                    );
+
                     return (
                       <TableRow
                         key={orderItem?._id}
-                        className="hover:bg-white/5 transition-colors"
+                        className="hover:bg-gray-100 dark:hover:bg-white/5"
                       >
-                        <TableCell className="font-mono text-sm">
-                          {orderItem?._id?.toString().substring(0, 8)}...
+                        <TableCell className="font-mono">
+                          {orderItem?._id?.substring(0, 8)}…
                         </TableCell>
-                        <TableCell className="text-sm">
-                          {formatDate(orderItem)}
-                        </TableCell>
+                        <TableCell>{formatDate(orderItem)}</TableCell>
                         <TableCell>
-                          <Badge className={`py-1 px-3 text-sm rounded-xl font-medium shadow-md ${badgeClass}`}>
+                          <Badge
+                            className={`py-1 px-3 rounded-xl ${badgeClass}`}
+                          >
                             {badgeText}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-sm text-white/70">
-                          {orderItem?.payment?.method || orderItem?.paymentMethod || 'N/A'}
+                        <TableCell className="text-gray-600 dark:text-white/70">
+                          {orderItem?.payment?.method ||
+                            orderItem?.paymentMethod ||
+                            "—"}
                         </TableCell>
-                        <TableCell className="text-sm font-semibold text-green-300">
+                        <TableCell className="font-semibold">
                           {getTotalAmount(orderItem)} QR
                           {orderItem?.appliedCoupon?.discountAmount > 0 && (
-                            <span className="text-xs text-gold-300 block">
-                              خصم: {orderItem.appliedCoupon.discountAmount} QR
+                            <span className="block text-xs text-gray-500 dark:text-white/50">
+                              Discount: {orderItem.appliedCoupon.discountAmount} QR
                             </span>
                           )}
                         </TableCell>
                         <TableCell>
                           <Button
-                            onClick={() => handleFetchOrderDetails(orderItem?._id)}
-                            className="bg-gold-950 hover:bg-gold-800 text-navy-950 px-4 py-2 text-sm rounded-xl shadow-md transition-all glow-gold"
+                            onClick={() =>
+                              handleFetchOrderDetails(orderItem?._id)
+                            }
+                            className="
+                              bg-black text-white
+                              dark:bg-white dark:text-black
+                            
+                              px-4 py-2 rounded-xl
+                            "
                           >
-                            عرض التفاصيل
+                            Details
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -223,8 +268,11 @@ function ShoppingOrders() {
                   })
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-6 text-white/60">
-                      لا توجد طلبات.
+                    <TableCell
+                      colSpan={6}
+                      className="text-center py-6 text-gray-500 dark:text-white/60"
+                    >
+                      No orders found
                     </TableCell>
                   </TableRow>
                 )}
@@ -234,6 +282,7 @@ function ShoppingOrders() {
         </CardContent>
       </Card>
 
+      {/* ================= Dialog ================= */}
       <Dialog
         open={openDetailsDialog}
         onOpenChange={(open) => {

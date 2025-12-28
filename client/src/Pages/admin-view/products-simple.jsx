@@ -57,45 +57,46 @@ function AdminProductsSimple() {
 
   function onSubmit(event) {
     event.preventDefault();
-
-    // Extract File objects from productImages and imageFile
     const imageFiles = [];
+    const oldImageUrls = []; // Old images that should be kept (URLs only, no file property)
     
-    // Add files from productImages array (multiple images)
     productImages.forEach(img => {
       if (img.file instanceof File) {
+        // New image file
         imageFiles.push(img.file);
+      } else if (img.url && !img.file) {
+        // Old image URL that should be kept
+        oldImageUrls.push(img.url);
       }
     });
-    
-    // Add single uploaded image file if exists
     if (imageFile instanceof File) {
       imageFiles.push(imageFile);
     }
-
-    // Prepare form data with File objects
-    // Format attributes for Clothes category
     let attributes = {};
     if (formData.category === "Clothes" && formData.selectedSizes.length > 0) {
       attributes = {
         sizes: formData.selectedSizes
       };
     }
-
+    
+    // When editing, send old image URLs that should be kept
+    // This allows removing images without adding new ones
+    const isEditing = currentEditId !== null;
+    
     const submitData = {
       ...formData,
       attributes: Object.keys(attributes).length > 0 ? JSON.stringify(attributes) : undefined,
       groups: formData.selectedGroups.length > 0 ? JSON.stringify(formData.selectedGroups) : undefined,
       imageFiles: imageFiles.length > 0 ? imageFiles : undefined,
-      // Remove selectedSizes and selectedGroups from submitData as they're now in attributes/groups
+      // Send list of old image URLs to keep (only the ones still in productImages)
+      // If oldImageUrls is sent, API will only keep those specific images
+      keepOldImages: isEditing && (oldImageUrls.length > 0 || imageFiles.length > 0) ? true : undefined,
+      oldImageUrls: isEditing && oldImageUrls.length > 0 ? JSON.stringify(oldImageUrls) : undefined,
       selectedSizes: undefined,
       selectedGroups: undefined
     };
-    
-    // Clean up - remove selectedSizes and selectedGroups from the object
     delete submitData.selectedSizes;
     delete submitData.selectedGroups;
-
     if (currentEditId) {
       dispatch(
         editProduct({
@@ -143,20 +144,21 @@ function AdminProductsSimple() {
 
   function handleEditProduct(productItem) {
     setCurrentEditId(productItem._id);
-    
-    // Extract sizes from attributes if exists
     let selectedSizes = [];
     if (productItem.attributes && productItem.attributes.sizes) {
       selectedSizes = Array.isArray(productItem.attributes.sizes) 
         ? productItem.attributes.sizes 
         : [];
     }
-    
+    // Extract brand ID if brand is populated (object) or use as is if it's already a string
+    const brandId = typeof productItem.brand === 'object' && productItem.brand?._id 
+      ? productItem.brand._id 
+      : productItem.brand || "";
     setFormData({
       title: productItem.title || "",
       description: productItem.description || "",
       category: productItem.category || "",
-      brand: productItem.brand || "",
+      brand: brandId,
       price: productItem.price || "",
       salePrice: productItem.salePrice || "",
       totalStock: productItem.totalStock || "",
@@ -169,10 +171,7 @@ function AdminProductsSimple() {
       selectedSizes: selectedSizes,
       selectedGroups: Array.isArray(productItem.groups) ? productItem.groups : [],
     });
-    
-    // Handle existing images using utility function
     if (productItem.image) {
-      // Handle both string and object formats
       let imageUrl = '';
       if (typeof productItem.image === 'string') {
         imageUrl = getImageUrl(productItem.image);
@@ -181,27 +180,21 @@ function AdminProductsSimple() {
       }
       setUploadedImageUrl(imageUrl);
     }
-    
-    // Convert image objects/URLs to the format expected by MultipleImageUpload
     if (productItem.images && Array.isArray(productItem.images)) {
       const formattedImages = productItem.images.map(img => {
         let url = '';
         if (typeof img === 'string') {
-          // Legacy format: just a URL string
           url = getImageUrl(img);
         } else if (img.url) {
-          // New format: image object with metadata
           url = getImageUrl(img.url);
         }
         return url ? { url, id: Date.now() + Math.random() } : null;
       }).filter(Boolean);
-      
       setProductImages(formattedImages);
       if (formattedImages.length > 0) {
         setMainImageIndex(0);
       }
     }
-    
     setOpenCreateProductDialog(true);
   }
 
@@ -218,12 +211,9 @@ function AdminProductsSimple() {
            formData.totalStock && 
            formData.gender &&
            (uploadedImageUrl || productImages.length > 0);
-    
-    // Additional validation based on category
     if (formData.category === "Clothes") {
       return baseValid && formData.selectedSizes.length > 0 && formData.color && formData.material && formData.fit;
     }
-    
     return baseValid;
   };
 
@@ -233,12 +223,12 @@ function AdminProductsSimple() {
         {/* Header */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="p-4 rounded-2xl bg-primary/10 dark:bg-primary/20">
-              <Package className="w-8 h-8 text-primary" />
+            <div className="p-4 rounded-2xl bg-neutral-200 dark:bg-neutral-800">
+              <Package className="w-8 h-8 text-black dark:text-white" />
             </div>
             <h1 className="text-4xl font-bold text-foreground">{t('products.title')}</h1>
           </div>
-          <p className="text-primary/70 text-lg">{t('products.subtitle')}</p>
+          <p className="text-neutral-500 dark:text-neutral-400 text-lg">{t('products.subtitle')}</p>
         </div>
 
         {/* Stats Cards */}
@@ -247,7 +237,7 @@ function AdminProductsSimple() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-primary/70 text-sm">{t('products.totalProducts')}</p>
+                  <p className="text-neutral-500 dark:text-neutral-400 text-sm">{t('products.totalProducts')}</p>
                   <p className="text-3xl font-bold text-foreground">{productList?.length || 0}</p>
                 </div>
                 <div className="p-3 rounded-xl bg-blue-500/20">
@@ -261,7 +251,7 @@ function AdminProductsSimple() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-primary/70 text-sm">{t('products.activeProducts')}</p>
+                  <p className="text-neutral-500 dark:text-neutral-400 text-sm">{t('products.activeProducts')}</p>
                   <p className="text-3xl font-bold text-foreground">
                     {productList?.filter(p => p.isActive !== false).length || 0}
                   </p>
@@ -277,7 +267,7 @@ function AdminProductsSimple() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-primary/70 text-sm">{t('products.outOfStock')}</p>
+                  <p className="text-neutral-500 dark:text-neutral-400 text-sm">{t('products.outOfStock')}</p>
                   <p className="text-3xl font-bold text-foreground">
                     {productList?.filter(p => p.totalStock === 0).length || 0}
                   </p>
@@ -293,7 +283,7 @@ function AdminProductsSimple() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-primary/70 text-sm">{t('products.differentCategories')}</p>
+                  <p className="text-neutral-500 dark:text-neutral-400 text-sm">{t('products.differentCategories')}</p>
                   <p className="text-3xl font-bold text-foreground">
                     {new Set(productList?.map(p => p.category)).size || 0}
                   </p>
@@ -310,7 +300,7 @@ function AdminProductsSimple() {
         <div className="text-center">
           <Button
             onClick={() => setOpenCreateProductDialog(true)}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-4 text-lg rounded-xl shadow-[0_0_20px_rgba(210,176,101,0.4)]"
+            className="bg-black dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-black font-bold px-8 py-4 text-lg rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.13)]"
           >
             <PlusCircle className="w-6 h-6 mr-2" />
             {t('products.addNewProduct')}
@@ -321,7 +311,7 @@ function AdminProductsSimple() {
         {productList?.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {productList.map((productItem) => (
-              <Card key={productItem._id} className="bg-card border border-border shadow-sm hover:border-primary/30 transition-all duration-300">
+              <Card key={productItem._id} className="bg-card border border-border shadow-sm hover:border-black/30 dark:hover:border-white/20 transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     {/* Product Image */}
@@ -339,9 +329,9 @@ function AdminProductsSimple() {
                     {/* Product Info */}
                     <div className="space-y-2">
                       <h3 className="text-lg font-semibold text-foreground line-clamp-2">{productItem.title}</h3>
-                      <p className="text-primary/70 text-sm line-clamp-2">{productItem.description}</p>
+                      <p className="text-neutral-500 dark:text-neutral-400 text-sm line-clamp-2">{productItem.description}</p>
                       <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-primary">${productItem.price}</span>
+                        <span className="text-2xl font-bold text-black dark:text-white">${productItem.price}</span>
                         <span className="text-sm text-foreground/70">{t('products.stockLabel', { stock: productItem.totalStock })}</span>
                       </div>
                     </div>
@@ -352,7 +342,7 @@ function AdminProductsSimple() {
                         size="sm"
                         variant="outline"
                         onClick={() => handleEditProduct(productItem)}
-                        className="flex-1 border-border text-primary hover:bg-luxury-gold hover:text-luxury-navy"
+                        className="flex-1 border-border text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white"
                       >
                         <Pencil className="w-4 h-4 mr-1" />
                         {t('products.edit')}
@@ -374,14 +364,14 @@ function AdminProductsSimple() {
         ) : (
           <div className="text-center py-20">
             <div className="max-w-md mx-auto">
-              <div className="w-24 h-24 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Package className="w-12 h-12 text-primary/50" />
+              <div className="w-24 h-24 bg-neutral-200 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Package className="w-12 h-12 text-black/50 dark:text-white/50" />
               </div>
               <h3 className="text-2xl font-bold text-foreground mb-4">{t('products.noProducts')}</h3>
-              <p className="text-primary/70 mb-8">{t('products.createNew')}</p>
+              <p className="text-neutral-500 dark:text-neutral-400 mb-8">{t('products.createNew')}</p>
               <Button
                 onClick={() => setOpenCreateProductDialog(true)}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-3 rounded-xl"
+                className="bg-black dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-black font-bold px-8 py-3 rounded-xl"
               >
                 <PlusCircle className="w-5 h-5 mr-2" />
                 {t('products.addProduct')}
@@ -393,25 +383,25 @@ function AdminProductsSimple() {
         {/* Simple Product Form Modal */}
         {openCreateProductDialog && (
           <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-            <div className="relative w-full max-w-4xl max-h-[90vh] bg-background/95 backdrop-blur-sm text-foreground rounded-2xl border border-border shadow-[0_0_60px_rgba(210,176,101,0.3)]">
+            <div className="relative w-full max-w-4xl max-h-[90vh] bg-background/95 backdrop-blur-sm text-foreground rounded-2xl border border-border shadow-[0_0_60px_rgba(0,0,0,0.09)]">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-border">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-primary/10 dark:bg-primary/20">
-                    <PlusCircle className="w-8 h-8 text-primary" />
+                  <div className="p-3 rounded-xl bg-neutral-200 dark:bg-neutral-800">
+                    <PlusCircle className="w-8 h-8 text-black dark:text-white" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-foreground">
                       {currentEditId ? t('products.editProduct') : t('products.addNewProduct')}
                     </h2>
-                    <p className="text-primary/70">{t('products.fillRequiredFields')}</p>
+                    <p className="text-neutral-500 dark:text-neutral-400">{t('products.fillRequiredFields')}</p>
                   </div>
                 </div>
                 <Button
                   onClick={() => resetForm()}
                   variant="outline"
                   size="icon"
-                  className="border-border text-primary hover:bg-luxury-gold hover:text-luxury-navy"
+                  className="border-border text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white"
                 >
                   <X className="w-5 h-5" />
                 </Button>
@@ -421,7 +411,7 @@ function AdminProductsSimple() {
               <form onSubmit={onSubmit} className="p-6 space-y-6 max-h-[calc(90vh-120px)] overflow-y-auto">
                 {/* Images Section */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                  <h3 className="text-lg font-semibold text-black dark:text-white flex items-center gap-2">
                     <ImageIcon className="w-5 h-5" />
                     {t('products.productImages')}
                   </h3>
@@ -457,7 +447,7 @@ function AdminProductsSimple() {
 
                 {/* Product Details */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                  <h3 className="text-lg font-semibold text-black dark:text-white flex items-center gap-2">
                     <Package className="w-5 h-5" />
                     {t('products.productDetails')}
                   </h3>
@@ -473,7 +463,7 @@ function AdminProductsSimple() {
                         value={formData.title}
                         onChange={(e) => setFormData({...formData, title: e.target.value})}
                         placeholder={t('products.enterProductName')}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-black dark:focus:border-white focus:outline-none"
                         required
                       />
                     </div>
@@ -486,7 +476,7 @@ function AdminProductsSimple() {
                       <select
                         value={formData.category}
                         onChange={(e) => setFormData({...formData, category: e.target.value})}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-black dark:focus:border-white focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
                         required
                       >
                         <option value="" className="bg-background text-foreground">{t('products.selectCategoryOption')}</option>
@@ -513,7 +503,7 @@ function AdminProductsSimple() {
                       <select
                         value={formData.gender}
                         onChange={(e) => setFormData({...formData, gender: e.target.value})}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-black dark:focus:border-white focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
                         required
                       >
                         <option value="" className="bg-background text-foreground">{t('products.selectGender')}</option>
@@ -534,7 +524,7 @@ function AdminProductsSimple() {
                         onChange={(e) => setFormData({...formData, price: e.target.value})}
                         placeholder={t('products.enterPrice')}
                         min="0"
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-black dark:focus:border-white focus:outline-none"
                         required
                       />
                     </div>
@@ -548,7 +538,7 @@ function AdminProductsSimple() {
                         onChange={(e) => setFormData({...formData, salePrice: e.target.value})}
                         placeholder={t('products.salePricePlaceholder')}
                         min="0"
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-black dark:focus:border-white focus:outline-none"
                       />
                     </div>
 
@@ -563,7 +553,7 @@ function AdminProductsSimple() {
                         onChange={(e) => setFormData({...formData, totalStock: e.target.value})}
                         placeholder={t('products.enterQuantity')}
                         min="0"
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-black dark:focus:border-white focus:outline-none"
                         required
                       />
                     </div>
@@ -579,7 +569,7 @@ function AdminProductsSimple() {
                             value={formData.size}
                             onChange={(e) => setFormData({...formData, size: e.target.value})}
                             placeholder={t('products.sizePlaceholder')}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-black dark:focus:border-white focus:outline-none"
                           />
                         </div>
 
@@ -591,7 +581,7 @@ function AdminProductsSimple() {
                             value={formData.fragranceType}
                             onChange={(e) => setFormData({...formData, fragranceType: e.target.value})}
                             placeholder={t('products.fragranceTypePlaceholder')}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-black dark:focus:border-white focus:outline-none"
                           />
                         </div>
                       </>
@@ -619,8 +609,8 @@ function AdminProductsSimple() {
                                   }}
                                   className={`px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 ${
                                     isSelected
-                                      ? "bg-primary text-primary-foreground border-2 border-primary shadow-[0_0_15px_rgba(210,176,101,0.5)] scale-105"
-                                      : "bg-background border-2 border-border text-foreground hover:border-primary/50 hover:bg-primary/10"
+                                      ? "bg-black dark:bg-white text-white dark:text-black border-2 border-black dark:border-white shadow-[0_0_15px_rgba(0,0,0,0.14)] scale-105"
+                                      : "bg-background border-2 border-border text-foreground hover:border-black/50 dark:hover:border-white/40 hover:bg-neutral-200 dark:hover:bg-neutral-900"
                                   }`}
                                 >
                                   {size}
@@ -643,7 +633,7 @@ function AdminProductsSimple() {
                             value={formData.color}
                             onChange={(e) => setFormData({...formData, color: e.target.value})}
                             placeholder={t('products.colorPlaceholder')}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-black dark:focus:border-white focus:outline-none"
                             required
                           />
                         </div>
@@ -658,7 +648,7 @@ function AdminProductsSimple() {
                             value={formData.material}
                             onChange={(e) => setFormData({...formData, material: e.target.value})}
                             placeholder={t('products.materialPlaceholder')}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-black dark:focus:border-white focus:outline-none"
                             required
                           />
                         </div>
@@ -671,7 +661,7 @@ function AdminProductsSimple() {
                           <select
                             value={formData.fit}
                             onChange={(e) => setFormData({...formData, fit: e.target.value})}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
+                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-black dark:focus:border-white focus:outline-none [&>option]:bg-background [&>option]:text-foreground"
                             required
                           >
                             <option value="" className="bg-background text-foreground">{t('products.selectFit')}</option>
@@ -716,8 +706,8 @@ function AdminProductsSimple() {
                             }}
                             className={`px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 border-2 ${
                               isSelected
-                                ? "bg-primary text-primary-foreground border-primary shadow-[0_0_10px_rgba(210,176,101,0.4)] scale-105"
-                                : "bg-background border-border text-foreground hover:border-primary/50 hover:bg-primary/10"
+                                ? "bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-[0_0_10px_rgba(0,0,0,0.1)] scale-105"
+                                : "bg-background border-border text-foreground hover:border-black/50 dark:hover:border-white/40 hover:bg-neutral-200 dark:hover:bg-neutral-900"
                             }`}
                           >
                             {group}
@@ -737,7 +727,7 @@ function AdminProductsSimple() {
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
                       placeholder={t('products.enterProductDescription')}
                       rows="4"
-                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none resize-none"
+                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-black dark:focus:border-white focus:outline-none resize-none"
                       required
                     />
                   </div>
@@ -748,11 +738,11 @@ function AdminProductsSimple() {
                   <Button
                     type="submit"
                     disabled={imageLoadingStatus || !isFormValid()}
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-4 text-lg rounded-xl shadow-[0_0_20px_rgba(210,176,101,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-black dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-black font-bold py-4 text-lg rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.14)] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {imageLoadingStatus ? (
                       <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 border-2 border-luxury-navy border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-5 h-5 border-2 border-black dark:border-white border-t-transparent rounded-full animate-spin"></div>
                         {t('products.uploading')}
                       </div>
                     ) : (
@@ -773,5 +763,4 @@ function AdminProductsSimple() {
 }
 
 export default AdminProductsSimple;
-
 

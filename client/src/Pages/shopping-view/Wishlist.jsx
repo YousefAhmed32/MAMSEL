@@ -27,24 +27,24 @@ function Wishlist() {
   const handleRemoveFromWishlist = (productId) => {
     dispatch(removeFromWishlist(productId));
     toast({
-      title: "تم الحذف من المفضلات",
-      description: "تم إزالة المنتج من قائمة المفضلات الخاصة بك",
+      title: "Removed from wishlist",
+      description: "Product removed from wishlist",
     });
   };
 
   const handleClearWishlist = () => {
     dispatch(clearWishlist());
     toast({
-      title: "تم مسح قائمة المفضلات",
-      description: "تم إزالة جميع العناصر من قائمة المفضلات",
+      title: "Wishlist cleared",
+      description: "All items removed from wishlist",
     });
   };
 
   const handleAddToCart = (productId, totalStock) => {
     if (!user?.id) {
       toast({
-        title: "تسجيل الدخول مطلوب",
-        description: "يجب تسجيل الدخول لإضافة المنتجات إلى السلة",
+        title: "Login required",
+        description: "Please login to add products to cart",
         variant: "destructive",
       });
       return;
@@ -55,8 +55,8 @@ function Wishlist() {
         if (data?.payload?.success) {
           dispatch(fetchCartItems(user.id));
           toast({
-            title: "تمت الإضافة للسلة",
-            description: "تم إضافة المنتج إلى سلة التسوق الخاصة بك",
+            title: "Added to cart",
+            description: "Added product to cart",
           });
         }
       }
@@ -86,12 +86,12 @@ function Wishlist() {
               <div>
                 <h1 className="text-3xl sm:text-4xl font-bold flex items-center gap-3">
                   <Heart className="h-8 w-8 text-red-500 fill-current" />
-                  قائمة المفضلات
+                  Wishlist
                 </h1>
                 <p className="text-muted-foreground mt-2">
                   {wishlistItems.length === 0
-                    ? "قائمة المفضلات فارغة"
-                    : `${wishlistItems.length} ${wishlistItems.length === 1 ? "منتج" : "منتجات"} محفوظة`}
+                    ? "Wishlist is empty"
+                    : `${wishlistItems.length} ${wishlistItems.length === 1 ? "product" : "products"} saved`}
                 </p>
               </div>
             </div>
@@ -102,7 +102,7 @@ function Wishlist() {
                 className="text-destructive hover:bg-destructive/10 hover:text-destructive"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                مسح الكل
+                Clear all
               </Button>
             )}
           </div>
@@ -114,7 +114,7 @@ function Wishlist() {
             <div className="p-6 rounded-full bg-muted/30 mb-4">
               <Heart className="h-16 w-16 text-muted-foreground" />
             </div>
-            <h2 className="text-2xl font-semibold mb-2">لا توجد منتجات محفوظة بعد</h2>
+            <h2 className="text-2xl font-semibold mb-2">No products saved yet</h2>
             <p className="text-muted-foreground mb-6 max-w-md">
               يمكنك البدء في إضافة المنتجات إلى قائمة المفضلات بالنقر على أيقونة القلب في أي بطاقة منتج.
             </p>

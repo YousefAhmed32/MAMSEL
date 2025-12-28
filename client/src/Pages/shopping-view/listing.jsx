@@ -103,6 +103,11 @@ function ShoppingListing() {
     sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
   }
 
+  function handleClearAllFilters() {
+    serFilters({});
+    sessionStorage.removeItem("filters");
+  }
+
   function handleGetProductDetails(getCurrentProductId) {
     if (getCurrentProductId) {
       navigate(`/shop/product/${getCurrentProductId}`);
@@ -159,6 +164,7 @@ function ShoppingListing() {
               filters={filters} 
               handleFilters={handleFilters} 
               handlePriceChange={handlePriceChange}
+              handleClearAllFilters={handleClearAllFilters}
             />
           </motion.div>
 
@@ -177,7 +183,7 @@ function ShoppingListing() {
                 <Package className="w-6 h-6 text-pink-600 dark:text-pink-400" />
               </div>
                   <div>
-                  <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">                    All products
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">    All products....
                     </h2>
                     <p className="text-sm text-gray-600 dark:text-gold-300/70 mt-1">
                     Discover our exclusive collection of luxurious fashion                     </p>
@@ -188,7 +194,7 @@ function ShoppingListing() {
               <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800/30">
                 <Sparkles className="w-4 h-4 text-pink-600 dark:text-pink-400" />
                 <span className="text-sm font-semibold text-pink-700 dark:text-pink-300">
-                      {productList?.length || 0} منتج
+                      {productList?.length || 0} products
                     </span>
                   </div>
                   
@@ -229,7 +235,7 @@ function ShoppingListing() {
                     <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 dark:border-navy-700 mx-auto mb-4"></div>
                     <div className="animate-spin rounded-full h-16 w-16 border-4 border-gold-500 border-t-transparent absolute top-0 left-1/2 transform -translate-x-1/2"></div>
                   </div>
-                  <p className="text-gold-600 dark:text-gold-400 font-semibold mt-4">جاري تحميل المنتجات...</p>
+                  <p className="text-gold-600 dark:text-gold-400 font-semibold mt-4">Loading products...</p>
                 </div>
               </div>
             ) : productList && productList.length > 0 ? (
@@ -264,10 +270,10 @@ function ShoppingListing() {
                   <Package className="w-16 h-16 text-pink-500 dark:text-pink-400" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  لا توجد منتجات
+                  No products found
                 </h3>
                 <p className="text-gray-600 dark:text-gold-300/70 text-sm max-w-md">
-                  جرب تعديل الفلاتر للعثور على ما تبحث عنه
+                  Try modifying the filters to find what you're looking for
                 </p>
               </motion.div>
             )}

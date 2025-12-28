@@ -59,17 +59,17 @@ function MenuItems({ setOpen, isCollapsed = false }) {
               transition-all duration-300 ease-in-out
               ${
                 active
-                  ? "bg-gradient-to-r from-[#D4AF37]/20 via-[#D4AF37]/15 to-transparent dark:from-[#D4AF37]/30 dark:via-[#D4AF37]/20 dark:to-transparent text-[#D4AF37] dark:text-[#D4AF37] shadow-lg shadow-[#D4AF37]/10 dark:shadow-[#D4AF37]/20 scale-[1.02]"
+                  ? "bg-gradient-to-r from-black/10 via-black/5 to-transparent dark:from-black/30 dark:via-black/20 dark:to-transparent text-black dark:text-white shadow-lg shadow-black/10 dark:shadow-black/30 scale-[1.02]"
                   : "text-gray-600 dark:text-gray-400 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-100 hover:scale-[1.01]"
               }
             `}
             title={isCollapsed ? t(menuItem.key) : ""}
           >
-            {/* Active indicator - Glow line */}
+            {/* Active indicator - Black Glow line */}
             {active && (
               <>
-                <span className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#D4AF37] via-[#E5C158] to-[#D4AF37] rounded-l-full shadow-[0_0_8px_rgba(212,175,55,0.6)] dark:shadow-[0_0_12px_rgba(212,175,55,0.8)]" />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#D4AF37]/5 to-transparent dark:from-[#D4AF37]/10 dark:to-transparent animate-pulse" />
+                <span className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-b from-black via-gray-700 to-black rounded-l-full shadow-[0_0_8px_rgba(0,0,0,0.4)] dark:shadow-[0_0_12px_rgba(0,0,0,0.7)]" />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-black/5 to-transparent dark:from-black/10 dark:to-transparent animate-pulse" />
               </>
             )}
             
@@ -79,13 +79,13 @@ function MenuItems({ setOpen, isCollapsed = false }) {
                 className={`
                   w-5 h-5 flex-shrink-0 transition-all duration-300
                   ${active 
-                    ? "text-[#D4AF37] dark:text-[#D4AF37] drop-shadow-[0_0_4px_rgba(212,175,55,0.5)]" 
+                    ? "text-black dark:text-white drop-shadow-[0_0_4px_rgba(0,0,0,0.4)]" 
                     : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200"
                   }
                 `} 
               />
               {active && (
-                <div className="absolute inset-0 w-5 h-5 bg-[#D4AF37]/20 rounded-full blur-sm animate-ping" />
+                <div className="absolute inset-0 w-5 h-5 bg-black/15 dark:bg-black/25 rounded-full blur-sm animate-ping" />
               )}
             </div>
             
@@ -139,7 +139,7 @@ function AdminSidebar({ open, setOpen }) {
                       alt="MAMSEL" 
                       className="w-[140px] h-7 object-cover transition-transform duration-300 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-[#D4AF37]/10 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-black/10 dark:bg-white/10 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                 </div>
               </SheetTitle>
@@ -191,7 +191,7 @@ function AdminSidebar({ open, setOpen }) {
                 alt="MAMSEL" 
                 className={`object-cover transition-all duration-300 group-hover:scale-105 ${isCollapsed ? 'w-12 h-12 rounded-full' : 'w-[140px] h-7'}`}
               />
-              <div className="absolute inset-0 bg-[#D4AF37]/10 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-black/10 dark:bg-white/10 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
           </div>
           
@@ -199,7 +199,7 @@ function AdminSidebar({ open, setOpen }) {
             onClick={() => setIsCollapsed(!isCollapsed)}
             variant="ghost"
             size="icon"
-            className="h-8 w-8 hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/20 text-gray-500 dark:text-gray-400 hover:text-[#D4AF37] transition-all duration-200 hover:scale-110"
+            className="h-8 w-8 hover:bg-black/10 dark:hover:bg-black/20 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-all duration-200 hover:scale-110"
           >
             {isCollapsed ? (
               <ChevronRight className="w-4 h-4" />

@@ -47,10 +47,10 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
       e.stopPropagation();
       dispatch(toggleWishlistItem(product));
       toast({
-        title: isInWishlist ? "تم الحذف من المفضلة" : "تمت الإضافة للمفضلة",
+        title: isInWishlist ? "Removed from wishlist" : "Added to wishlist",
         description: isInWishlist 
-          ? `تم حذف ${product?.title || product?.name} من قائمة المفضلة`
-          : `تم إضافة ${product?.title || product?.name} إلى قائمة المفضلة`,
+          ? `Removed ${product?.title || product?.name} from the wishlist`
+          : `Added ${product?.title || product?.name} to the wishlist`,
       });
     };
 
@@ -77,8 +77,8 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
     
     if (totalStock === 0) {
       toast({
-        title: "المنتج غير متوفر",
-        description: "هذا المنتج غير متوفر حالياً",
+        title: "Product is not available",
+        description: "This product is not available currently",
         variant: "destructive"
       });
       return;
@@ -94,11 +94,11 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
       {/* Section Header */}
       <div className="text-center mb-16 mt-10 pointer-events-none">
         <h2 className="text-5xl font-serif font-bold luxury-text mb-4 tracking-wide">
-          جميع المنتجات
+          All Products
         </h2>
         <div className="w-24 h-1 bg-gradient-to-r from-luxury-gold to-luxury-gold-light mx-auto rounded-full" />
         <p className="text-white/70 mt-6 text-lg font-light max-w-3xl mx-auto">
-          استكشف مجموعتنا الكاملة من  العود الفاخرة، كل منتج تم اختياره بعناية ليوفر تجربة فريدة ومميزة.
+          Explore our complete collection of luxurious incense, each carefully selected to provide a unique and exceptional experience.
         </p>
       </div>
 
@@ -137,7 +137,7 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
                     onViewDetails(product._id);
                   }}
                   className="bg-luxury-gold/95 border-luxury-gold text-luxury-navy hover:bg-luxury-gold-light hover:text-luxury-navy shadow-[0_0_15px_rgba(210,176,101,0.6)] backdrop-blur-sm relative z-50 pointer-events-auto"
-                  title="عرض التفاصيل"
+                  title="View Details"
                 >
                   <Eye className="w-4 h-4" />
                 </Button>
@@ -155,8 +155,8 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
 
                     if (product.totalStock === 0) {
                       toast({
-                        title: "المنتج غير متوفر",
-                        description: "هذا المنتج غير متوفر حالياً",
+                        title: "Product is not available",
+                        description: "This product is not available currently",
                         variant: "destructive"
                       });
                       return;
@@ -168,7 +168,7 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
                   }}
                   className="bg-luxury-gold/95 border-luxury-gold text-luxury-navy hover:bg-luxury-gold-light hover:text-luxury-navy shadow-[0_0_15px_rgba(210,176,101,0.6)] backdrop-blur-sm relative z-50 pointer-events-auto"
                   disabled={product.totalStock === 0}
-                  title="أضف إلى السلة"
+                  title="Add to Cart"
                 >
                   <ShoppingCart className="w-4 h-4" />
                 </Button>
@@ -210,7 +210,7 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
               
               {/* Description */}
               <p className="text-gray-700 dark:text-white/90 text-sm leading-relaxed line-clamp-2 min-h-[40px] font-medium">
-                {product.description || 'منتج فاخر متميز'}
+                {product.description || 'Luxurious Product'}
               </p>
               
               {/* Price */}
@@ -224,7 +224,7 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
                       QR{product.price}
                     </span>
                     <span className="ml-auto bg-red-500 text-white text-xs px-3 py-1 rounded-full font-bold shadow-lg">
-                      خصم {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
+                      Discount {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
                     </span>
                   </>
                 ) : (
@@ -241,7 +241,7 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
                     className="w-full opacity-50 cursor-not-allowed bg-gray-400 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-600 text-white font-semibold relative z-20"
                     disabled
                   >
-                    نفدت الكمية
+                    Out of Stock
                   </Button>
                 ) : (
                   <Button
@@ -258,7 +258,7 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 pointer-events-none" />
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       <ShoppingCart className="w-4 h-4" />
-                      أضف إلى السلة
+                      Add to Cart
                     </span>
                   </Button>
                 )}
@@ -276,7 +276,7 @@ const AllProducts = ({ onViewDetails, onAddToCart }) => {
             variant="outline"
             className="border-luxury-gold text-luxury-gold hover:bg-luxury-gold hover:text-luxury-navy luxury-btn px-8 py-3 text-lg relative z-30 pointer-events-auto"
           >
-            {showAll ? "عرض أقل" : `عرض جميع المنتجات (${productList.length})`}
+              {showAll ? "Show Less" : `Show All Products (${productList.length})`}
           </Button>
         </div>
       )}

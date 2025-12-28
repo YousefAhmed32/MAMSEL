@@ -97,7 +97,7 @@ function AuthRegister() {
                 <div className="relative inline-block">
                   <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#E5C158] flex items-center justify-center shadow-[0_0_40px_rgba(212,175,55,0.3)]">
                     <img 
-                      src="/assets/logo3.png" 
+                      src="/assets/logo-c.png" 
                       alt="MAMSEL" 
                       className="w-14 h-14 object-cover rounded-full"
                     />
@@ -151,7 +151,7 @@ function AuthRegister() {
                   <div className="relative">
                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#E5C158] flex items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.3)]">
                       <img 
-                        src="/assets/logo3.png" 
+                        src="/assets/logo-c.png" 
                         alt="MAMSEL" 
                         className="w-12 h-12 object-cover rounded-full"
                       />
@@ -162,10 +162,10 @@ function AuthRegister() {
                 {/* Form Header */}
                 <div className="mb-10">
                   <h2 className="text-3xl font-light tracking-wide text-gray-900 dark:text-white mb-2">
-                    إنشاء حساب جديد
+                    Create new account
                   </h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    املأ البيانات التالية لإنشاء حسابك
+                    Fill in the following data to create your account
                   </p>
                 </div>
 
@@ -177,7 +177,7 @@ function AuthRegister() {
                   className="w-full mb-6 h-12 border-gray-300 dark:border-gray-700 bg-white dark:bg-[#0a0a0a] hover:bg-gray-50 dark:hover:bg-[#0f0f0f] text-gray-700 dark:text-gray-300 transition-all duration-300 group"
                 >
                   <Chrome className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-                  <span>المتابعة مع Google</span>
+                  <span>Continue with Google</span>
                 </Button>
 
                 {/* Divider */}
@@ -289,11 +289,11 @@ function AuthRegister() {
                     {isLoading ? (
                       <div className="flex items-center gap-2">
                         <div className="animate-spin rounded-full h-5 w-5 border-2 border-white dark:border-gray-900 border-t-transparent"></div>
-                        <span>جاري إنشاء الحساب...</span>
+                        <span>Creating account...</span>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <span>إنشاء الحساب</span>
+                          <span>Create account</span>
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </div>
                     )}
@@ -303,12 +303,12 @@ function AuthRegister() {
                 {/* Login Link */}
                 <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    لديك حساب بالفعل؟{" "}
+                    Already have an account?{" "}
                     <Link
                       to="/auth/login"
                       className="font-medium text-[#D4AF37] hover:text-[#E5C158] transition-colors underline-offset-4 hover:underline"
                     >
-                      تسجيل الدخول
+                      Login
                     </Link>
                   </p>
                 </div>

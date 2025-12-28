@@ -132,12 +132,12 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
                 <CardTitle className="text-2xl sm:text-3xl font-bold tracking-tight
                   text-foreground dark:text-foreground
                   bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-                  {currentEditId ? "Edit Address" : "إضافة عنوان جديد"}
+                  {currentEditId ? "Edit Address" : "Add a new address"}
                 </CardTitle>
                 <p className="text-sm text-muted-foreground mt-1">
                   {currentEditId 
                     ? "Update your address information" 
-                    : "إدارة عناوين التسليم الخاصة بك"}
+                    : "Manage your delivery addresses"}
                 </p>
               </div>
             </div>
@@ -165,8 +165,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
                 <h3 className="text-lg sm:text-xl font-semibold text-foreground dark:text-foreground
                   flex items-center gap-2 px-4">
                   <CheckCircle2 className="h-5 w-5 text-primary" />
-                  عناوينك المحفوظة
-                </h3>
+                  Your saved addresses                </h3>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent"></div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">

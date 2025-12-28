@@ -10,8 +10,8 @@ const DynamicSelect = ({
   value, 
   onChange, 
   options = [], 
-  placeholder = "اختر أو أضف جديد",
-  addNewLabel = "إضافة جديد",
+  placeholder = "Choose or add new",
+  addNewLabel = "Add new",
   required = false 
 }) => {
   const [isAddingNew, setIsAddingNew] = useState(false);
@@ -46,8 +46,8 @@ const DynamicSelect = ({
       setIsAddingNew(false);
       
       toast({
-        title: "تم إضافة العنصر الجديد بنجاح",
-        description: `${newOption.label} تم إضافته إلى القائمة`
+        title: "New item added successfully",
+        description: `${newOption.label} added to the list`
       });
     }
   };
@@ -96,7 +96,7 @@ const DynamicSelect = ({
           <Input
             value={newItem}
             onChange={(e) => setNewItem(e.target.value)}
-            placeholder={`أدخل ${label.toLowerCase()} جديد`}
+            placeholder={`Enter new ${label.toLowerCase()}`}
             className="flex-1 bg-luxury-navy/50 border-luxury-gold/30 text-white"
             onKeyPress={(e) => e.key === 'Enter' && handleAddNew()}
           />
@@ -119,7 +119,7 @@ const DynamicSelect = ({
 
       {selectedOption && (
         <p className="text-xs text-luxury-gold/70">
-          المحدد: {selectedOption.label}
+          Selected: {selectedOption.label}
         </p>
       )}
     </div>

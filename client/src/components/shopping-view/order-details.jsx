@@ -4,96 +4,138 @@ import { DialogContent } from "../ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
 import { getImageUrl } from "@/utils/imageUtils";
-import { 
-  Package, 
-  Calendar, 
-  DollarSign, 
-  CreditCard, 
-  MapPin, 
-  Phone, 
-  User, 
-  CheckCircle, 
-  Clock, 
+import {
+  Package,
+  Calendar,
+  DollarSign,
+  CreditCard,
+  MapPin,
+  Phone,
+  User,
+  CheckCircle,
+  Clock,
   XCircle,
   Truck,
   Edit3,
-  ShoppingBag
+  ShoppingBag,
 } from "lucide-react";
 
 function ShoppingOrderDetailsView({ orderDetails }) {
   const { user } = useSelector((state) => state.auth);
+
+  /* ================= Status Helpers ================= */
 
   const getStatusIcon = (status) => {
     switch (status) {
       case "accepted":
       case "confirmed":
       case "delivered":
-        return <CheckCircle className="w-5 h-5 text-green-400" />;
+        return <CheckCircle className="w-5 h-5 text-black dark:text-white" />;
       case "rejected":
-        return <XCircle className="w-5 h-5 text-red-400" />;
+        return <XCircle className="w-5 h-5 text-red-500" />;
       case "on the way":
       case "shipped":
-        return <Truck className="w-5 h-5 text-blue-400" />;
+        return <Truck className="w-5 h-5 text-blue-500" />;
       case "processing":
-        return <Edit3 className="w-5 h-5 text-purple-400" />;
-      case "pending":
-        return <Clock className="w-5 h-5 text-yellow-400" />;
+        return <Edit3 className="w-5 h-5 text-purple-500" />;
       default:
-        return <Clock className="w-5 h-5 text-gray-400" />;
+        return <Clock className="w-5 h-5 text-gray-500" />;
     }
   };
 
   const getStatusBadge = (status) => {
+    const base =
+      "border rounded-xl px-3 py-1 text-xs font-medium";
+
     switch (status) {
       case "accepted":
       case "confirmed":
-        return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">مقبول</Badge>;
+        return (
+          <Badge className={`${base} bg-black text-white dark:bg-white dark:text-black`}>
+            Accepted
+          </Badge>
+        );
+      case "delivered":
+        return (
+          <Badge className={`${base} bg-black text-white dark:bg-white dark:text-black`}>
+            Delivered
+          </Badge>
+        );
       case "rejected":
-        return <Badge className="bg-red-500/20 text-red-400 border-red-500/30">مرفوض</Badge>;
-      case "pending":
-        return <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">في الانتظار</Badge>;
+        return (
+          <Badge className={`${base} bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400`}>
+            Rejected
+          </Badge>
+        );
       case "processing":
-        return <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">قيد المعالجة</Badge>;
+        return (
+          <Badge className={`${base} bg-purple-100 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400`}>
+            Processing
+          </Badge>
+        );
       case "on the way":
       case "shipped":
-        return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">في الطريق</Badge>;
-      case "delivered":
-        return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">تم التسليم</Badge>;
+        return (
+          <Badge className={`${base} bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400`}>
+            On the way
+          </Badge>
+        );
       default:
-        return <Badge className="bg-gray-500/20 text-gray-400 border-gray-500/30">في الانتظار</Badge>;
+        return (
+          <Badge className={`${base} bg-gray-100 text-gray-600 dark:bg-white/5 dark:text-white/60`}>
+            Pending
+          </Badge>
+        );
     }
   };
 
-  const orderDate = orderDetails?.createdAt 
-    ? new Date(orderDetails.createdAt).toLocaleDateString('ar-EG')
-    : orderDetails?.orderDate 
-      ? (typeof orderDetails.orderDate === 'string' 
-          ? orderDetails.orderDate.split("T")[0] 
-          : new Date(orderDetails.orderDate).toLocaleDateString('ar-EG'))
-      : 'غير محدد';
+  /* ================= Data ================= */
 
-  const totalAmount = orderDetails?.totalAfterDiscount || orderDetails?.total || orderDetails?.totalAmount || 0;
-  const discountAmount = orderDetails?.appliedCoupon?.discountAmount || 0;
-  const totalBeforeDiscount = orderDetails?.totalBeforeDiscount || totalAmount + discountAmount;
+  const orderDate = orderDetails?.createdAt
+    ? new Date(orderDetails.createdAt).toLocaleDateString("ar-EG")
+    : "—";
+
+  const totalAmount =
+    orderDetails?.totalAfterDiscount ||
+    orderDetails?.total ||
+    orderDetails?.totalAmount ||
+    0;
+
+  const discountAmount =
+    orderDetails?.appliedCoupon?.discountAmount || 0;
+
+  /* ================= UI ================= */
 
   return (
-    <DialogContent className="lg:rounded-[20px] sm:max-w-[900px] bg-[#0B0F19]/95 backdrop-blur-2xl border border-gold-500/30 shadow-[0_0_25px_rgba(210,176,101,0.15)] p-0 text-white overflow-hidden">
-      <div className="max-h-[90vh] overflow-y-auto custom-scroll">
-        {/* Header */}
-        <div className="luxury-gradient p-6 border-b border-gold-500/20">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-gold-950/20">
-                <ShoppingBag className="w-6 h-6 text-gold-950" />
+    <DialogContent
+      className="
+        sm:max-w-[900px]
+        rounded-2xl
+        bg-white dark:bg-[#0b0b0b]
+        text-gray-900 dark:text-white
+        border border-gray-200 dark:border-white/10
+        shadow-xl
+        p-0 overflow-hidden
+      "
+    >
+      <div className="max-h-[90vh] overflow-y-auto">
+        {/* ================= Header ================= */}
+        <div className="p-6 border-b border-gray-200 dark:border-white/10">
+          <div className="flex justify-between items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-gray-100 dark:bg-white/5">
+                <ShoppingBag className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white glow-text">
-                  تفاصيل الطلب #{orderDetails?._id?.toString().slice(-8) || 'N/A'}
+                <h2 className="text-xl sm:text-2xl font-semibold">
+                    Order Details #{orderDetails?._id?.slice(-8)}
                 </h2>
-                <p className="text-gold-300">معلومات مفصلة عن طلبك</p>
+                <p className="text-sm text-gray-500 dark:text-white/60">
+                    View Order Details
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               {getStatusIcon(orderDetails?.orderStatus)}
               {getStatusBadge(orderDetails?.orderStatus)}
             </div>
@@ -101,292 +143,167 @@ function ShoppingOrderDetailsView({ orderDetails }) {
         </div>
 
         <div className="p-6 space-y-8">
-          {/* Order Summary Cards */}
+          {/* ================= Summary ================= */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="perfume-card p-4">
-              <CardContent className="p-0">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-gold-950/20">
-                    <Calendar className="w-5 h-5 text-gold-950" />
-                  </div>
-                  <div>
-                    <p className="text-gold-300 text-sm">تاريخ الطلب</p>
-                    <p className="text-white font-semibold">{orderDate}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="perfume-card p-4">
-              <CardContent className="p-0">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-green-500/20">
-                    <DollarSign className="w-5 h-5 text-green-400" />
-                  </div>
-                  <div>
-                    <p className="text-gold-300 text-sm">المبلغ الإجمالي</p>
-                    <p className="text-white font-semibold">{totalAmount} QR</p>
-                    {discountAmount > 0 && (
-                      <p className="text-xs text-gold-300 mt-1">
-                        خصم: {discountAmount} QR
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="perfume-card p-4">
-              <CardContent className="p-0">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-blue-500/20">
-                    <CreditCard className="w-5 h-5 text-blue-400" />
-                  </div>
-                  <div>
-                    <p className="text-gold-300 text-sm">طريقة الدفع</p>
-                    <p className="text-white font-semibold">
-                      {orderDetails?.payment?.method || orderDetails?.paymentMethod || "غير محدد"}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="perfume-card p-4">
-              <CardContent className="p-0">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-purple-500/20">
-                    <Package className="w-5 h-5 text-pink-500 dark:text-pink-400" />
-                  </div>
-                  <div>
-                    <p className="text-gold-300 text-sm">عدد المنتجات</p>
-                    <p className="text-white font-semibold">
-                      {orderDetails?.items?.length || orderDetails?.cartItems?.length || 0}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <InfoCard icon={<Calendar />} label="Order Date" value={orderDate} />
+            <InfoCard
+              icon={<DollarSign />}
+              label="Total Amount"
+              value={`${totalAmount} QR`}
+              sub={discountAmount > 0 ? `Discount: ${discountAmount} QR` : null}
+            />
+            <InfoCard
+              icon={<CreditCard />}
+              label="Payment Method"
+              value={
+                orderDetails?.payment?.method ||
+                orderDetails?.paymentMethod ||
+                "—"
+              }
+            />
+            <InfoCard
+              icon={<Package />}
+              label="Number of Products"
+              value={
+                orderDetails?.items?.length ||
+                orderDetails?.cartItems?.length ||
+                0
+              }
+            />
           </div>
 
-          {/* Order Items */}
-          <Card className="perfume-card">
-            <CardHeader className="border-b border-white/10">
-              <CardTitle className="text-white flex items-center gap-2">
-                <Package className="w-5 h-5 text-pink-500 dark:text-pink-400" />
-                منتجات الطلب
+          {/* ================= Products ================= */}
+          <Card className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Package className="w-5 h-5" />
+                Order Products
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              {(orderDetails?.items?.length > 0 || orderDetails?.cartItems?.length > 0) ? (
-                <div className="space-y-4">
-                  {(orderDetails.items || orderDetails.cartItems || []).map((item, i) => {
-                    const productImageSrc = item.productImage || item.image || (item.productId && typeof item.productId === 'object' ? item.productId.image : '') || '';
-                    const imageUrl = productImageSrc ? getImageUrl(productImageSrc) : null;
-                    const placeholderUrl = "https://images.unsplash.com/photo-1541643600914-78b084683601?w=80&h=80&fit=crop&crop=center";
-                    
-                    return (
-                      <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
-                        <div className="flex items-center gap-4">
-                          <div className="w-16 h-16 rounded-lg border border-gold-500/30 overflow-hidden bg-navy-950/50 flex items-center justify-center flex-shrink-0">
-                            {imageUrl ? (
-                              <img 
-                                src={imageUrl}
-                                alt={item.title || 'Product'}
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  e.target.src = placeholderUrl;
-                                }}
-                              />
-                            ) : (
-                              <Package className="w-8 h-8 text-pink-500 dark:text-pink-400" />
-                            )}
-                          </div>
-                          <div>
-                            <h4 className="text-white font-semibold">{item.title || 'N/A'}</h4>
-                            <p className="text-gold-300 text-sm">الكمية: {item.quantity || 0}</p>
-                          </div>
+            <CardContent className="space-y-4">
+              {(orderDetails.items || orderDetails.cartItems || []).map(
+                (item, i) => {
+                  const img =
+                    item.productImage ||
+                    item.image ||
+                    item?.productId?.image;
+                  const imageUrl = img ? getImageUrl(img) : null;
+
+                  return (
+                    <div
+                      key={i}
+                      className="flex justify-between items-center p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-lg overflow-hidden bg-gray-100 dark:bg-white/10 flex items-center justify-center">
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Package className="w-6 h-6 text-gray-400" />
+                          )}
                         </div>
-                        <div className="text-right">
-                          <p className="text-white font-semibold">{item.price || 0} QR</p>
-                          <p className="text-gold-300 text-sm">
-                            المجموع: {(item.price || 0) * (item.quantity || 0)} QR
+                        <div>
+                          <p className="font-semibold">
+                            {item.title || "—"}
+                          </p>
+                          <p className="text-sm text-gray-500 dark:text-white/60">
+                            Quantity: {item.quantity || 0}
                           </p>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p className="text-gold-300 text-center py-8">لا توجد منتجات في هذا الطلب</p>
+                      <div className="text-right">
+                        <p className="font-semibold">
+                          {item.price || 0} QR
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-white/60">
+                          Total:{" "}
+                          {(item.price || 0) *
+                            (item.quantity || 0)}{" "}
+                          QR
+                        </p>
+                      </div>
+                    </div>
+                  );
+                }
               )}
             </CardContent>
           </Card>
 
-          {/* Order Summary */}
-          {discountAmount > 0 && (
-            <Card className="perfume-card">
-              <CardHeader className="border-b border-white/10">
-                <CardTitle className="text-white flex items-center gap-2">
-                  <DollarSign className="w-5 h-5 text-gold-950" />
-                  ملخص الطلب
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gold-300">المجموع الفرعي</span>
-                    <span className="text-white font-semibold">{totalBeforeDiscount - discountAmount} QR</span>
-                  </div>
-                  {orderDetails?.shipping > 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gold-300">الشحن</span>
-                      <span className="text-white font-semibold">{orderDetails.shipping} QR</span>
-                    </div>
-                  )}
-                  {discountAmount > 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gold-300">الخصم ({orderDetails?.appliedCoupon?.code})</span>
-                      <span className="text-green-400 font-semibold">-{discountAmount} QR</span>
-                    </div>
-                  )}
-                  <Separator className="bg-white/10" />
-                  <div className="flex items-center justify-between">
-                    <span className="text-white font-bold text-lg">المجموع الإجمالي</span>
-                    <span className="text-gold-950 font-bold text-lg">{totalAmount} QR</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Shipping Information */}
-          <Card className="perfume-card">
-            <CardHeader className="border-b border-white/10">
-              <CardTitle className="text-white flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-gold-950" />
-                معلومات الشحن
+          {/* ================= Shipping ================= */}
+          <Card className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="w-5 h-5" />
+                Shipping Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <User className="w-5 h-5 text-gold-500" />
-                    <div>
-                      <p className="text-gold-300 text-sm">الاسم</p>
-                      <p className="text-white font-semibold">{user?.userName || "غير محدد"}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-gold-500" />
-                    <div>
-                      <p className="text-gold-300 text-sm">رقم الهاتف</p>
-                      <p className="text-white font-semibold">
-                        {orderDetails?.address?.phone || orderDetails?.addressInfo?.phone || "غير محدد"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-gold-500 mt-1" />
-                    <div>
-                      <p className="text-gold-300 text-sm">العنوان</p>
-                      <p className="text-white font-semibold">
-                        {orderDetails?.address?.address || orderDetails?.addressInfo?.address || "غير محدد"}
-                      </p>
-                      <p className="text-gold-300 text-sm">
-                        {orderDetails?.address?.city || orderDetails?.addressInfo?.city || ""} -
-                        {orderDetails?.address?.pincode || orderDetails?.addressInfo?.pincode || ""}
-                      </p>
-                    </div>
-                  </div>
-
-                  {(orderDetails?.address?.notes || orderDetails?.addressInfo?.notes) && (
-                    <div className="flex items-start gap-3">
-                      <Edit3 className="w-5 h-5 text-gold-500 mt-1" />
-                      <div>
-                        <p className="text-gold-300 text-sm">ملاحظات</p>
-                        <p className="text-white font-semibold">
-                          {orderDetails?.address?.notes || orderDetails?.addressInfo?.notes}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+            <CardContent className="grid md:grid-cols-2 gap-6">
+              <InfoRow icon={<User />} label="Name" value={user?.userName} />
+              <InfoRow
+                icon={<Phone />}
+                label="Phone"
+                value={
+                  orderDetails?.address?.phone ||
+                  orderDetails?.addressInfo?.phone
+                }
+              />
+              <InfoRow
+                icon={<MapPin />}
+                label="Address"
+                value={
+                  orderDetails?.address?.address ||
+                  orderDetails?.addressInfo?.address
+                }
+              />
+              {orderDetails?.address?.notes && (
+                <InfoRow
+                  icon={<Edit3 />}
+                  label="Notes"
+                  value={orderDetails.address.notes}
+                />
+              )}
             </CardContent>
           </Card>
-
-          {/* Payment Information (if Transfer) */}
-          {orderDetails?.payment?.method === 'Transfer' && orderDetails?.payment?.transferInfo && (
-            <Card className="perfume-card">
-              <CardHeader className="border-b border-white/10">
-                <CardTitle className="text-white flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-gold-950" />
-                  معلومات التحويل
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-gold-300 text-sm mb-1">اسم المرسل</p>
-                      <p className="text-white font-semibold">
-                        {orderDetails.payment.transferInfo.fullName || "غير محدد"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gold-300 text-sm mb-1">المبلغ المحوّل</p>
-                      <p className="text-white font-semibold">
-                        {orderDetails.payment.transferInfo.amountTransferred || 0} QR
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {orderDetails.payment.status === 'awaiting_admin_approval' && (
-                    <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-5 h-5 text-yellow-400" />
-                        <p className="text-yellow-400 font-semibold">
-                          جاري مراجعة التحويل من قبل الإدارة
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {orderDetails.payment.status === 'approved' && (
-                    <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-green-400" />
-                        <p className="text-green-400 font-semibold">
-                          تم الموافقة على التحويل
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {orderDetails.payment.status === 'rejected' && (
-                    <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
-                      <div className="flex items-center gap-2">
-                        <XCircle className="w-5 h-5 text-red-400" />
-                        <p className="text-red-400 font-semibold">
-                          تم رفض التحويل
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
     </DialogContent>
   );
 }
+
+/* ================= Small Components ================= */
+
+const InfoCard = ({ icon, label, value, sub }) => (
+  <Card className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+    <CardContent className="p-4 flex items-center gap-3">
+      <div className="p-2 rounded-lg bg-gray-100 dark:bg-white/10">
+        {icon}
+      </div>
+      <div>
+        <p className="text-sm text-gray-500 dark:text-white/60">{label}</p>
+        <p className="font-semibold">{value}</p>
+        {sub && (
+          <p className="text-xs text-gray-500 dark:text-white/50">
+            {sub}
+          </p>
+        )}
+      </div>
+    </CardContent>
+  </Card>
+);
+
+const InfoRow = ({ icon, label, value }) => (
+  <div className="flex items-start gap-3">
+    <div className="mt-1">{icon}</div>
+    <div>
+      <p className="text-sm text-gray-500 dark:text-white/60">
+        {label}
+      </p>
+      <p className="font-semibold">{value || "—"}</p>
+    </div>
+  </div>
+);
 
 export default ShoppingOrderDetailsView;

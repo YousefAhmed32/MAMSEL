@@ -71,7 +71,7 @@ const UserCartItemsContent = ({ cartItem }) => {
       
       if (getTotalStock > 0 && newQuantity > getTotalStock) {
         toast({
-          title: `يمكن إضافة ${currentQuantity} كمية فقط لهذا المنتج`,
+          title: `You can add only ${currentQuantity} quantity for this product`,
           variant: "destructive",
         });
         return;
@@ -102,8 +102,8 @@ const UserCartItemsContent = ({ cartItem }) => {
         // This prevents race conditions and ensures we always use the latest state
       } else {
         toast({
-          title: "خطأ في تحديث الكمية",
-          description: data?.payload?.message || "يرجى المحاولة مرة أخرى",
+          title: "Error updating quantity",
+          description: data?.payload?.message || "Please try again",
           variant: "destructive",
         });
       }
@@ -111,8 +111,8 @@ const UserCartItemsContent = ({ cartItem }) => {
       setIsUpdating(false);
       console.error("Error updating quantity:", error);
       toast({
-        title: "خطأ في تحديث الكمية",
-        description: "حدث خطأ أثناء تحديث الكمية. يرجى المحاولة مرة أخرى",
+        title: "Error updating quantity",
+        description: "An error occurred while updating the quantity. Please try again",
         variant: "destructive",
       });
     });
@@ -133,16 +133,16 @@ const UserCartItemsContent = ({ cartItem }) => {
         dispatch(fetchCartItems(user?.id));
       } else {
         toast({
-          title: "خطأ في تحديث المقاس",
-          description: data?.payload?.message || "يرجى المحاولة مرة أخرى",
+          title: "Error updating size",
+          description: data?.payload?.message || "Please try again",
           variant: "destructive",
         });
       }
     }).catch((error) => {
       console.error("Error updating size:", error);
       toast({
-        title: "خطأ في تحديث المقاس",
-        description: "حدث خطأ أثناء تحديث المقاس. يرجى المحاولة مرة أخرى",
+        title: "Error updating size",
+        description: "An error occurred while updating the size. Please try again",
         variant: "destructive",
       });
     });
@@ -156,14 +156,14 @@ const UserCartItemsContent = ({ cartItem }) => {
       ).then((data) => {
         if (data?.payload?.success) {
           toast({
-            title: "تم حذف عنصر السلة بنجاح",
+            title: "Cart item deleted successfully",
           });
           // Refresh cart items after deletion
           dispatch(fetchCartItems(user?.id));
         } else {
           toast({
-            title: "خطأ في حذف المنتج",
-            description: data?.payload?.message || "يرجى المحاولة مرة أخرى",
+            title: "Error deleting product",
+            description: data?.payload?.message || "Please try again",
             variant: "destructive",
           });
         }
@@ -171,8 +171,8 @@ const UserCartItemsContent = ({ cartItem }) => {
       }).catch((error) => {
         console.error("Error deleting item:", error);
         toast({
-          title: "خطأ في حذف المنتج",
-          description: "حدث خطأ أثناء حذف المنتج. يرجى المحاولة مرة أخرى",
+          title: "Error deleting product",
+          description: "An error occurred while deleting the product. Please try again",
           variant: "destructive",
         });
         setIsDeleting(false);
@@ -211,7 +211,7 @@ const UserCartItemsContent = ({ cartItem }) => {
         />
         {hasSale && (
           <div className="absolute top-1 left-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
-            خصم
+            Discount
           </div>
         )}
       </div>
@@ -242,7 +242,7 @@ const UserCartItemsContent = ({ cartItem }) => {
         {/* Size Display and Selector for Clothes */}
         {isClothesProduct && availableSizes.length > 0 && (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500 dark:text-gray-400">المقاس:</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">Size:</span>
             {showSizeSelector ? (
               <div className="flex flex-wrap gap-1.5 items-center">
                 {availableSizes.map((size) => (
@@ -275,11 +275,11 @@ const UserCartItemsContent = ({ cartItem }) => {
               <button
                 type="button"
                 onClick={() => setShowSizeSelector(true)}
-                className="px-3 py-1 rounded-full text-xs font-semibold bg-[#D4AF37]/10 dark:bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30 hover:bg-[#D4AF37]/20 dark:hover:bg-[#D4AF37]/30 transition-all hover:scale-105"
+                className="px-3 py-1 rounded-full text-xs font-semibold bg-black/10 dark:bg-black/20 text-black border border-black/30 hover:bg-black/20 dark:hover:bg-black/30 transition-all hover:scale-105"
               >
-                {cartItem?.selectedSize || "اختر المقاس"}
+                {cartItem?.selectedSize || "Select size"}
               </button>
-            )}
+            )}  
           </div>
         )}
 
@@ -316,7 +316,7 @@ const UserCartItemsContent = ({ cartItem }) => {
 
           {/* Price */}
           <div className="flex flex-col items-end">
-            <p className="font-bold text-lg text-[#D4AF37] dark:text-[#D4AF37]">
+            <p className="font-bold text-lg text-gold-primary dark:text-gold-primary">
               QR {totalItemPrice.toFixed(2)}
             </p>
             {hasSale && (
@@ -339,7 +339,7 @@ const UserCartItemsContent = ({ cartItem }) => {
           opacity-0 group-hover:opacity-100
           transition-all duration-200
           shadow-md hover:scale-110"
-        aria-label="حذف المنتج"
+        aria-label="Delete product"
       >
         <Trash className="w-4 h-4" />
       </button>

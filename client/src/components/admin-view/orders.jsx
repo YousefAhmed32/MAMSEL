@@ -21,13 +21,13 @@ import {
   resetOrderDetails,
 } from "@/store/admin/order-slice.js";
 import { Badge } from "../ui/badge";
-import { 
-  Search, 
-  Filter, 
-  Calendar, 
-  DollarSign, 
-  Package, 
-  Eye, 
+import {
+  Search,
+  Filter,
+  Calendar,
+  DollarSign,
+  Package,
+  Eye,
   MoreVertical,
   ShoppingCart,
   Clock,
@@ -72,22 +72,23 @@ function AdminOrdersView() {
   const filteredOrders = orderList?.filter(order => {
     const orderDate = order.createdAt || order.orderDate;
     const matchesSearch = order._id?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.orderStatus?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.payment?.method?.toLowerCase().includes(searchTerm.toLowerCase());
+      order.orderStatus?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.payment?.method?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === "all" || order.orderStatus === filterStatus;
-    const matchesDate = filterDate === "all" || 
-                       (filterDate === "today" && orderDate && new Date(orderDate).toDateString() === new Date().toDateString()) ||
-                       (filterDate === "week" && orderDate && new Date(orderDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) ||
-                       (filterDate === "month" && orderDate && new Date(orderDate) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
-    
+    const matchesDate = filterDate === "all" ||
+      (filterDate === "today" && orderDate && new Date(orderDate).toDateString() === new Date().toDateString()) ||
+      (filterDate === "week" && orderDate && new Date(orderDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) ||
+      (filterDate === "month" && orderDate && new Date(orderDate) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
+
     return matchesSearch && matchesStatus && matchesDate;
   }) || [];
 
+  // جميع ألوان الأصفر أو الذهبي تم استبدالها بالأسود مع دعم الوضعين الفاتح والداكن
   const getStatusIcon = (status) => {
     if (!status) return <Clock className="w-4 h-4 text-muted-foreground" />;
-    
+
     const normalizedStatus = String(status).toLowerCase().trim();
-    
+
     switch (normalizedStatus) {
       case "confirmed":
       case "accepted":
@@ -95,7 +96,8 @@ function AdminOrdersView() {
       case "rejected":
         return <XCircle className="w-4 h-4 text-red-600 dark:text-red-400" />;
       case "pending":
-        return <Clock className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
+        // اللون الأسود لكل من الوضعين
+        return <Clock className="w-4 h-4 text-black dark:text-white" />;
       case "processing":
         return <Edit3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
       case "on the way":
@@ -114,9 +116,9 @@ function AdminOrdersView() {
     if (!status) {
       return <Badge className="bg-muted text-muted-foreground border-border">{t('orders.undefined')}</Badge>;
     }
-    
+
     const normalizedStatus = String(status).toLowerCase().trim();
-    
+
     switch (normalizedStatus) {
       case "confirmed":
       case "accepted":
@@ -124,7 +126,12 @@ function AdminOrdersView() {
       case "rejected":
         return <Badge className="bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30">{t('orders.rejected')}</Badge>;
       case "pending":
-        return <Badge className="bg-yellow-500/10 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border-yellow-500/30">{t('orders.pending')}</Badge>;
+        // اسود كامل مكان الأصفر/الذهبي
+        return (
+          <Badge className="bg-black/10 dark:bg-black text-black dark:text-white border border-black/30 dark:border-white/30">
+            {t('orders.pending')}
+          </Badge>
+        );
       case "processing":
         return <Badge className="bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30">{t('orders.processing')}</Badge>;
       case "on the way":
@@ -150,8 +157,8 @@ function AdminOrdersView() {
         {/* Header */}
         <div className="text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <div className="p-3 sm:p-4 rounded-2xl bg-primary/10 dark:bg-primary/20 backdrop-blur-sm">
-              <ShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            <div className="p-3 sm:p-4 rounded-2xl bg-black/10 dark:bg-black backdrop-blur-sm">
+              <ShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-black dark:text-white" />
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
               {t('orders.title')}
@@ -166,8 +173,8 @@ function AdminOrdersView() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <div className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-2 sm:p-3 rounded-xl bg-primary/10 dark:bg-primary/20">
-                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              <div className="p-2 sm:p-3 rounded-xl bg-black/10 dark:bg-black">
+                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-black dark:text-white" />
               </div>
               <div className="text-right">
                 <h3 className="text-2xl sm:text-3xl font-bold text-foreground">{orderList?.length || 0}</h3>
@@ -190,8 +197,9 @@ function AdminOrdersView() {
 
           <div className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-2 sm:p-3 rounded-xl bg-yellow-500/10 dark:bg-yellow-500/20">
-                <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" />
+              {/* خلفية البطاقة المعلقة: أسود فقط ولا يوجد ذهبي أو أصفر */}
+              <div className="p-2 sm:p-3 rounded-xl bg-black/10 dark:bg-black">
+                <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-black dark:text-white" />
               </div>
               <div className="text-right">
                 <h3 className="text-2xl sm:text-3xl font-bold text-foreground">{pendingOrders}</h3>
@@ -231,7 +239,7 @@ function AdminOrdersView() {
                 />
               </div>
             </div>
-            
+
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
@@ -268,24 +276,26 @@ function AdminOrdersView() {
               <div key={orderItem._id} className="bg-card border border-border rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                   <div className="flex items-start sm:items-center gap-4 sm:gap-6 min-w-0 flex-1 w-full lg:w-auto">
-                    <div className="p-2 sm:p-3 rounded-xl bg-primary/10 dark:bg-primary/20 flex-shrink-0">
-                      <Package className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                    <div className="p-2 sm:p-3 rounded-xl bg-black/10 dark:bg-black flex-shrink-0">
+                      <Package className="w-5 h-5 sm:w-6 sm:h-6 text-black dark:text-white" />
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-2">
                         <h3 className="text-foreground font-semibold text-base sm:text-lg">
-                          {t('orders.orderNumber', { number: orderItem._id.slice(-8) })}
+                          <span dir={i18n.language === "ar" ? "rtl" : "ltr"} style={{ unicodeBidi: "isolate", direction: i18n.language === "ar" ? "rtl" : "ltr" }}>
+                            {t('orders.orderNumber', { number: orderItem._id.slice(-8) })}
+                          </span>
                         </h3>
                         {getStatusIcon(orderItem.orderStatus || 'pending')}
                         {getStatusBadge(orderItem.orderStatus || 'pending')}
                       </div>
-                      
+
                       <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                          <span>{orderItem.createdAt ? new Date(orderItem.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : 'en-US') : 
-                                 orderItem.orderDate ? orderItem.orderDate.split("T")[0] : 'N/A'}</span>
+                          <span>{orderItem.createdAt ? new Date(orderItem.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-EG' : 'en-US') :
+                            orderItem.orderDate ? orderItem.orderDate.split("T")[0] : 'N/A'}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
@@ -318,7 +328,7 @@ function AdminOrdersView() {
                       <span className="hidden sm:inline">{t('orders.viewDetails')}</span>
                       <span className="sm:hidden">{t('orders.view')}</span>
                     </Button>
-                    
+
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground h-9 w-9">
@@ -330,8 +340,9 @@ function AdminOrdersView() {
                           <CheckCircle className="w-4 h-4 mr-2" />
                           {t('orders.confirmOrder')}
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-foreground hover:bg-yellow-500/10 dark:hover:bg-yellow-500/20">
-                          <Clock className="w-4 h-4 mr-2" />
+                        {/* لا أصفر! تم استبدال الأصفر أو الذهبي بالأسود فقط ودعم الداكن */}
+                        <DropdownMenuItem className="text-foreground hover:bg-black/10 dark:hover:bg-black dark:hover:text-white">
+                          <Clock className="w-4 h-4 mr-2 text-black dark:text-white" />
                           {t('orders.setPending')}
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-foreground hover:bg-red-500/10 dark:hover:bg-red-500/20">

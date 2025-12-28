@@ -6,27 +6,26 @@ import ShoppingOrders from "@/components/shopping-view/orders";
 function ShoppingAccount() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-gray-100 dark:from-navy-950 dark:to-black transition-colors duration-500">
-      {/* قسم الهيدر بالصور */}
-      <div className="relative h-[300px] w-full overflow-hidden">
+      {/* <div className="relative h-[300px] w-full overflow-hidden">
         <img
           src={accImg}
           className="w-full h-full object-cover object-center brightness-90"
-          alt="الحساب الشخصي"
+          alt="My Account"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent dark:from-navy-950/70 dark:via-navy-900/40" />
         <div className="absolute bottom-6 left-8 text-3xl md:text-4xl font-bold tracking-wide text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
-          حسابي
+          My Account
         </div>
-      </div>
+      </div> */}
 
       {/* المحتوى الرئيسي */}
-      <div className="container mx-auto py-10 px-4 md:px-8">
+      <div className="   py-10 px-4 md:px-8">
         <div
-          className="rounded-2xl shadow-2xl border border-gray-200 dark:border-navy-900 
-                     bg-white/80 dark:bg-navy-950/60 backdrop-blur-xl 
+          className="rounded-2xl  w-full
+                     bg-gray-100 dark:bg-navy-950/60 backdrop-blur-xl 
                      transition-all duration-500"
         >
-          <Tabs defaultValue="orders" className="w-full">
+          <Tabs defaultValue="orders" className="pt-2 w-full">
             {/* ترويسة الـ Tabs */}
             <TabsList
               className="flex justify-center gap-4 bg-gray-100/70 dark:bg-navy-900/60 
@@ -41,7 +40,7 @@ function ShoppingAccount() {
                            data-[state=inactive]:text-gray-600 dark:data-[state=inactive]:text-gray-300
                            hover:scale-[1.05] transition-all duration-300"
               >
-                🧾 الطلبات
+                🧾 Orders
               </TabsTrigger>
               <TabsTrigger
                 value="address"
@@ -51,7 +50,7 @@ function ShoppingAccount() {
                            data-[state=inactive]:text-gray-600 dark:data-[state=inactive]:text-gray-300
                            hover:scale-[1.05] transition-all duration-300"
               >
-                🏠 العنوان
+                🏠 Address
               </TabsTrigger>
             </TabsList>
 

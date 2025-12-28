@@ -80,6 +80,7 @@ export const editProduct = createAsyncThunk(
     if (formData.attributes !== undefined) data.append('attributes', formData.attributes);
     if (formData.groups !== undefined) data.append('groups', formData.groups);
     if (formData.keepOldImages !== undefined) data.append('keepOldImages', formData.keepOldImages);
+    if (formData.oldImageUrls !== undefined) data.append('oldImageUrls', formData.oldImageUrls);
     
     // Handle image files if provided
     if (formData.imageFiles && Array.isArray(formData.imageFiles)) {

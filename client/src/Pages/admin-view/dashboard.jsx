@@ -336,15 +336,15 @@ function AdminDashboard() {
         {/* Header */}
         <div className="text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-            <div className="relative p-4 rounded-2xl bg-gradient-to-br from-[#D4AF37]/20 to-[#D4AF37]/10 dark:from-[#D4AF37]/30 dark:to-[#D4AF37]/20 backdrop-blur-sm shadow-lg group hover:scale-110 transition-transform duration-300">
-              <BarChart3 className="w-8 h-8 text-[#D4AF37] dark:text-[#D4AF37]" />
-              <div className="absolute inset-0 bg-[#D4AF37]/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative p-4 rounded-2xl bg-gradient-to-br from-black/20 to-black/10 dark:from-white/10 dark:to-white/5 backdrop-blur-sm shadow-lg group hover:scale-110 transition-transform duration-300">
+              <BarChart3 className="w-8 h-8 text-black dark:text-white" />
+              <div className="absolute inset-0 bg-black/20 dark:bg-white/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
             <div>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tight text-gray-900 dark:text-white mb-2">
                 {t('dashboard.title')}
               </h1>
-              <div className="h-1 w-24 bg-gradient-to-r from-[#D4AF37] to-transparent mx-auto"></div>
+              <div className="h-1 w-24 bg-gradient-to-r from-black/80 to-transparent dark:from-white/70 mx-auto"></div>
             </div>
           </div>
           <p className="text-gray-600 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto px-4 font-light">
@@ -365,24 +365,24 @@ function AdminDashboard() {
             ].map(({ key, label, translationKey, icon: Icon }) => {
               const fullLabel = t(translationKey);
               return (
-              <button
-                key={key}
-                onClick={() => setTimeFilter(key)}
-                className={`
-                  px-3 sm:px-4 md:px-5 py-2.5 rounded-lg transition-all duration-300 
-                  flex items-center gap-2 text-xs sm:text-sm font-medium whitespace-nowrap
-                  ${
-                    timeFilter === key 
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#E5C158] text-[#0a0a0f] shadow-lg shadow-[#D4AF37]/30 scale-105" 
-                      : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/50 dark:hover:bg-gray-800/50"
-                  }
-                `}
-                title={fullLabel}
-              >
-                <Icon className={`w-4 h-4 flex-shrink-0 ${timeFilter === key ? 'text-[#0a0a0f]' : ''}`} />
-                <span className="hidden sm:inline">{fullLabel}</span>
-                <span className="sm:hidden">{label}</span>
-              </button>
+                <button
+                  key={key}
+                  onClick={() => setTimeFilter(key)}
+                  className={`
+                    px-3 sm:px-4 md:px-5 py-2.5 rounded-lg transition-all duration-300 
+                    flex items-center gap-2 text-xs sm:text-sm font-medium whitespace-nowrap
+                    ${
+                      timeFilter === key 
+                        ? "bg-gradient-to-r from-black to-gray-800 text-white dark:bg-gradient-to-r dark:from-white dark:to-gray-700 dark:text-gray-900 shadow-lg shadow-black/30 scale-105 dark:shadow-white/20" 
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-white/50 dark:hover:bg-gray-800/50"
+                    }
+                  `}
+                  title={fullLabel}
+                >
+                  <Icon className={`w-4 h-4 flex-shrink-0 ${timeFilter === key ? 'text-white dark:text-gray-900' : ''}`} />
+                  <span className="hidden sm:inline">{fullLabel}</span>
+                  <span className="sm:hidden">{label}</span>
+                </button>
               );
             })}
           </div>
@@ -477,13 +477,13 @@ function AdminDashboard() {
 
           {/* Total Products */}
           <div className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-[#0f0f0f] dark:to-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-br from-black/15 to-transparent dark:from-white/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-[#D4AF37]/20 to-[#D4AF37]/10 dark:from-[#D4AF37]/30 dark:to-[#D4AF37]/20 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Package className="w-6 h-6 text-[#D4AF37] dark:text-[#D4AF37]" />
+                <div className="p-3 rounded-xl bg-gradient-to-br from-black/30 to-black/10 dark:from-white/20 dark:to-white/10 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Package className="w-6 h-6 text-black dark:text-white" />
                 </div>
-                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#D4AF37]/10 dark:bg-[#D4AF37]/20">
+                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-black/10 dark:bg-white/10">
                   {parseFloat(dashboardData.overview.productsGrowth) > 0 ? (
                     <ArrowUpRight className="w-4 h-4 text-green-600 dark:text-green-400" />
                   ) : (
@@ -496,7 +496,7 @@ function AdminDashboard() {
                   </span>
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[#D4AF37] dark:group-hover:text-[#D4AF37] transition-colors">
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-black dark:group-hover:text-white transition-colors">
                 {dashboardData.overview.totalProducts}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">{t('dashboard.overview.totalProducts')}</p>
@@ -507,19 +507,19 @@ function AdminDashboard() {
         {/* Revenue Status Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Pending Revenue */}
-          <div className="group relative bg-gradient-to-br from-white to-yellow-50/30 dark:from-[#0f0f0f] dark:to-yellow-900/10 border-2 border-yellow-500/30 dark:border-yellow-500/30 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="group relative bg-gradient-to-br from-white to-gray-200/40 dark:from-[#0f0f0f] dark:to-[#444]/20 border-2 border-gray-400/50 dark:border-gray-400/30 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-yellow-500/20 to-yellow-500/10 dark:from-yellow-500/30 dark:to-yellow-500/20 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Clock className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                <div className="p-3 rounded-xl bg-gradient-to-br from-gray-500/20 to-gray-400/10 dark:from-gray-300/15 dark:to-gray-100/10 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Clock className="w-6 h-6 text-gray-800 dark:text-gray-300" />
                 </div>
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors">
                 QR{dashboardData.overview.pendingRevenue.toLocaleString()}
               </h3>
-              <p className="text-yellow-600 dark:text-yellow-400 text-sm font-semibold mb-1">{t('dashboard.revenueStatus.pendingRevenue')}</p>
-              <p className="text-gray-500 dark:text-gray-500 text-xs">{t('dashboard.revenueStatus.pendingDescription')}</p>
+              <p className="text-gray-800 dark:text-gray-200 text-sm font-semibold mb-1">{t('dashboard.revenueStatus.pendingRevenue')}</p>
+              <p className="text-gray-500 dark:text-gray-400 text-xs">{t('dashboard.revenueStatus.pendingDescription')}</p>
             </div>
           </div>
 
@@ -667,8 +667,6 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* Most Reviewed Products - Removed as we don't have review data yet */}
-
         {/* Additional Useful Sections */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {/* Quick Actions */}
@@ -681,8 +679,8 @@ function AdminDashboard() {
             </div>
             
             <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              <button className="bg-primary/10 dark:bg-primary/20 hover:bg-primary/20 dark:hover:bg-primary/30 text-primary p-3 sm:p-4 rounded-lg transition-all">
-                <Package className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2 text-primary dark:text-primary" />
+              <button className="bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 text-black dark:text-white p-3 sm:p-4 rounded-lg transition-all">
+                <Package className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2 text-black dark:text-white" />
                 <span className="text-xs sm:text-sm font-medium">إضافة منتج</span>
               </button>
               <button className="bg-green-500/10 dark:bg-green-500/20 hover:bg-green-500/20 dark:hover:bg-green-500/30 text-green-600 dark:text-green-400 p-3 sm:p-4 rounded-lg transition-all">
@@ -727,8 +725,8 @@ function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground text-sm sm:text-base">التخزين</span>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                  <span className="text-yellow-600 dark:text-yellow-400 text-xs sm:text-sm">75%</span>
+                  <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                  <span className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">75%</span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
@@ -755,7 +753,7 @@ function AdminDashboard() {
                   <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
                     activity.type === 'success' ? 'bg-green-500' :
                     activity.type === 'info' ? 'bg-blue-500' :
-                    activity.type === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
+                    activity.type === 'warning' ? 'bg-gray-700 dark:bg-gray-300' : 'bg-red-500'
                   }`}></div>
                   <div className="flex-1 min-w-0">
                     <p className="text-foreground text-xs sm:text-sm">{activity.action}</p>
