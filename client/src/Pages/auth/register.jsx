@@ -44,16 +44,16 @@ function AuthRegister() {
       setIsLoading(false);
       if (data?.payload?.success) {
         toast({
-          title: "تم إنشاء الحساب بنجاح ✅",
-          description: data?.payload?.message || "مرحباً بك في MAMSEL"
+          title: "Account created successfully ✅",
+          description: data?.payload?.message || "Welcome to MAMSEL"
         });
         setTimeout(() => {
           navigate("/auth/login");
         }, 500);
       } else {
         toast({
-          title: "خطأ في التسجيل",
-          description: data?.payload?.message || "يرجى التحقق من البيانات المدخلة",
+          title: "Error in registration",
+          description: data?.payload?.message || "Please check the entered data",
           variant: "destructive"
         });
       }
@@ -63,8 +63,8 @@ function AuthRegister() {
   function handleGoogleLogin() {
     // TODO: Implement Google OAuth
     toast({
-      title: "قريباً",
-      description: "تسجيل الدخول عبر Google سيكون متاحاً قريباً",
+      title: "Soon",
+      description: "Login via Google will be available soon",
     });
   }
 
@@ -111,7 +111,7 @@ function AuthRegister() {
                   </h1>
                   <div className="h-px w-24 bg-gradient-to-r from-[#D4AF37] to-transparent"></div>
                   <p className="text-lg text-gray-600 dark:text-gray-400 font-light tracking-wide max-w-md">
-                    انضم إلينا اليوم واستمتع بتجربة تسوق فريدة مع أفضل العروض والخدمات الحصرية
+                    Join us today and enjoy a unique shopping experience with the best offers and exclusive services
                   </p>
                 </div>
               </div>
@@ -121,22 +121,22 @@ function AuthRegister() {
                 <div className="flex items-start gap-4 group">
                   <div className="w-1 h-12 bg-gradient-to-b from-[#D4AF37] to-transparent group-hover:h-16 transition-all duration-300"></div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">انضم بسهولة</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">إنشاء حساب في دقائق معدودة</p>
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">Join easily</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Create an account in a few minutes</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 group">
                   <div className="w-1 h-12 bg-gradient-to-b from-[#D4AF37] to-transparent group-hover:h-16 transition-all duration-300"></div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">عروض حصرية</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">احصل على خصومات خاصة للأعضاء الجدد</p>
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">Exclusive offers</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Get special discounts for new members</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 group">
                   <div className="w-1 h-12 bg-gradient-to-b from-[#D4AF37] to-transparent group-hover:h-16 transition-all duration-300"></div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">أمان مضمون</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">حماية كاملة لبياناتك الشخصية</p>
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">Full security</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Full protection for your personal data</p>
                   </div>
                 </div>
               </div>
@@ -186,7 +186,7 @@ function AuthRegister() {
                     <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white dark:bg-[#0f0f0f] px-2 text-gray-500 dark:text-gray-400">أو</span>
+                    <span className="bg-white dark:bg-[#0f0f0f] px-2 text-gray-500 dark:text-gray-400">Or</span>
                   </div>
                 </div>
 
@@ -195,7 +195,7 @@ function AuthRegister() {
                   {/* User Name Field */}
                   <div className="space-y-2">
                     <label className="text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                      اسم المستخدم
+                      User name
                     </label>
                     <div className="relative group">
                       <User className={`absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors duration-300 ${
@@ -210,7 +210,7 @@ function AuthRegister() {
                         onFocus={() => setFocusedField('userName')}
                         onBlur={() => setFocusedField(null)}
                         className="w-full bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3.5 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20 transition-all duration-300"
-                        placeholder="أدخل اسم المستخدم"
+                        placeholder="Enter your user name"
                         required
                       />
                       {focusedField === 'userName' && (
@@ -222,7 +222,7 @@ function AuthRegister() {
                   {/* Email Field */}
                   <div className="space-y-2">
                     <label className="text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                      البريد الإلكتروني
+                      Email
                     </label>
                     <div className="relative group">
                       <Mail className={`absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors duration-300 ${
@@ -249,7 +249,7 @@ function AuthRegister() {
                   {/* Password Field */}
                   <div className="space-y-2">
                     <label className="text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                      كلمة المرور
+                      Password
                     </label>
                     <div className="relative group">
                       <Lock className={`absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors duration-300 ${
