@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "@/store/auth-slice";
+import { registerUser, loginUser } from "@/store/auth-slice";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { 
@@ -37,32 +37,71 @@ function AuthRegister() {
     };
   }, []);
 
-  function onSubmit(event) {
+  async function onSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
-    dispatch(registerUser(formData)).then((data) => {
-      setIsLoading(false);
-      if (data?.payload?.success) {
-        toast({
-          title: "Account created successfully ✅",
-          description: "Please log in to continue"
-        });
-        setTimeout(() => {
-          navigate("/auth/login", { 
-            state: { 
-              from: "/shop/home",
-              email: formData.email // Pass email to pre-fill login form
-            } 
+    
+    try {
+      // Step 1: Register the user
+      const registerResult = await dispatch(registerUser(formData));
+      
+      if (registerResult?.payload?.success) {
+        // Step 2: Automatically log in with the same credentials
+        const loginCredentials = {
+          email: formData.email,
+          password: formData.password
+        };
+        
+        const loginResult = await dispatch(loginUser(loginCredentials));
+        
+        setIsLoading(false);
+        
+        if (loginResult?.payload?.success) {
+          toast({
+            title: "Account created successfully ✅",
+            description: "Welcome to MAMSEL! You are now logged in."
           });
-        }, 500);
+          
+          // Navigate based on user role
+          setTimeout(() => {
+            if (loginResult?.payload?.user?.role === "admin") {
+              navigate("/admin/dashboard", { replace: true });
+            } else {
+              navigate("/shop/home", { replace: true });
+            }
+          }, 500);
+        } else {
+          // Registration succeeded but login failed - redirect to login page
+          toast({
+            title: "Account created successfully ✅",
+            description: loginResult?.payload?.message || "Please log in to continue",
+            variant: "default"
+          });
+          setTimeout(() => {
+            navigate("/auth/login", { 
+              state: { 
+                from: "/shop/home",
+                email: formData.email
+              } 
+            });
+          }, 1000);
+        }
       } else {
+        setIsLoading(false);
         toast({
           title: "Error in registration",
-          description: data?.payload?.message || "Please check the entered data",
+          description: registerResult?.payload?.message || "Please check the entered data",
           variant: "destructive"
         });
       }
-    });
+    } catch (error) {
+      setIsLoading(false);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive"
+      });
+    }
   }
 
   function handleGoogleLogin() {
