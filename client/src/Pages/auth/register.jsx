@@ -45,10 +45,15 @@ function AuthRegister() {
       if (data?.payload?.success) {
         toast({
           title: "Account created successfully ✅",
-          description: data?.payload?.message || "Welcome to MAMSEL"
+          description: "Please log in to continue"
         });
         setTimeout(() => {
-          navigate("/auth/login");
+          navigate("/auth/login", { 
+            state: { 
+              from: "/shop/home",
+              email: formData.email // Pass email to pre-fill login form
+            } 
+          });
         }, 500);
       } else {
         toast({

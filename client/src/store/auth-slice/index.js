@@ -120,8 +120,9 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload.user || action.payload;
-        state.isAuthenticated = true;
+        // Don't set user as authenticated - they need to log in to get a real token
+        state.user = null;
+        state.isAuthenticated = false;
         state.error = null;
       })
       .addCase(registerUser.rejected, (state, action) => {

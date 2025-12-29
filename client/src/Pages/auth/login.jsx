@@ -30,6 +30,18 @@ function AuthLogin() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   
   const savedPath = location.state?.from || "/shop/home";
+  
+  // Pre-fill email if coming from registration
+  useEffect(() => {
+    if (location.state?.email) {
+      setFormData(prev => ({ ...prev, email: location.state.email }));
+      // Show a helpful message
+      toast({
+        title: "Account created successfully!",
+        description: "Please log in with your credentials to continue",
+      });
+    }
+  }, [location.state?.email, toast]);
 
   // Page load animation
   useEffect(() => {
