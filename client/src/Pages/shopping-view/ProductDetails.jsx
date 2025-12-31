@@ -741,10 +741,10 @@ function ProductDetails() {
                 {product.salePrice && product.salePrice < product.price ? (
                   <>
                     <span className="text-2xl font-bold text-black dark:text-white">
-                      ${product.salePrice}
+                      QR{product.salePrice}
                     </span>
                     <span className="text-gray-500 dark:text-gray-400 line-through text-sm">
-                      ${product.price}
+                      QR{product.price}
                     </span>
                     <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                       Discount {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
@@ -752,7 +752,7 @@ function ProductDetails() {
                   </>
                 ) : (
                   <span className="text-2xl font-bold text-black dark:text-white">
-                    ${product.price}
+                    QR{product.price}
                   </span>
                 )}
               </div>

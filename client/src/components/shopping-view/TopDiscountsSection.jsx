@@ -237,12 +237,12 @@ const TopDiscountsSection = ({
             <span className={`font-light text-gray-900 dark:text-white ${
               isHero ? "text-2xl md:text-3xl lg:text-4xl" : "text-xl md:text-2xl"
             }`}>
-              ${product.salePrice}
+              QR{product.salePrice}
             </span>
             <span className={`font-light text-gray-400 dark:text-gray-500 line-through ${
               isHero ? "text-lg md:text-xl" : "text-base"
             }`}>
-              ${product.price}
+              QR{product.price}
             </span>
           </div>
 

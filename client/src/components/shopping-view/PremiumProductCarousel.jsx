@@ -507,15 +507,15 @@ const PremiumProductCarousel = ({ onViewDetails, onAddToCart }) => {
                           {product.salePrice && product.salePrice < product.price ? (
                             <>
                               <span className="text-xl sm:text-2xl font-light text-gray-900 dark:text-white">
-                                ${product.salePrice}
+                                QR{product.salePrice}
                               </span>
                               <span className="text-gray-400 dark:text-gray-600 line-through text-sm">
-                                ${product.price}
+                                QR{product.price}
                               </span>
                             </>
                           ) : (
                             <span className="text-xl sm:text-2xl font-light text-gray-900 dark:text-white">
-                              ${product.price}
+                              QR{product.price}
                             </span>
                           )}
                         </div>

@@ -22,9 +22,9 @@ function AdminSettings() {
   const [settings, setSettings] = useState({
     // General Settings
     siteName: "MAMSEL",
-    siteDescription: "متجر  العود الفاخرة",
+    siteDescription: "متجر  الملابس الفاخرة القطرية",
     contactEmail: "info@oudalwajba.com",
-    contactPhone: "+97451227772",
+    contactPhone: "+97471160117",
     
     // Notification Settings
     emailNotifications: true,

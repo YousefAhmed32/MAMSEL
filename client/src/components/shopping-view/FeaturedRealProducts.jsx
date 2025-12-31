@@ -256,15 +256,15 @@ const FeaturedRealProducts = ({
                     {product.salePrice && product.salePrice < product.price ? (
                       <>
                         <span className="text-2xl md:text-3xl font-light text-gray-900 dark:text-white">
-                          ${product.salePrice}
+                          QR{product.salePrice}
                         </span>
                         <span className="text-sm font-light text-gray-400 dark:text-gray-500 line-through">
-                          ${product.price}
+                          QR{product.price}
                         </span>
                       </>
                     ) : (
                       <span className="text-2xl md:text-3xl font-light text-gray-900 dark:text-white">
-                        ${product.price}
+                        QR{product.price}
                       </span>
                     )}
                   </div>

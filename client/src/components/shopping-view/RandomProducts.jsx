@@ -271,10 +271,10 @@ const RandomProducts = ({ onViewDetails, onAddToCart }) => {
       {product.salePrice && product.salePrice < product.price ? (
         <>
           <span className="text-2xl font-serif font-semibold text-black dark:text-white">
-            ${product.salePrice}
+            QR${product.salePrice}
           </span>
           <span className="text-gray-400 dark:text-gray-500 line-through text-base">
-            ${product.price}
+            QR${product.price}
           </span>
           <span className="ml-auto bg-black dark:bg-white text-white/90 dark:text-black text-xs px-2 py-1 rounded-sm font-medium">
             {Math.round(((product.price - product.salePrice) / product.price) * 100)}% OFF
@@ -282,7 +282,7 @@ const RandomProducts = ({ onViewDetails, onAddToCart }) => {
         </>
       ) : (
         <span className="text-2xl font-serif font-semibold text-black dark:text-white">
-          ${product.price}
+          QR${product.price}
         </span>
       )}
     </div>

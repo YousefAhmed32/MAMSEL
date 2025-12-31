@@ -43,7 +43,7 @@ function Footer() {
               </a>
               {/* WhatsApp */}
               <a
-                href="https://wa.me/97451227772"
+                href="https://wa.me/97471160117"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300"
@@ -110,13 +110,13 @@ function Footer() {
             <ul className="space-y-4 text-sm">
               <li className="flex items-center gap-3">
                 <a
-                  href="https://wa.me/97451227772"
+                  href="https://wa.me/97471160117"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-[#D4AF37] transition-colors duration-300"
                 >
                   <Phone className="w-4 h-4" />
-                  <span>+97451227772</span>
+                  <span>+97471160117</span>
                 </a>
               </li>
               <li className="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">

@@ -357,8 +357,8 @@ function ShoppingCheckout() {
               <div className="space-y-3">
                 {[
                   { value: "COD", icon: Banknote, label: "Payment on delivery", desc: "Pay on delivery" },
-                  // { value: "Free Sample", icon: Gift, label: "تجربة مجانية", desc: "للعينات المجانية فقط" },
-                  { value: "Transfer", icon: CreditCard, label: "Bank transfer / Phone transfer", desc: "Direct transfer" }
+               
+                  { value: "Transfer", icon: CreditCard, label: "Fawran transfer / Phone transfer", desc: "Direct transfer" }
                 ].map((method) => (
                   <motion.label
                     key={method.value}
@@ -417,11 +417,11 @@ function ShoppingCheckout() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium uppercase tracking-wider">Phone number</p>
-                      <p className="text-gray-900 dark:text-white font-semibold text-base">01012345678</p>
+                      <p className="text-gray-900 dark:text-white font-semibold text-base">+974 7116 0117</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium uppercase tracking-wider">Bank account number</p>
-                      <p className="text-gray-900 dark:text-white font-semibold text-base">1234567890123456</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium uppercase tracking-wider">Fawran account number</p>
+                      <p className="text-gray-900 dark:text-white font-semibold text-base">70970254</p>
                     </div>
                   </div>
                   
@@ -442,7 +442,7 @@ function ShoppingCheckout() {
                   <div>
                     <label className="text-gray-900 dark:text-white font-semibold mb-2 block flex items-center gap-2 text-sm">
                       <Star className="w-4 h-4 text-pink-600 dark:text-pink-400" />
-                      Transfer amount
+                      Fawran transfer amount
                     </label>
                     <input
                       type="number"
