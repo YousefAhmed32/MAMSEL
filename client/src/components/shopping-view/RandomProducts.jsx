@@ -270,7 +270,7 @@ const RandomProducts = ({ onViewDetails, onAddToCart }) => {
     <div className="flex items-baseline gap-3">
       {product.salePrice && product.salePrice < product.price ? (
         <>
-          <span className="text-2xl font-serif font-semibold text-black dark:text-white">
+          <span className="text-2xl font-card font-semibold text-black dark:text-white">
             QR{product.salePrice}
           </span>
           <span className="text-gray-400 dark:text-gray-500 line-through text-base">
@@ -281,7 +281,7 @@ const RandomProducts = ({ onViewDetails, onAddToCart }) => {
           </span>
         </>
       ) : (
-        <span className="text-2xl font-serif font-semibold text-black dark:text-white">
+        <span className="text-2xl font-medium font-semibold text-black dark:text-white">
           QR{product.price}
         </span>
       )}

@@ -33,7 +33,7 @@ function Footer() {
             <div className="flex gap-3 pt-2">
               {/* Instagram */}
               <a
-                href="https://www.instagram.com/oud_alwajba?igsh=ZnJ0M3UwYXM5b2E2"
+                href="https://www.instagram.com/mamsel.qa/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-300"
@@ -85,9 +85,9 @@ function Footer() {
             </h3>
             <ul className="space-y-3 text-sm">
               {[
-                { to: "/shop/listing?category=men", label: "Men's Collection" },
+                // { to: "/shop/listing?category=men", label: "Men's Collection" },
                 { to: "/shop/listing?category=women", label: "Women's Collection" },
-                { to: "/shop/listing?category=unisex", label: "Unisex" },
+                // { to: "/shop/listing?category=unisex", label: "Unisex" },
                 { to: "/shop/listing?category=luxury", label: "Luxury Collection" },
               ].map((item, idx) => (
                 <li key={idx}>
